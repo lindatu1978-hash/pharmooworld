@@ -14,6 +14,7 @@ import Checkout from "./pages/Checkout";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
+import About from "./pages/About";
 import Terms from "./pages/Terms";
 import Disclaimer from "./pages/Disclaimer";
 import ClientAssurance from "./pages/ClientAssurance";
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="/account" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/client-assurance" element={<ClientAssurance />} />
