@@ -89,6 +89,7 @@ const Footer = () => {
             <h3 className="font-semibold mb-4">Information</h3>
             <ul className="space-y-2 text-sm opacity-80">
               <li><Link to="/about" className="hover:text-accent">About Us</Link></li>
+              <li><Link to="/testimonials" className="hover:text-accent">Customer Reviews</Link></li>
               <li><Link to="/client-assurance" className="hover:text-accent">Client Assurance</Link></li>
               <li><Link to="/certifications" className="hover:text-accent">Certifications</Link></li>
               <li><Link to="/shipping" className="hover:text-accent">Shipping & Delivery</Link></li>
