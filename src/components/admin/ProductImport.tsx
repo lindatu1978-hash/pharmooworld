@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, Check, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const BOTULINUM_PRODUCTS = [
   {
@@ -127,18 +135,477 @@ const BOTULINUM_PRODUCTS = [
   },
 ];
 
-interface ProductImportProps {
-  categoryId: string;
-}
+const DERMAL_FILLER_PRODUCTS = [
+  {
+    name: "Juvederm Volift with Lidocaine (2x1ml)",
+    slug: "juvederm-volift-lidocaine-2x1ml",
+    description: "The latest addition to the Juvederm range - Juvéderm® VOLIFT® with lidocaine, delivers natural looks at their best.",
+    price: 180,
+    bulk_price: 153,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/juvederm-volift-with-lidocaine-2x1ml-600x600.png",
+  },
+  {
+    name: "Juvederm Volbella with Lidocaine (2x1ml)",
+    slug: "juvederm-volbella-lidocaine-2x1ml",
+    description: "A treatment designed to plump up lips with increased volume as well as smoothing lines around the mouth.",
+    price: 175,
+    bulk_price: 148.75,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-juvederm-volbella-with-lidocaine-1x1ml-online-600x600.jpg",
+  },
+  {
+    name: "Juvederm Ultra 2 (2x0.55ml)",
+    slug: "juvederm-ultra-2-2x055ml",
+    description: "A highly cross-linked formulation for the subtle correction of medium facial lines and skin depressions. Also enhances lip contour.",
+    price: 70,
+    bulk_price: 59.50,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 0.55ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-juvederm-ultra-2-2x055ml-online-600x600.jpg",
+  },
+  {
+    name: "Juvederm Ultra 3 (2x1ml)",
+    slug: "juvederm-ultra-3-2x1ml",
+    description: "Also enhances lip contour and volume. A thicker gel that allows more versatility in contouring and volumising, facial lines and naso-labial folds, filling deeper wrinkles and enhancing lip volume.",
+    price: 140,
+    bulk_price: 119,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-juvederm-ultra-3-2x1ml-online-600x600.jpg",
+  },
+  {
+    name: "Juvederm Ultra 4 (2x1ml)",
+    slug: "juvederm-ultra-4-2x1ml",
+    description: "A highly cross-linked robust formulation for volumising and correction of deeper folds and wrinkles, including enhancing volume in the cheeks and chin.",
+    price: 150,
+    bulk_price: 127.50,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-juvederm-ultra-4-2x1ml-online-600x600.jpg",
+  },
+  {
+    name: "Juvederm Ultra Smile (2x0.55ml)",
+    slug: "juvederm-ultra-smile-2x055ml",
+    description: "Juvéderm ULTRA SMILE is specifically for your lips to create natural, smooth, beautiful results.",
+    price: 100,
+    bulk_price: 85,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 0.55ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-juvederm-ultra-smile-2x055ml-online-600x600.jpg",
+  },
+  {
+    name: "Juvederm Volbella with Lidocaine (1x1ml)",
+    slug: "juvederm-volbella-lidocaine-1x1ml",
+    description: "A treatment designed to plump up lips with increased volume as well as smoothing lines around the mouth.",
+    price: 90,
+    bulk_price: 76.50,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-juvederm-volbella-with-lidocaine-1x1ml-online-600x600.jpg",
+  },
+  {
+    name: "Juvederm Voluma with Lidocaine (2x1ml)",
+    slug: "juvederm-voluma-lidocaine-2x1ml",
+    description: "Juvéderm™ VOLUMA™ with Lidocaine is injectable hyaluronic volumiser that recontours the face to restore volume to chin, cheeks, and cheekbones that have become hollow or thin due to weight loss or age-related facial fat loss.",
+    price: 175,
+    bulk_price: 148.75,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/voluma-xc-e1416503834931-600x341.jpg",
+  },
+  {
+    name: "Juvederm Volift Retouch (2x0.55ml)",
+    slug: "juvederm-volift-retouch-2x055ml",
+    description: "A new addition to the Juvederm range in 0.55ml, designed to create less wastage in the first session.",
+    price: 100,
+    bulk_price: 85,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "2 x 0.55ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/juvederm-volift-retouch-600x600.png",
+  },
+  {
+    name: "Juvederm Hydrate (1x1ml)",
+    slug: "juvederm-hydrate-1x1ml",
+    description: "Juvéderm HYDRATE offers deep hydration to give you smoother, firmer skin in areas that are often susceptible to sun damage and the signs of aging - the face, neck, décolletage, and hands.",
+    price: 35,
+    bulk_price: 29.75,
+    manufacturer: "Allergan",
+    origin: "France",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/juvederm-hydrate-600x336.jpg",
+  },
+  {
+    name: "Filorga NCTF 135HA (5x3ml)",
+    slug: "filorga-nctf-135ha-5x3ml",
+    description: "This ionic balancing formula has 55 ingredients to repair the skin layers. Filorga NCTF 135HA® actively repairs the skin to replace minerals that are deficient such as Magnesium, Sodium, Potassium and Calcium.",
+    price: 150,
+    bulk_price: 127.50,
+    manufacturer: "Filorga",
+    origin: "France",
+    form: "Injectable solution",
+    dosage: "5 x 3ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/filorga-nctf-135-ha-mesotherapie-anti-age-rajeunissement-cutane-global-kit-pour-5-traitements-de-comblement-600x600.jpg",
+  },
+  {
+    name: "Belotero Intense (1x1ml)",
+    slug: "belotero-intense-1x1ml",
+    description: "Belotero Intense is an ideal product for deeper lines and wrinkles. It is injected into the deep dermis with a 27G needle.",
+    price: 50,
+    bulk_price: 42.50,
+    manufacturer: "Merz Pharmaceuticals",
+    origin: "Germany",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/belotero-intense-1x1ml-600x600.jpg",
+  },
+  {
+    name: "Aliaxin EV Essential Volume",
+    slug: "aliaxin-ev-essential-volume",
+    description: "Aliaxin EV Essential Volume is used for nasolabial folds and acne scars. Used for the areas of the face which require enrichment of the facial tissue through growth of the soft tissues (cheeks, chin, cheekbones).",
+    price: 90,
+    bulk_price: 76.50,
+    manufacturer: "IBSA",
+    origin: "Italy",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/aliaxin-ev-essential-volume-600x600.jpg",
+  },
+  {
+    name: "Aliaxin GP Global Performance",
+    slug: "aliaxin-gp-global-performance",
+    description: "Aliaxin GP Global Performance is ideal for treating common aesthetic defects such as glabellar wrinkles, nasolabial folds, marionette lines, and improved volume in the cheek and chin zones.",
+    price: 93,
+    bulk_price: 79.05,
+    manufacturer: "IBSA",
+    origin: "Italy",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/aliaxin-gp-global-performance-600x450.png",
+  },
+  {
+    name: "Aliaxin FL Lips",
+    slug: "aliaxin-fl-lips",
+    description: "Defines contours and increases lip volume. Ideal viscosity to guarantee a homogeneous diffusion in the mucosa.",
+    price: 90.99,
+    bulk_price: 77.34,
+    manufacturer: "IBSA",
+    origin: "Italy",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-aliaxin-fl-lips-online-600x415.jpg",
+  },
+  {
+    name: "Sculptra (2 vials)",
+    slug: "sculptra-2-vials",
+    description: "Sculptra Aesthetic is a revolutionary injection offering progressive results that are noticeable immediately. Collagen levels are increased within the body to restore their natural function.",
+    price: 150,
+    bulk_price: 127.50,
+    manufacturer: "Galderma",
+    origin: "USA",
+    form: "Injectable suspension",
+    dosage: "2 vials",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/sculptra-aesthetic-600x341.jpg",
+  },
+  {
+    name: "Restylane (1x1ml)",
+    slug: "restylane-1x1ml",
+    description: "The Restylane family of products can be used to add volume and fullness to the skin to correct moderate to severe facial wrinkles and folds.",
+    price: 56,
+    bulk_price: 47.60,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-1x1ml-3-600x536.png",
+  },
+  {
+    name: "Restylane (1x0.5ml)",
+    slug: "restylane-1x05ml",
+    description: "The Restylane family of products can be used to add volume and fullness to the skin to correct moderate to severe facial wrinkles and folds.",
+    price: 70,
+    bulk_price: 59.50,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 0.5ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-1x0.5ml-600x536.png",
+  },
+  {
+    name: "Restylane Lidocaine (1x0.5ml)",
+    slug: "restylane-lidocaine-1x05ml",
+    description: "The Restylane family of products with added Lidocaine for a more comfortable treatment experience.",
+    price: 35,
+    bulk_price: 29.75,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 0.5ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-lidocaine-1x0.5ml-600x600.png",
+  },
+  {
+    name: "Restylane Lidocaine (1x1ml)",
+    slug: "restylane-lidocaine-1x1ml",
+    description: "The Restylane family of products with added Lidocaine for a more comfortable treatment experience.",
+    price: 50,
+    bulk_price: 42.50,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-lidocaine-1x1ml-600x600.png",
+  },
+  {
+    name: "Restylane Perlane (1x0.5ml)",
+    slug: "restylane-perlane-1x05ml",
+    description: "Restylane Perlane can be used to add volume and fullness to the skin to correct moderate to severe facial wrinkles and folds.",
+    price: 60,
+    bulk_price: 51,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 0.5ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-perlane-1x0.5-ml-600x600.png",
+  },
+  {
+    name: "Restylane Perlane (1x1ml)",
+    slug: "restylane-perlane-1x1ml",
+    description: "Restylane Perlane can be used to add volume and fullness to the skin to correct moderate to severe facial wrinkles and folds.",
+    price: 85,
+    bulk_price: 72.25,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-perlane-1x1ml-600x600.png",
+  },
+  {
+    name: "Restylane Vital Injector with Lidocaine (2ml)",
+    slug: "restylane-vital-injector-lidocaine-2ml",
+    description: "Restylane Vital Injector with Lidocaine offers pain free treatment through an injector pen which allows for application over a large area of skin surface.",
+    price: 100,
+    bulk_price: 85,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 2ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-vital-injector-with-lidocaine-2ml-600x600.png",
+  },
+  {
+    name: "Restylane Kysse with Lidocaine (1x1ml)",
+    slug: "restylane-kysse-lidocaine-1x1ml",
+    description: "Creates fuller plumper lips with a beautifully defined contour. Restylane Kysse can create the perfect shaped lips that are full of volume and plumpness.",
+    price: 60,
+    bulk_price: 51,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-kysse-with-lidocaine-1x1ml-600x600.jpg",
+  },
+  {
+    name: "Restylane Defyne with Lidocaine (1x1ml)",
+    slug: "restylane-defyne-lidocaine-1x1ml",
+    description: "Defyne can treat deep nasolabial folds to ensure appearance is smoothed out.",
+    price: 70,
+    bulk_price: 59.50,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-defyne-with-lidocaine-1x1ml-600x600.png",
+  },
+  {
+    name: "Restylane Refyne with Lidocaine (1x1ml)",
+    slug: "restylane-refyne-lidocaine-1x1ml",
+    description: "To treat moderate wrinkles in between fine and deep.",
+    price: 60,
+    bulk_price: 51,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-refyne-with-lidocaine-1x1ml-254x203.png",
+  },
+  {
+    name: "Restylane Volyme with Lidocaine (1x1ml)",
+    slug: "restylane-volyme-lidocaine-1x1ml",
+    description: "A volumising filler that creates a lifting effect in cheekbones.",
+    price: 60,
+    bulk_price: 51,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-volyme-with-lidocaine-1x1ml-254x203.png",
+  },
+  {
+    name: "Restylane Fynesse (1x1ml)",
+    slug: "restylane-fynesse-1x1ml",
+    description: "A dermal filler specially formulated to treat superficial lines and wrinkles.",
+    price: 48,
+    bulk_price: 40.80,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-fynesse-1x1ml-254x203.png",
+  },
+  {
+    name: "Restylane Lyft (1x1ml)",
+    slug: "restylane-lyft-1x1ml",
+    description: "From the Perlane Collection. A robust filler for deep tissue volumization.",
+    price: 60,
+    bulk_price: 51,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-lyft-1x1ml-600x600.png",
+  },
+  {
+    name: "Restylane Lyft with Lidocaine (1x1ml)",
+    slug: "restylane-lyft-lidocaine-1x1ml",
+    description: "From the Perlane Collection for painless treatment. A robust filler for deep tissue volumization.",
+    price: 62,
+    bulk_price: 52.70,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-lyft-with-lidocaine-1x1ml-600x600.png",
+  },
+  {
+    name: "Restylane Lip Volume with Lidocaine (1x1ml)",
+    slug: "restylane-lip-volume-lidocaine-1x1ml",
+    description: "Restylane Lip Volume with Lidocaine offers a completely comfortable treatment to increase the volume of your lips and improve the contours of the lip outline.",
+    price: 85,
+    bulk_price: 72.25,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 1ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-lip-volume-with-lidocaine-1x1ml-600x600.png",
+  },
+  {
+    name: "Restylane SubQ (1x2ml)",
+    slug: "restylane-subq-1x2ml",
+    description: "Restylane SubQ is injected deeper to add volume and support the overlying tissue, providing facial fullness and restoring symmetry. Ideal for patients with flattened facial features.",
+    price: 130,
+    bulk_price: 110.50,
+    manufacturer: "Galderma",
+    origin: "Sweden",
+    form: "Injectable gel",
+    dosage: "1 x 2ml",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/restylane-subq-1x2ml-600x600.png",
+  },
+];
 
-const ProductImport = ({ categoryId }: ProductImportProps) => {
+type ProductCategory = "botulinum" | "dermal-fillers";
+
+const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOTULINUM_PRODUCTS }> = {
+  "botulinum": {
+    name: "Botulinum Products",
+    products: BOTULINUM_PRODUCTS,
+  },
+  "dermal-fillers": {
+    name: "Dermal Filler Products",
+    products: DERMAL_FILLER_PRODUCTS,
+  },
+};
+
+const ProductImport = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [importedCount, setImportedCount] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategory>("botulinum");
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name, slug")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const getCategoryId = (categoryType: ProductCategory) => {
+    if (!categories) return null;
+    if (categoryType === "botulinum") {
+      return categories.find(c => c.slug === "botulinum" || c.name.toLowerCase().includes("botulinum"))?.id;
+    }
+    if (categoryType === "dermal-fillers") {
+      return categories.find(c => c.slug === "dermal-fillers" || c.name.toLowerCase().includes("dermal") || c.name.toLowerCase().includes("filler"))?.id;
+    }
+    return null;
+  };
+
+  const currentProducts = PRODUCT_SETS[selectedCategory].products;
+  const categoryId = getCategoryId(selectedCategory);
 
   const importMutation = useMutation({
     mutationFn: async () => {
-      const productsToInsert = BOTULINUM_PRODUCTS.map((product) => ({
+      if (!categoryId) {
+        throw new Error("Category not found");
+      }
+
+      const productsToInsert = currentProducts.map((product) => ({
         ...product,
         category_id: categoryId,
         in_stock: true,
@@ -167,7 +634,7 @@ const ProductImport = ({ categoryId }: ProductImportProps) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       toast({
         title: "Import complete",
-        description: `Successfully imported ${count} Botulinum products.`,
+        description: `Successfully imported ${count} ${PRODUCT_SETS[selectedCategory].name}.`,
       });
     },
     onError: (error: any) => {
@@ -179,46 +646,72 @@ const ProductImport = ({ categoryId }: ProductImportProps) => {
     },
   });
 
+  const handleCategoryChange = (value: ProductCategory) => {
+    setSelectedCategory(value);
+    setImportedCount(0);
+    importMutation.reset();
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Upload className="h-5 w-5" />
-          Import Botulinum Products
+          Import Products from PharmooWorld
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Select Product Category</label>
+          <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="botulinum">Botulinum Products ({BOTULINUM_PRODUCTS.length} items)</SelectItem>
+              <SelectItem value="dermal-fillers">Dermal Fillers ({DERMAL_FILLER_PRODUCTS.length} items)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <p className="text-sm text-muted-foreground">
-          Import {BOTULINUM_PRODUCTS.length} Botulinum products from pharmooworld.com into the database.
+          Import {currentProducts.length} {PRODUCT_SETS[selectedCategory].name} from pharmooworld.com into the database.
+          {categoryId ? (
+            <span className="text-success"> Category found ✓</span>
+          ) : (
+            <span className="text-destructive"> Category not found - please create it first</span>
+          )}
         </p>
 
-        <div className="space-y-2">
-          {BOTULINUM_PRODUCTS.map((product, index) => (
-            <div key={product.slug} className="flex items-center gap-2 text-sm">
-              {importedCount > index ? (
-                <Check className="h-4 w-4 text-success" />
-              ) : (
-                <Package className="h-4 w-4 text-muted-foreground" />
-              )}
-              <span className={importedCount > index ? "text-muted-foreground" : ""}>
-                {product.name}
-              </span>
-              <Badge variant="outline" className="ml-auto">
-                ${product.price}
-              </Badge>
-            </div>
-          ))}
-        </div>
+        <ScrollArea className="h-64 border rounded-lg p-3">
+          <div className="space-y-2">
+            {currentProducts.map((product, index) => (
+              <div key={product.slug} className="flex items-center gap-2 text-sm">
+                {importedCount > index ? (
+                  <Check className="h-4 w-4 text-success flex-shrink-0" />
+                ) : (
+                  <Package className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                )}
+                <span className={`flex-1 truncate ${importedCount > index ? "text-muted-foreground" : ""}`}>
+                  {product.name}
+                </span>
+                <Badge variant="outline" className="ml-auto flex-shrink-0">
+                  ${product.price}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
 
         <Button
           onClick={() => importMutation.mutate()}
-          disabled={importMutation.isPending || importMutation.isSuccess}
+          disabled={importMutation.isPending || importMutation.isSuccess || !categoryId}
           className="w-full gradient-medical"
         >
           {importMutation.isPending ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Importing... ({importedCount}/{BOTULINUM_PRODUCTS.length})
+              Importing... ({importedCount}/{currentProducts.length})
             </>
           ) : importMutation.isSuccess ? (
             <>
@@ -228,7 +721,7 @@ const ProductImport = ({ categoryId }: ProductImportProps) => {
           ) : (
             <>
               <Upload className="h-4 w-4 mr-2" />
-              Import All Products
+              Import All {currentProducts.length} Products
             </>
           )}
         </Button>
