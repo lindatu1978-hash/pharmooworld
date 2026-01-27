@@ -879,6 +879,19 @@ const HOSPITAL_SUPPLIES_PRODUCTS = [
     regulatory_status: "CE Marked, Medical Grade",
     image_url: "https://www.pharmooworld.com/assets/images/fs-4-600x601.jpg",
   },
+  {
+    name: "Blue SMS Disposable Surgical Gown",
+    slug: "blue-sms-disposable-surgical-gown",
+    description: "Blue SMS Disposable Protective Gowns for Hospital, Chemical, and Beauty Industry. Long sleeve with knitted cuffs, hooks and loops tie in neck and waist. Water & blood resistant, EO sterilized, single packed. Lightweight, breathable, durable, non-toxic and eco-friendly. Protects from dust, particles, blood, bacteria and virus. Widely used in hospitals, clinics, labs or contaminated areas.",
+    price: 8.50,
+    bulk_price: 6.00,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "Protective gown",
+    dosage: "S/M/L/XL/XXL - 30g to 60g",
+    regulatory_status: "ISO/CE/FDA Certified",
+    image_url: "https://www.pharmooworld.com/assets/images/5c9dc9cbd56ba-600x600.jpg",
+  },
 ];
 
 type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks" | "implants" | "hospital-supplies";
