@@ -807,7 +807,49 @@ const SNAKE_VENOM_PRODUCTS = [
   },
 ];
 
-type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom";
+const PMMA_BUTTOCKS_PRODUCTS = [
+  {
+    name: "1000CC PMMA Buttock Injection Kit",
+    slug: "pmma-buttock-injection-1000cc",
+    description: "Complete PMMA buttock enhancement kit (1000cc = 500cc per cheek). Includes polymethyl-methacrylate filler, sterile syringes, user manual, demo DVD, antibiotics, muscle relaxer, numbing cream, anesthesia, garment, and aftercare meds. Safe and permanent results for buttock, hip, and thigh enhancement.",
+    price: 1680,
+    bulk_price: 1500,
+    manufacturer: "PharmooWorld",
+    origin: "USA",
+    form: "Injectable filler kit",
+    dosage: "1000cc (50ml/vial)",
+    regulatory_status: "Professional Use Only",
+    image_url: "https://www.pharmooworld.com/assets/images/1000cc-injection-352x550.jpg",
+  },
+  {
+    name: "2000CC PMMA Buttock Injection Kit",
+    slug: "pmma-buttock-injection-2000cc",
+    description: "Large PMMA buttock enhancement kit (2000cc = 1000cc per cheek). Complete kit with polymethyl-methacrylate filler, sterile syringes, instruction materials, antibiotics, muscle relaxer, numbing cream, anesthesia, compression garment, and full aftercare package. For significant volume enhancement.",
+    price: 3200,
+    bulk_price: 2900,
+    manufacturer: "PharmooWorld",
+    origin: "USA",
+    form: "Injectable filler kit",
+    dosage: "2000cc (50ml/vial)",
+    regulatory_status: "Professional Use Only",
+    image_url: "https://www.pharmooworld.com/assets/images/1000cc-injection-352x550.jpg",
+  },
+  {
+    name: "500CC PMMA Buttock Injection Kit",
+    slug: "pmma-buttock-injection-500cc",
+    description: "Starter PMMA buttock enhancement kit (500cc = 250cc per cheek). Complete kit with polymethyl-methacrylate filler, sterile syringes, user manual, demo DVD, antibiotics, numbing cream, and aftercare essentials. Ideal for subtle enhancement and contouring.",
+    price: 950,
+    bulk_price: 850,
+    manufacturer: "PharmooWorld",
+    origin: "USA",
+    form: "Injectable filler kit",
+    dosage: "500cc (50ml/vial)",
+    regulatory_status: "Professional Use Only",
+    image_url: "https://www.pharmooworld.com/assets/images/1000cc-injection-352x550.jpg",
+  },
+];
+
+type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks";
 
 const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOTULINUM_PRODUCTS }> = {
   "botulinum": {
@@ -825,6 +867,10 @@ const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOT
   "snake-venom": {
     name: "Snake Venom & Research",
     products: SNAKE_VENOM_PRODUCTS,
+  },
+  "pmma-buttocks": {
+    name: "PMMA Buttocks Injection",
+    products: PMMA_BUTTOCKS_PRODUCTS,
   },
 };
 
@@ -859,6 +905,9 @@ const ProductImport = () => {
     }
     if (categoryType === "snake-venom") {
       return categories.find(c => c.slug === "snake-venom" || c.name.toLowerCase().includes("venom"))?.id;
+    }
+    if (categoryType === "pmma-buttocks") {
+      return categories.find(c => c.slug === "pmma-buttocks-injection" || c.name.toLowerCase().includes("pmma") || c.name.toLowerCase().includes("buttock"))?.id;
     }
     return null;
   };
@@ -939,6 +988,7 @@ const ProductImport = () => {
               <SelectItem value="dermal-fillers">Dermal Fillers ({DERMAL_FILLER_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="face-masks-ppe">Face Masks & PPE ({FACE_MASKS_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="snake-venom">Snake Venom & Research ({SNAKE_VENOM_PRODUCTS.length} items)</SelectItem>
+              <SelectItem value="pmma-buttocks">PMMA Buttocks Injection ({PMMA_BUTTOCKS_PRODUCTS.length} items)</SelectItem>
             </SelectContent>
           </Select>
         </div>
