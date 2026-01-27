@@ -554,7 +554,101 @@ const DERMAL_FILLER_PRODUCTS = [
   },
 ];
 
-type ProductCategory = "botulinum" | "dermal-fillers";
+const FACE_MASKS_PRODUCTS = [
+  {
+    name: "Disposable 3 Ply Face Masks (Box of 50)",
+    slug: "disposable-3ply-face-masks-50",
+    description: "Non woven disposable face masks with earloops to hold in place. Made from a 3 ply non woven material. Ideal for general use on public transport and in enclosed public spaces.",
+    price: 15,
+    bulk_price: 12,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "Disposable mask",
+    dosage: "50 pcs/box",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/637303299602141355-3-ply-fm-in-situ-1-web-600x600.jpg",
+  },
+  {
+    name: "Type IIR Medical Face Mask with Tie Coveralls (Box of 50)",
+    slug: "type-iir-medical-mask-tie-50",
+    description: "3 Layers Single Use Medical Face Mask 17.5cm x 9.5cm. EN 14683:2019+AC:2019 Type IIR with Tie Coverall. BFE≥98%. Ideal for Hospitals, Clinics, Laboratories.",
+    price: 25,
+    bulk_price: 20,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "Medical mask",
+    dosage: "50 pcs/box",
+    regulatory_status: "EN 14683 Type IIR, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/n1-scaled-1400x1867.jpg",
+  },
+  {
+    name: "Type I Medical Face Mask for Kids (Box of 50)",
+    slug: "type-i-medical-mask-kids-50",
+    description: "3 Layers medical face mask designed for children. Polypropylene Spunbond outer and inner layers with High-Efficiency Melt-Blown Fabric filter. BFE≥95%. Ideal for schools and public transport.",
+    price: 12,
+    bulk_price: 9,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "Medical mask",
+    dosage: "50 pcs/box",
+    regulatory_status: "EN 14683 Type I, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/n1-scaled-1400x1867.jpg",
+  },
+  {
+    name: "N95 Disposable Respirator Face Mask (Box of 20)",
+    slug: "n95-respirator-mask-20",
+    description: "Respirator face masks designed to protect wearer from exposure to small, infectious airborne particles, including bacteria and germs. PFE≥95%, BFE≥95%. Cone-shape with adjustable aluminum nose clip.",
+    price: 35,
+    bulk_price: 28,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "N95 Respirator",
+    dosage: "20 pcs/box",
+    regulatory_status: "NIOSH N95, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/n1-scaled-1400x1867.jpg",
+  },
+  {
+    name: "Disposable 3 Ply Face Masks (Case of 5,000)",
+    slug: "disposable-3ply-face-masks-5000",
+    description: "Bulk case of non woven disposable face masks with earloops. Made from 3 ply non woven material. Perfect for businesses and healthcare facilities.",
+    price: 450,
+    bulk_price: 400,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "Disposable mask",
+    dosage: "5,000 pcs/case",
+    regulatory_status: "CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/637303299602141355-3-ply-fm-in-situ-1-web-600x600.jpg",
+  },
+  {
+    name: "Type IIR Medical Face Mask (Case of 5,000)",
+    slug: "type-iir-medical-mask-5000",
+    description: "Bulk case of EN 14683:2019 Type IIR certified medical face masks. 3 layers with BFE≥98%. Hospital and clinical grade protection.",
+    price: 450,
+    bulk_price: 400,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "Medical mask",
+    dosage: "5,000 pcs/case",
+    regulatory_status: "EN 14683 Type IIR, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/n1-scaled-1400x1867.jpg",
+  },
+  {
+    name: "N95 Respirator Face Mask (Case of 1,000)",
+    slug: "n95-respirator-mask-1000",
+    description: "Bulk case of N95 respirator masks for maximum protection. Particle Filtration Efficiency ≥95%, Bacterial Filtration Efficiency ≥95%. Ideal for all work environments.",
+    price: 600,
+    bulk_price: 500,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "N95 Respirator",
+    dosage: "1,000 pcs/case",
+    regulatory_status: "NIOSH N95, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/n1-scaled-1400x1867.jpg",
+  },
+];
+
+type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe";
 
 const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOTULINUM_PRODUCTS }> = {
   "botulinum": {
@@ -564,6 +658,10 @@ const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOT
   "dermal-fillers": {
     name: "Dermal Filler Products",
     products: DERMAL_FILLER_PRODUCTS,
+  },
+  "face-masks-ppe": {
+    name: "Face Masks & PPE",
+    products: FACE_MASKS_PRODUCTS,
   },
 };
 
@@ -592,6 +690,9 @@ const ProductImport = () => {
     }
     if (categoryType === "dermal-fillers") {
       return categories.find(c => c.slug === "dermal-fillers" || c.name.toLowerCase().includes("dermal") || c.name.toLowerCase().includes("filler"))?.id;
+    }
+    if (categoryType === "face-masks-ppe") {
+      return categories.find(c => c.slug === "face-masks-ppe" || c.name.toLowerCase().includes("face mask") || c.name.toLowerCase().includes("ppe"))?.id;
     }
     return null;
   };
@@ -670,6 +771,7 @@ const ProductImport = () => {
             <SelectContent>
               <SelectItem value="botulinum">Botulinum Products ({BOTULINUM_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="dermal-fillers">Dermal Fillers ({DERMAL_FILLER_PRODUCTS.length} items)</SelectItem>
+              <SelectItem value="face-masks-ppe">Face Masks & PPE ({FACE_MASKS_PRODUCTS.length} items)</SelectItem>
             </SelectContent>
           </Select>
         </div>
