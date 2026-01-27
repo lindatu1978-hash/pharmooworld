@@ -20,6 +20,7 @@ import Privacy from "./pages/Privacy";
 import Returns from "./pages/Returns";
 import Shipping from "./pages/Shipping";
 import Testimonials from "./pages/Testimonials";
+import FAQ from "./pages/FAQ";
 import Disclaimer from "./pages/Disclaimer";
 import ClientAssurance from "./pages/ClientAssurance";
 import NotFound from "./pages/NotFound";
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/returns" element={<Returns />} />
               <Route path="/shipping" element={<Shipping />} />
               <Route path="/testimonials" element={<Testimonials />} />
+              <Route path="/faq" element={<FAQ />} />
               <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/client-assurance" element={<ClientAssurance />} />
             <Route path="*" element={<NotFound />} />
