@@ -849,7 +849,23 @@ const PMMA_BUTTOCKS_PRODUCTS = [
   },
 ];
 
-type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks";
+const IMPLANT_PRODUCTS = [
+  {
+    name: "Allergan Natrelle Silicone Breast Implant",
+    slug: "allergan-natrelle-silicone-breast-implant",
+    description: "NATRELLE Silicone-Filled Breast Implants are constructed with barrier shell technology resulting in a low diffusion silicone elastomer shell and are filled with a soft, cohesive silicone gel. Recommended for women over 22 years of age wanting to increase breast volume size, or for correcting and improving breasts following previous surgery. Also used for breast reconstruction after cancer or trauma.",
+    price: 900,
+    bulk_price: 810,
+    manufacturer: "Allergan",
+    origin: "USA",
+    form: "Silicone implant",
+    dosage: "Various sizes available",
+    regulatory_status: "FDA Approved, CE Marked",
+    image_url: "https://www.pharmooworld.com/assets/images/large-1400x1376.png",
+  },
+];
+
+type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks" | "implants";
 
 const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOTULINUM_PRODUCTS }> = {
   "botulinum": {
@@ -871,6 +887,10 @@ const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOT
   "pmma-buttocks": {
     name: "PMMA Buttocks Injection",
     products: PMMA_BUTTOCKS_PRODUCTS,
+  },
+  "implants": {
+    name: "Implants",
+    products: IMPLANT_PRODUCTS,
   },
 };
 
@@ -908,6 +928,9 @@ const ProductImport = () => {
     }
     if (categoryType === "pmma-buttocks") {
       return categories.find(c => c.slug === "pmma-buttocks-injection" || c.name.toLowerCase().includes("pmma") || c.name.toLowerCase().includes("buttock"))?.id;
+    }
+    if (categoryType === "implants") {
+      return categories.find(c => c.slug === "implants" || c.name.toLowerCase().includes("implant"))?.id;
     }
     return null;
   };
@@ -989,6 +1012,7 @@ const ProductImport = () => {
               <SelectItem value="face-masks-ppe">Face Masks & PPE ({FACE_MASKS_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="snake-venom">Snake Venom & Research ({SNAKE_VENOM_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="pmma-buttocks">PMMA Buttocks Injection ({PMMA_BUTTOCKS_PRODUCTS.length} items)</SelectItem>
+              <SelectItem value="implants">Implants ({IMPLANT_PRODUCTS.length} items)</SelectItem>
             </SelectContent>
           </Select>
         </div>
