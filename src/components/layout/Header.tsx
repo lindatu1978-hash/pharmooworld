@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ShoppingCart, User, Search, Phone, Mail } from "lucide-react";
+import { Menu, X, ShoppingCart, User, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/useCart";
+import ProductSearch from "@/components/search/ProductSearch";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,13 +56,7 @@ const Header = () => {
 
           {/* Search Bar - Desktop */}
           <div className="hidden lg:flex flex-1 max-w-xl mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search products, APIs, medical supplies..." 
-                className="pl-10 pr-4 w-full"
-              />
-            </div>
+            <ProductSearch className="w-full" />
           </div>
 
           {/* Actions */}
@@ -95,13 +89,7 @@ const Header = () => {
 
         {/* Search Bar - Mobile */}
         <div className="lg:hidden mt-4">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search products..." 
-              className="pl-10 pr-4 w-full"
-            />
-          </div>
+          <ProductSearch className="w-full" placeholder="Search products..." />
         </div>
       </div>
 
