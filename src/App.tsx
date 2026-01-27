@@ -18,6 +18,7 @@ import About from "./pages/About";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Returns from "./pages/Returns";
+import Shipping from "./pages/Shipping";
 import Disclaimer from "./pages/Disclaimer";
 import ClientAssurance from "./pages/ClientAssurance";
 import NotFound from "./pages/NotFound";
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/returns" element={<Returns />} />
+              <Route path="/shipping" element={<Shipping />} />
               <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/client-assurance" element={<ClientAssurance />} />
             <Route path="*" element={<NotFound />} />
