@@ -1,1 +1,4 @@
 project_id = "rutasxqwqxdyzjdzmxrk"
+
+[functions.product-assistant]
+verify_jwt = false
