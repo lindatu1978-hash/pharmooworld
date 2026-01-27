@@ -3,7 +3,7 @@ import { ArrowRight, Shield, Award, Truck, Clock, CheckCircle, Package, FileChec
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Layout } from '@/components/layout/Layout';
-
+import { FeaturedProducts } from '@/components/FeaturedProducts';
 const trustBadges = [
   { icon: Shield, label: 'GMP Certified' },
   { icon: Award, label: 'WHO Compliant' },
@@ -101,6 +101,9 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Featured Products */}
+      <FeaturedProducts />
 
       {/* Why Choose Us */}
       <section className="section-padding bg-muted">
