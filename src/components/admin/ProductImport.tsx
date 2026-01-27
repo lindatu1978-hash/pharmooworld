@@ -865,7 +865,23 @@ const IMPLANT_PRODUCTS = [
   },
 ];
 
-type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks" | "implants";
+const HOSPITAL_SUPPLIES_PRODUCTS = [
+  {
+    name: "Disposable Medical Face Shield",
+    slug: "disposable-medical-face-shield",
+    description: "High Light Transmittance PET Face Shield for comprehensive protection. Protects eyes, nose and mouth from liquid splashing. Effectively blocks spread of droplets. Transparent, anti-fog, disposable, for medical use. Available sizes: 33x22cm, 32x24cm, 28x19cm.",
+    price: 2.50,
+    bulk_price: 1.80,
+    manufacturer: "PharmooWorld",
+    origin: "China",
+    form: "Protective equipment",
+    dosage: "One size fits most",
+    regulatory_status: "CE Marked, Medical Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/fs-4-600x601.jpg",
+  },
+];
+
+type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks" | "implants" | "hospital-supplies";
 
 const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOTULINUM_PRODUCTS }> = {
   "botulinum": {
@@ -891,6 +907,10 @@ const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOT
   "implants": {
     name: "Implants",
     products: IMPLANT_PRODUCTS,
+  },
+  "hospital-supplies": {
+    name: "Hospital Supplies",
+    products: HOSPITAL_SUPPLIES_PRODUCTS,
   },
 };
 
@@ -931,6 +951,9 @@ const ProductImport = () => {
     }
     if (categoryType === "implants") {
       return categories.find(c => c.slug === "implants" || c.name.toLowerCase().includes("implant"))?.id;
+    }
+    if (categoryType === "hospital-supplies") {
+      return categories.find(c => c.slug === "hospital-supplies" || c.name.toLowerCase().includes("hospital"))?.id;
     }
     return null;
   };
@@ -1013,6 +1036,7 @@ const ProductImport = () => {
               <SelectItem value="snake-venom">Snake Venom & Research ({SNAKE_VENOM_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="pmma-buttocks">PMMA Buttocks Injection ({PMMA_BUTTOCKS_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="implants">Implants ({IMPLANT_PRODUCTS.length} items)</SelectItem>
+              <SelectItem value="hospital-supplies">Hospital Supplies ({HOSPITAL_SUPPLIES_PRODUCTS.length} items)</SelectItem>
             </SelectContent>
           </Select>
         </div>
