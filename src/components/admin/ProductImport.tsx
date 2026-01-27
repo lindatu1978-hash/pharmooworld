@@ -648,7 +648,166 @@ const FACE_MASKS_PRODUCTS = [
   },
 ];
 
-type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe";
+const SNAKE_VENOM_PRODUCTS = [
+  {
+    name: "Saw-scaled Viper Snake Venom (Echis carinatus)",
+    slug: "saw-scaled-viper-echis-carinatus-venom",
+    description: "Pure desiccated Saw-scaled viper (Echis carinatus) snake venom. Used in pharmaceutical research for anticoagulant properties and antivenom production. Carefully extracted and processed for maximum potency.",
+    price: 1326,
+    bulk_price: 1100,
+    manufacturer: "PharmooWorld",
+    origin: "Various",
+    form: "Lyophilized powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/saw-scaled-viper-snake-300x300.jpg",
+  },
+  {
+    name: "Eastern Green Mamba Snake Venom (Dendroaspis angusticeps)",
+    slug: "eastern-green-mamba-dendroaspis-angusticeps-venom",
+    description: "Pure desiccated Eastern green mamba (Dendroaspis angusticeps) snake venom. Contains neurotoxic proteins valuable for neurological research and drug development. Premium quality extraction.",
+    price: 250,
+    bulk_price: 200,
+    manufacturer: "PharmooWorld",
+    origin: "Africa",
+    form: "Lyophilized powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/eastern-green-mamba-snake-venom-300x300.jpg",
+  },
+  {
+    name: "Phrynomantis Bifasciatus Toad",
+    slug: "phrynomantis-bifasciatus-toad",
+    description: "Phrynomantis bifasciatus (Banded Rubber Frog) for research purposes. Known for its unique skin secretions containing bioactive compounds used in pharmaceutical research.",
+    price: 1274,
+    bulk_price: 1000,
+    manufacturer: "PharmooWorld",
+    origin: "Africa",
+    form: "Live specimen",
+    dosage: "Per unit",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/phrynomantis-bifasciatus-toad-for-sale-online-252x200.jpg",
+  },
+  {
+    name: "Schismaderma Carens Toad Venom",
+    slug: "schismaderma-carens-toad-venom",
+    description: "Schismaderma carens (Red Toad) venom extract. Contains bufotoxins and other bioactive compounds for pharmaceutical and research applications.",
+    price: 498,
+    bulk_price: 400,
+    manufacturer: "PharmooWorld",
+    origin: "Africa",
+    form: "Dried extract",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/schismaderma-carens-toad-venom-300x300.jpg",
+  },
+  {
+    name: "Bufo Bufo Toad Venom",
+    slug: "bufo-bufo-toad-venom",
+    description: "Bufo bufo (Common European Toad) venom for smoking and research applications. Contains bufotoxins with potential therapeutic properties being studied for various conditions.",
+    price: 554,
+    bulk_price: 450,
+    manufacturer: "PharmooWorld",
+    origin: "Europe",
+    form: "Dried extract",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/smoking-bufo-bufo-toad-venom-for-sale-250x202.jpg",
+  },
+  {
+    name: "Bubbling Kassina Toad Venom",
+    slug: "bubbling-kassina-toad-venom",
+    description: "Kassina senegalensis (Bubbling Kassina) toad venom. Unique bioactive compounds for advanced pharmaceutical research and drug discovery programs.",
+    price: 1570,
+    bulk_price: 1300,
+    manufacturer: "PharmooWorld",
+    origin: "Africa",
+    form: "Dried extract",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/toad-venom-of-bubbling-kassina-online-450x450.png",
+  },
+  {
+    name: "Buthus Occitanus Scorpion Venom",
+    slug: "buthus-occitanus-scorpion-venom",
+    description: "Buthus occitanus (Common Yellow Scorpion) venom. One of the most valuable venoms for medical research, containing peptides studied for cancer treatment and pain management.",
+    price: 5143,
+    bulk_price: 4500,
+    manufacturer: "PharmooWorld",
+    origin: "Mediterranean",
+    form: "Lyophilized powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/buttus-occitanus-scorpion-venom-254x198.jpg",
+  },
+  {
+    name: "Bush Viper Snake Venom (Atheris Chlorechis)",
+    slug: "bush-viper-atheris-chlorechis-venom",
+    description: "Pure desiccated Bush Viper (Atheris Chlorechis) snake venom. Contains hemotoxic proteins valuable for cardiovascular research and anticoagulant drug development.",
+    price: 1271,
+    bulk_price: 1000,
+    manufacturer: "PharmooWorld",
+    origin: "Africa",
+    form: "Lyophilized powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-atheris-chlorechisbush-viper-snake-venom-300x300.jpg",
+  },
+  {
+    name: "Black Mamba Snake Venom (Dendroaspis polylepis)",
+    slug: "black-mamba-dendroaspis-polylepis-venom",
+    description: "Pure desiccated Black mamba (Dendroaspis polylepis) snake venom. Contains dendrotoxins studied for neurological disorders and pain management. Premium research grade.",
+    price: 300,
+    bulk_price: 250,
+    manufacturer: "PharmooWorld",
+    origin: "Africa",
+    form: "Lyophilized powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/black-mamba-snake-venom-dendroaspis-polylepis-300x300.jpg",
+  },
+  {
+    name: "Jararaca Pit Viper Snake Venom (Bothrops jararaca)",
+    slug: "jararaca-pit-viper-bothrops-jararaca-venom",
+    description: "Pure desiccated Jararaca pit viper (Bothrops jararaca) snake venom. Source of bradykinin-potentiating peptides that led to the development of ACE inhibitors for hypertension.",
+    price: 1274,
+    bulk_price: 1000,
+    manufacturer: "PharmooWorld",
+    origin: "South America",
+    form: "Lyophilized powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/buy-jararaca-pit-viper-snake-venom-300x300.jpg",
+  },
+  {
+    name: "Shield Nose Snake Venom (Aspidelaps scutatus)",
+    slug: "shield-nose-aspidelaps-scutatus-venom",
+    description: "Freeze dried Aspidelaps scutatus (Shield Nose Snake) venom. Contains unique neurotoxic proteins for neurological and pharmacological research applications.",
+    price: 1173,
+    bulk_price: 950,
+    manufacturer: "PharmooWorld",
+    origin: "Africa",
+    form: "Freeze-dried powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/freeze-dried-aspidelaps-scutatus-shield-nose-snake-venom1gram-300x300.jpg",
+  },
+  {
+    name: "King Cobra Snake Venom (Ophiophagus hannah)",
+    slug: "king-cobra-ophiophagus-hannah-venom",
+    description: "Pure desiccated King Cobra (Ophiophagus hannah) snake venom. Contains ohanin and other proteins being studied for pain management and as potential cancer treatments.",
+    price: 500,
+    bulk_price: 400,
+    manufacturer: "PharmooWorld",
+    origin: "Asia",
+    form: "Lyophilized powder",
+    dosage: "1 gram",
+    regulatory_status: "Research Grade",
+    image_url: "https://www.pharmooworld.com/assets/images/ophiophagus-hannah-king-cobra-snake-venom-300x300.jpg",
+  },
+];
+
+type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom";
 
 const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOTULINUM_PRODUCTS }> = {
   "botulinum": {
@@ -662,6 +821,10 @@ const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOT
   "face-masks-ppe": {
     name: "Face Masks & PPE",
     products: FACE_MASKS_PRODUCTS,
+  },
+  "snake-venom": {
+    name: "Snake Venom & Research",
+    products: SNAKE_VENOM_PRODUCTS,
   },
 };
 
@@ -693,6 +856,9 @@ const ProductImport = () => {
     }
     if (categoryType === "face-masks-ppe") {
       return categories.find(c => c.slug === "face-masks-ppe" || c.name.toLowerCase().includes("face mask") || c.name.toLowerCase().includes("ppe"))?.id;
+    }
+    if (categoryType === "snake-venom") {
+      return categories.find(c => c.slug === "snake-venom" || c.name.toLowerCase().includes("venom"))?.id;
     }
     return null;
   };
@@ -772,6 +938,7 @@ const ProductImport = () => {
               <SelectItem value="botulinum">Botulinum Products ({BOTULINUM_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="dermal-fillers">Dermal Fillers ({DERMAL_FILLER_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="face-masks-ppe">Face Masks & PPE ({FACE_MASKS_PRODUCTS.length} items)</SelectItem>
+              <SelectItem value="snake-venom">Snake Venom & Research ({SNAKE_VENOM_PRODUCTS.length} items)</SelectItem>
             </SelectContent>
           </Select>
         </div>
