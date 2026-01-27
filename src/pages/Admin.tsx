@@ -4,10 +4,11 @@ import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, Plus, Settings, Image, ShoppingCart, LayoutDashboard } from "lucide-react";
+import { Package, Plus, Settings, Image, ShoppingCart, LayoutDashboard, Upload } from "lucide-react";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import ProductList from "@/components/admin/ProductList";
 import ProductForm from "@/components/admin/ProductForm";
+import ProductImport from "@/components/admin/ProductImport";
 import BannerList from "@/components/admin/BannerList";
 import BannerForm from "@/components/admin/BannerForm";
 import OrderList from "@/components/admin/OrderList";
@@ -108,6 +109,10 @@ const Admin = () => {
                 <ShoppingCart className="h-4 w-4" />
                 Orders
               </TabsTrigger>
+              <TabsTrigger value="import" className="flex items-center gap-2">
+                <Upload className="h-4 w-4" />
+                Import
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="dashboard">
@@ -138,6 +143,10 @@ const Admin = () => {
 
             <TabsContent value="orders">
               <OrderList />
+            </TabsContent>
+
+            <TabsContent value="import">
+              <ProductImport categoryId="c13570dc-4f92-4c46-b982-f9938975f2a5" />
             </TabsContent>
           </Tabs>
         </div>
