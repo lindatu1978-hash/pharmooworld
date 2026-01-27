@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CartProvider } from "@/hooks/useCart";
+import ProductChatbot from "@/components/chat/ProductChatbot";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -38,8 +39,9 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/client-assurance" element={<ClientAssurance />} />
-              <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
             </Routes>
+            <ProductChatbot />
           </BrowserRouter>
         </CartProvider>
       </TooltipProvider>
