@@ -39,12 +39,13 @@ const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const { addToCart } = useCart();
 
   const selectedCategory = searchParams.get("category") || "";
   const selectedManufacturer = searchParams.get("manufacturer") || "";
   const selectedOrigin = searchParams.get("origin") || "";
+  const urlSearchQuery = searchParams.get("search") || "";
+  const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,6 +87,11 @@ const Products = () => {
 
     fetchData();
   }, [selectedCategory, selectedManufacturer, selectedOrigin]);
+
+  // Sync URL search param to local state
+  useEffect(() => {
+    setSearchQuery(urlSearchQuery);
+  }, [urlSearchQuery]);
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
