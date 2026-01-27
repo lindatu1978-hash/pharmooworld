@@ -146,7 +146,7 @@ const Admin = () => {
             </TabsContent>
 
             <TabsContent value="import">
-              <ProductImport categoryId="c13570dc-4f92-4c46-b982-f9938975f2a5" />
+              <ProductImport />
             </TabsContent>
           </Tabs>
         </div>
