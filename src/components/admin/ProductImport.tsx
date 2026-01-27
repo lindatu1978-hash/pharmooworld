@@ -959,7 +959,62 @@ const HOSPITAL_SUPPLIES_PRODUCTS = [
   },
 ];
 
-type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks" | "implants" | "hospital-supplies";
+const HYDROGEL_INJECTION_PRODUCTS = [
+  {
+    name: "Hydrogel Injection 250CC Kit",
+    slug: "hydrogel-injection-250cc",
+    description: "INTERFALL brand 100% Polyacrylamide Hydrogel for buttock enhancement (125cc for each cheek). Valid period 2-3 years. Available in 50ml sterile vials. Goes through 3-step sterilization process. For buttock, breast, and body shaping.",
+    price: 600,
+    bulk_price: 540,
+    manufacturer: "INTERFALL",
+    origin: "Europe",
+    form: "Injectable gel",
+    dosage: "250cc (5 x 50ml vials)",
+    regulatory_status: "Professional Use Only",
+    image_url: "https://www.pharmooworld.com/assets/images/01-1-600x482.jpg",
+  },
+  {
+    name: "Hydrogel Injection 500CC Kit",
+    slug: "hydrogel-injection-500cc",
+    description: "INTERFALL brand 100% Polyacrylamide Hydrogel for buttock enhancement (250cc for each cheek). Valid period 2-3 years. Available in 50ml sterile vials. Goes through 3-step sterilization process. Ideal for moderate enhancement.",
+    price: 1200,
+    bulk_price: 1080,
+    manufacturer: "INTERFALL",
+    origin: "Europe",
+    form: "Injectable gel",
+    dosage: "500cc (10 x 50ml vials)",
+    regulatory_status: "Professional Use Only",
+    image_url: "https://www.pharmooworld.com/assets/images/01-1-600x482.jpg",
+  },
+  {
+    name: "Hydrogel Injection 750CC Kit",
+    slug: "hydrogel-injection-750cc",
+    description: "INTERFALL brand 100% Polyacrylamide Hydrogel for buttock enhancement (375cc for each cheek). Valid period 2-3 years. Available in 50ml sterile vials. Goes through 3-step sterilization process. For significant volume enhancement.",
+    price: 1800,
+    bulk_price: 1620,
+    manufacturer: "INTERFALL",
+    origin: "Europe",
+    form: "Injectable gel",
+    dosage: "750cc (15 x 50ml vials)",
+    regulatory_status: "Professional Use Only",
+    image_url: "https://www.pharmooworld.com/assets/images/01-1-600x482.jpg",
+  },
+  {
+    name: "Hydrogel Injection 1000CC Kit",
+    slug: "hydrogel-injection-1000cc",
+    description: "INTERFALL brand 100% Polyacrylamide Hydrogel for maximum buttock enhancement (500cc for each cheek). Valid period 2-3 years. 20 x 50ml sterile vials. Goes through 3-step sterilization process. Includes shipping cost. For dramatic volume enhancement.",
+    price: 2500,
+    bulk_price: 2250,
+    manufacturer: "INTERFALL",
+    origin: "Europe",
+    form: "Injectable gel",
+    dosage: "1000cc (20 x 50ml vials)",
+    regulatory_status: "Professional Use Only",
+    image_url: "https://www.pharmooworld.com/assets/images/01-1-600x482.jpg",
+  },
+];
+
+type ProductCategory = "botulinum" | "dermal-fillers" | "face-masks-ppe" | "snake-venom" | "pmma-buttocks" | "implants" | "hospital-supplies" | "hydrogel-injection";
 
 const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOTULINUM_PRODUCTS }> = {
   "botulinum": {
@@ -989,6 +1044,10 @@ const PRODUCT_SETS: Record<ProductCategory, { name: string; products: typeof BOT
   "hospital-supplies": {
     name: "Hospital Supplies",
     products: HOSPITAL_SUPPLIES_PRODUCTS,
+  },
+  "hydrogel-injection": {
+    name: "Hydrogel Injection",
+    products: HYDROGEL_INJECTION_PRODUCTS,
   },
 };
 
@@ -1032,6 +1091,9 @@ const ProductImport = () => {
     }
     if (categoryType === "hospital-supplies") {
       return categories.find(c => c.slug === "hospital-supplies" || c.name.toLowerCase().includes("hospital"))?.id;
+    }
+    if (categoryType === "hydrogel-injection") {
+      return categories.find(c => c.slug === "hydrogel-injection" || c.name.toLowerCase().includes("hydrogel"))?.id;
     }
     return null;
   };
@@ -1115,6 +1177,7 @@ const ProductImport = () => {
               <SelectItem value="pmma-buttocks">PMMA Buttocks Injection ({PMMA_BUTTOCKS_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="implants">Implants ({IMPLANT_PRODUCTS.length} items)</SelectItem>
               <SelectItem value="hospital-supplies">Hospital Supplies ({HOSPITAL_SUPPLIES_PRODUCTS.length} items)</SelectItem>
+              <SelectItem value="hydrogel-injection">Hydrogel Injection ({HYDROGEL_INJECTION_PRODUCTS.length} items)</SelectItem>
             </SelectContent>
           </Select>
         </div>
