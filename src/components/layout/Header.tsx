@@ -1,28 +1,39 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ShoppingCart, User, Phone, Mail } from "lucide-react";
+import { Menu, X, ShoppingCart, User, Phone, Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import ProductSearch from "@/components/search/ProductSearch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { itemCount } = useCart();
 
-  const categories = [
-    { name: "Finished Pharmaceuticals", slug: "finished-pharmaceuticals" },
-    { name: "APIs & Raw Materials", slug: "apis-raw-materials" },
+  const mainCategories = [
     { name: "Botulinum", slug: "Botulinum-products" },
-    { name: "Dermal Fillers", slug: "Dermal-Fillers" },
+    { name: "Fillers", slug: "Dermal-Fillers" },
+    { name: "Pharma", slug: "finished-pharmaceuticals" },
+    { name: "APIs", slug: "apis-raw-materials" },
+    { name: "Devices", slug: "medical-devices" },
+  ];
+
+  const moreCategories = [
+    { name: "Hospital Supplies", slug: "hospital-supplies" },
     { name: "Hydrogel Injection", slug: "hydrogel-injection" },
     { name: "Snake Venom", slug: "snake-venom" },
     { name: "PMMA Buttock Injection", slug: "pmma-buttocks-injection" },
     { name: "Implants", slug: "implants" },
     { name: "Face Masks & PPE", slug: "face-masks-ppe" },
-    { name: "Hospital Supplies", slug: "hospital-supplies" },
-    { name: "Medical Devices", slug: "medical-devices" },
     { name: "OTC Products", slug: "otc-products" },
   ];
+
+  const allCategories = [...mainCategories, ...moreCategories];
 
   return (
     <header className="sticky top-0 z-50 w-full bg-card border-b border-border shadow-sm">
@@ -110,7 +121,7 @@ const Header = () => {
                 All Products
               </Link>
             </li>
-            {categories.map((category) => (
+            {mainCategories.map((category) => (
               <li key={category.slug}>
                 <Link
                   to={`/products?category=${category.slug}`}
@@ -120,6 +131,25 @@ const Header = () => {
                 </Link>
               </li>
             ))}
+            <li>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary transition-colors rounded-md">
+                  More <ChevronDown className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="bg-card border border-border shadow-lg z-50">
+                  {moreCategories.map((category) => (
+                    <DropdownMenuItem key={category.slug} asChild>
+                      <Link
+                        to={`/products?category=${category.slug}`}
+                        className="cursor-pointer"
+                      >
+                        {category.name}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </li>
           </ul>
         </div>
       </nav>
@@ -138,7 +168,7 @@ const Header = () => {
                   All Products
                 </Link>
               </li>
-              {categories.map((category) => (
+              {allCategories.map((category) => (
                 <li key={category.slug}>
                   <Link
                     to={`/products?category=${category.slug}`}
