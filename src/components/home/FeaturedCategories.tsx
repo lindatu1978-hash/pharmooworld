@@ -72,15 +72,12 @@ const FeaturedCategories = () => {
   ];
 
   return (
-    <section className="py-12 lg:py-16 bg-background">
+    <section className="py-8 lg:py-10 bg-background">
       <div className="container-pharma">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">
+        <div className="text-center mb-5">
+          <h2 className="text-xl lg:text-2xl font-bold text-foreground mb-1">
             Product Categories
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Browse our pharmaceutical and medical products
-          </p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
