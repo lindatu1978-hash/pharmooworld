@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Package, FlaskConical, Heart, Stethoscope, Building2, Pill, Sparkles, Syringe } from "lucide-react";
+import { Package, FlaskConical, Heart, Stethoscope, Building2, Pill, Sparkles, Syringe, Droplets } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const FeaturedCategories = () => {
@@ -27,6 +27,12 @@ const FeaturedCategories = () => {
       description: "High-quality dermal filler products wholesale",
       slug: "Dermal-Fillers",
       icon: Sparkles,
+    },
+    {
+      name: "Hydrogel Injection",
+      description: "Polyacrylamide hydrogel for body enhancement",
+      slug: "hydrogel-injection",
+      icon: Droplets,
     },
     {
       name: "Hospital Supplies",
