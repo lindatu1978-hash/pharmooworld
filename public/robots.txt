@@ -1,24 +1,120 @@
 # Pharmoo World - Robots.txt
+# Global Pharmaceutical & Medical Supplies Distributor
+# https://www.pharmooworld.com
+
+# ===========================================
+# Google Crawlers
+# ===========================================
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
-User-agent: Bingbot
+User-agent: Googlebot-Image
 Allow: /
 
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+User-agent: Storebot-Google
+Allow: /products
+Allow: /product/
+
+# ===========================================
+# Bing / Microsoft Crawlers
+# ===========================================
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: BingPreview
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
+User-agent: msnbot-media
+Allow: /
+
+# ===========================================
+# Yahoo Crawlers
+# ===========================================
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# ===========================================
+# Other Major Search Engines
+# ===========================================
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 2
+
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
+
+# ===========================================
+# Social Media Crawlers
+# ===========================================
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Pinterest
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# ===========================================
+# SEO & Analytics Tools
+# ===========================================
+User-agent: AhrefsBot
+Allow: /
+Crawl-delay: 5
+
+User-agent: SemrushBot
+Allow: /
+Crawl-delay: 5
+
+User-agent: MJ12bot
+Allow: /
+Crawl-delay: 5
+
+# ===========================================
+# Default Rule for All Other Bots
+# ===========================================
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://www.pharmooworld.com/sitemap.xml
-
-# Disallow admin and cart pages from indexing
+# ===========================================
+# Disallowed Pages (Private/Admin)
+# ===========================================
 Disallow: /admin
+Disallow: /admin/
 Disallow: /cart
 Disallow: /checkout
-Disallow: /account
+Disallow: /orders
+Disallow: /api/
+Disallow: /*.json$
+
+# ===========================================
+# Sitemaps
+# ===========================================
+Sitemap: https://www.pharmooworld.com/sitemap.xml
+
+# ===========================================
+# Host Directive
+# ===========================================
+Host: https://www.pharmooworld.com
