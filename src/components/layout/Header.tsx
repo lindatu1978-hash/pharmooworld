@@ -18,6 +18,7 @@ const Header = () => {
     { name: "Snake Venom", slug: "snake-venom" },
     { name: "PMMA Buttock Injection", slug: "pmma-buttocks-injection" },
     { name: "Implants", slug: "implants" },
+    { name: "Face Masks & PPE", slug: "face-masks-ppe" },
     { name: "Hospital Supplies", slug: "hospital-supplies" },
     { name: "Medical Devices", slug: "medical-devices" },
     { name: "OTC Products", slug: "otc-products" },
