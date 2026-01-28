@@ -29,9 +29,9 @@ const CTASection = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-8 text-sm opacity-90">
-            <a href="tel:+1234567890" className="flex items-center gap-2 hover:opacity-100">
+            <a href="tel:+4012324508" className="flex items-center gap-2 hover:opacity-100">
               <Phone className="h-4 w-4" />
-              +1 (234) 567-890
+              +401 - 232 - 4508
             </a>
             <a href="mailto:sales@pharmooworld.com" className="flex items-center gap-2 hover:opacity-100">
               <Mail className="h-4 w-4" />

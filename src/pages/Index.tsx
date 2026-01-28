@@ -35,7 +35,7 @@ const Index = () => {
             "url": "https://www.pharmooworld.com",
             "contactPoint": {
               "@type": "ContactPoint",
-              "telephone": "+1-234-567-890",
+              "telephone": "+401-232-4508",
               "contactType": "sales",
               "availableLanguage": ["English"]
             },

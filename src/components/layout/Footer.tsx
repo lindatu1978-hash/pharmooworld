@@ -55,9 +55,9 @@ const Footer = () => {
               Global pharmaceutical and medical supplies distributor. Trusted by healthcare providers worldwide with GMP-certified products and regulatory compliance.
             </p>
             <div className="space-y-2 text-sm">
-              <a href="tel:+1234567890" className="flex items-center gap-2 hover:text-accent">
+              <a href="tel:+4012324508" className="flex items-center gap-2 hover:text-accent">
                 <Phone className="h-4 w-4" />
-                +1 (234) 567-890
+                +401 - 232 - 4508
               </a>
               <a href="mailto:info@pharmooworld.com" className="flex items-center gap-2 hover:text-accent">
                 <Mail className="h-4 w-4" />

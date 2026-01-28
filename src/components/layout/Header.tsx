@@ -30,9 +30,9 @@ const Header = () => {
       <div className="bg-primary text-primary-foreground">
         <div className="container-pharma py-2 flex justify-between items-center text-sm">
           <div className="flex items-center gap-4">
-            <a href="tel:+1234567890" className="flex items-center gap-1 hover:opacity-80">
+            <a href="tel:+4012324508" className="flex items-center gap-1 hover:opacity-80">
               <Phone className="h-3 w-3" />
-              <span className="hidden sm:inline">+1 (234) 567-890</span>
+              <span className="hidden sm:inline">+401 - 232 - 4508</span>
             </a>
             <a href="mailto:info@pharmooworld.com" className="flex items-center gap-1 hover:opacity-80">
               <Mail className="h-3 w-3" />
