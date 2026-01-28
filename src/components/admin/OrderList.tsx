@@ -27,7 +27,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Eye, ShoppingCart } from "lucide-react";
+import { Search, Eye, ShoppingCart, FileText } from "lucide-react";
+import Invoice from "./Invoice";
 
 type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
 
@@ -35,6 +36,7 @@ const OrderList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [invoiceOrderId, setInvoiceOrderId] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -88,17 +90,18 @@ const OrderList = () => {
   });
 
   const { data: orderItems } = useQuery({
-    queryKey: ["order-items", selectedOrderId],
+    queryKey: ["order-items", selectedOrderId, invoiceOrderId],
     queryFn: async () => {
-      if (!selectedOrderId) return [];
+      const orderId = selectedOrderId || invoiceOrderId;
+      if (!orderId) return [];
       const { data, error } = await supabase
         .from("order_items")
         .select("*")
-        .eq("order_id", selectedOrderId);
+        .eq("order_id", orderId);
       if (error) throw error;
       return data;
     },
-    enabled: !!selectedOrderId,
+    enabled: !!(selectedOrderId || invoiceOrderId),
   });
 
   const updateStatusMutation = useMutation({
@@ -160,6 +163,7 @@ const OrderList = () => {
   };
 
   const selectedOrder = orders?.find((o) => o.id === selectedOrderId);
+  const invoiceOrder = orders?.find((o) => o.id === invoiceOrderId);
 
   if (isLoading) {
     return (
@@ -259,11 +263,20 @@ const OrderList = () => {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right space-x-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setInvoiceOrderId(order.id)}
+                      title="Generate Invoice"
+                    >
+                      <FileText className="h-4 w-4" />
+                    </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setSelectedOrderId(order.id)}
+                      title="View Details"
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -357,6 +370,15 @@ const OrderList = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Invoice Modal */}
+      {invoiceOrder && orderItems && (
+        <Invoice
+          order={invoiceOrder}
+          orderItems={orderItems}
+          onClose={() => setInvoiceOrderId(null)}
+        />
+      )}
     </div>
   );
 };
