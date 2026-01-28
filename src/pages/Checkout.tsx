@@ -109,26 +109,30 @@ const Checkout = () => {
 
       if (itemsError) throw itemsError;
 
-      // Send admin notification email
+      // Send notification emails (admin + customer confirmation)
+      const emailPayload = {
+        orderId: order.id,
+        customerEmail: formData.email,
+        companyName: formData.companyName,
+        orderTotal: total,
+        shippingAddress: `${formData.address}, ${formData.city}, ${formData.country}`,
+        paymentMethod,
+        items: orderItems.map((item) => ({
+          product_name: item.product_name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+
       try {
-        await supabase.functions.invoke("send-admin-order-notification", {
-          body: {
-            orderId: order.id,
-            customerEmail: formData.email,
-            companyName: formData.companyName,
-            orderTotal: total,
-            shippingAddress: `${formData.address}, ${formData.city}, ${formData.country}`,
-            paymentMethod,
-            items: orderItems.map((item) => ({
-              product_name: item.product_name,
-              quantity: item.quantity,
-              price: item.price,
-            })),
-          },
-        });
+        // Send both emails in parallel
+        await Promise.all([
+          supabase.functions.invoke("send-admin-order-notification", { body: emailPayload }),
+          supabase.functions.invoke("send-order-confirmation", { body: emailPayload }),
+        ]);
       } catch (emailError) {
-        console.error("Failed to send admin notification:", emailError);
-        // Don't fail the order if email fails
+        console.error("Failed to send notification emails:", emailError);
+        // Don't fail the order if emails fail
       }
 
       // Clear cart
