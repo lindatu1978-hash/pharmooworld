@@ -14,8 +14,34 @@ import {
   CircleDot
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const FeaturedCategories = () => {
+  // Fetch product counts by category
+  const { data: productCounts } = useQuery({
+    queryKey: ["product-counts-by-category"],
+    queryFn: async () => {
+      const { data: categories } = await supabase
+        .from("categories")
+        .select("id, slug");
+      
+      if (!categories) return {};
+      
+      const counts: Record<string, number> = {};
+      
+      for (const category of categories) {
+        const { count } = await supabase
+          .from("products")
+          .select("*", { count: "exact", head: true })
+          .eq("category_id", category.id);
+        
+        counts[category.slug] = count || 0;
+      }
+      
+      return counts;
+    },
+  });
   // Categories organized by type - matching database slugs exactly
   const categories = [
     // Aesthetics & Cosmetic (most popular first)
@@ -131,6 +157,11 @@ const FeaturedCategories = () => {
                   <h3 className="font-semibold text-sm lg:text-base text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-2">
                     {category.name}
                   </h3>
+                  {productCounts && productCounts[category.slug] !== undefined && (
+                    <span className="text-xs font-medium text-primary mb-1">
+                      {productCounts[category.slug]} {productCounts[category.slug] === 1 ? 'product' : 'products'}
+                    </span>
+                  )}
                   <p className="text-xs text-muted-foreground line-clamp-2 hidden sm:block">
                     {category.description}
                   </p>
