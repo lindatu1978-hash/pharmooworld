@@ -18,22 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const FeaturedCategories = () => {
   // Categories organized by type - matching database slugs exactly
   const categories = [
-    // Pharmaceuticals
-    {
-      name: "Finished Pharmaceuticals",
-      description: "Complete dosage forms ready for distribution",
-      slug: "finished-pharmaceuticals",
-      icon: Pill,
-      group: "Pharmaceuticals"
-    },
-    {
-      name: "APIs & Raw Materials",
-      description: "Active pharmaceutical ingredients and intermediates",
-      slug: "apis-raw-materials",
-      icon: FlaskConical,
-      group: "Pharmaceuticals"
-    },
-    // Aesthetics & Cosmetic
+    // Aesthetics & Cosmetic (most popular first)
     {
       name: "Botulinum",
       description: "Premium Botox and botulinum toxin products",
@@ -69,20 +54,27 @@ const FeaturedCategories = () => {
       icon: Heart,
       group: "Aesthetics"
     },
-    // Medical & Research
+    // Pharmaceuticals
     {
-      name: "Snake Venom",
-      description: "Research-grade snake, toad & scorpion venom",
-      slug: "snake-venom",
-      icon: Bug,
-      group: "Research"
+      name: "Finished Pharmaceuticals",
+      description: "Complete dosage forms ready for distribution",
+      slug: "finished-pharmaceuticals",
+      icon: Pill,
+      group: "Pharmaceuticals"
+    },
+    {
+      name: "APIs & Raw Materials",
+      description: "Active pharmaceutical ingredients and intermediates",
+      slug: "apis-raw-materials",
+      icon: FlaskConical,
+      group: "Pharmaceuticals"
     },
     // Medical Supplies
     {
-      name: "Face Masks & PPE",
-      description: "N95 respirators and protective equipment",
-      slug: "face-masks-ppe",
-      icon: Shield,
+      name: "Medical Devices",
+      description: "Diagnostic and therapeutic equipment",
+      slug: "medical-devices",
+      icon: Stethoscope,
       group: "Medical Supplies"
     },
     {
@@ -93,18 +85,26 @@ const FeaturedCategories = () => {
       group: "Medical Supplies"
     },
     {
-      name: "Medical Devices",
-      description: "Diagnostic and therapeutic equipment",
-      slug: "medical-devices",
-      icon: Stethoscope,
+      name: "Face Masks & PPE",
+      description: "N95 respirators and protective equipment",
+      slug: "face-masks-ppe",
+      icon: Shield,
       group: "Medical Supplies"
     },
+    // Consumer & Research
     {
       name: "OTC Products",
       description: "Over-the-counter medicines and consumer health",
       slug: "otc-products",
       icon: Package,
       group: "Consumer Health"
+    },
+    {
+      name: "Snake Venom",
+      description: "Research-grade snake, toad & scorpion venom",
+      slug: "snake-venom",
+      icon: Bug,
+      group: "Research"
     },
   ];
 
