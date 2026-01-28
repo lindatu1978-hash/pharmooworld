@@ -13,27 +13,27 @@ const TrustedBy = () => {
   ];
 
   return (
-    <section className="py-8 border-y border-border bg-muted/30 overflow-hidden">
+    <section className="py-10 border-y border-border bg-muted/30 overflow-hidden">
       <div className="container-pharma">
         <div className="flex flex-col md:flex-row items-center gap-8">
-          <p className="text-sm font-medium text-muted-foreground whitespace-nowrap shrink-0">
+          <p className="text-base font-semibold text-muted-foreground whitespace-nowrap shrink-0">
             Trusted by industry leaders
           </p>
           
-          <div className="relative flex-1 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            <div className="flex items-center gap-16 animate-marquee hover:[animation-play-state:paused]">
+          <div className="relative flex-1 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+            <div className="flex items-center gap-20 animate-marquee-slow hover:[animation-play-state:paused]">
               {[...partners, ...partners].map((partner, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-3 whitespace-nowrap group cursor-default"
+                  className="flex items-center gap-4 whitespace-nowrap group cursor-default"
                 >
-                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center border border-border/50 group-hover:border-primary/30 transition-colors">
-                    <span className={`text-sm font-bold ${partner.color}`}>
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-card to-muted flex items-center justify-center border border-border shadow-sm group-hover:shadow-md group-hover:border-primary/30 transition-all">
+                    <span className={`text-xl font-bold ${partner.color}`}>
                       {partner.name.charAt(0)}
                     </span>
                   </div>
                   <span
-                    className={`text-lg font-semibold ${partner.color} opacity-70 group-hover:opacity-100 transition-opacity`}
+                    className={`text-xl font-bold ${partner.color} opacity-80 group-hover:opacity-100 transition-opacity`}
                   >
                     {partner.name}
                   </span>
