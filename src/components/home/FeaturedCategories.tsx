@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Package, FlaskConical, Heart, Stethoscope, Building2, Pill, Sparkles, Syringe, Droplets } from "lucide-react";
+import { Package, FlaskConical, Heart, Stethoscope, Building2, Pill, Sparkles, Syringe, Droplets, Bug } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const FeaturedCategories = () => {
@@ -33,6 +33,12 @@ const FeaturedCategories = () => {
       description: "Polyacrylamide hydrogel for body enhancement",
       slug: "hydrogel-injection",
       icon: Droplets,
+    },
+    {
+      name: "Snake Venom",
+      description: "Research-grade snake, toad & scorpion venom",
+      slug: "snake-venom",
+      icon: Bug,
     },
     {
       name: "Hospital Supplies",
