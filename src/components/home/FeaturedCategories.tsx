@@ -72,32 +72,24 @@ const FeaturedCategories = () => {
   ];
 
   return (
-    <section className="py-8 lg:py-10 bg-background">
+    <section className="py-6 bg-muted/30">
       <div className="container-pharma">
-        <div className="text-center mb-5">
-          <h2 className="text-xl lg:text-2xl font-bold text-foreground mb-1">
-            Product Categories
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           {categories.map((category) => (
-            <Link key={category.slug} to={`/products?category=${category.slug}`}>
-              <Card className="group h-full hover:shadow-md hover:border-primary/50 transition-all duration-300">
-                <CardContent className="p-4 text-center flex flex-col items-center justify-center min-h-[120px]">
-                  <div className="h-12 w-12 rounded-xl gradient-medical flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                    <category.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">
-                    {category.name}
-                  </h3>
-                  {productCounts && productCounts[category.slug] !== undefined && (
-                    <span className="text-xs text-muted-foreground mt-1">
-                      {productCounts[category.slug]} products
-                    </span>
-                  )}
-                </CardContent>
-              </Card>
+            <Link 
+              key={category.slug} 
+              to={`/products?category=${category.slug}`}
+              className="group flex items-center gap-2 px-4 py-2 bg-background border border-border rounded-full hover:border-primary hover:bg-primary/5 transition-all duration-200"
+            >
+              <category.icon className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                {category.name}
+              </span>
+              {productCounts && productCounts[category.slug] !== undefined && (
+                <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                  {productCounts[category.slug]}
+                </span>
+              )}
             </Link>
           ))}
         </div>
