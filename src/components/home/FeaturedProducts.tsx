@@ -33,6 +33,8 @@ const FeaturedProducts = () => {
         .from("products")
         .select("*")
         .eq("in_stock", true)
+        .not("image_url", "is", null)
+        .neq("image_url", "")
         .limit(8);
 
       if (error) {
