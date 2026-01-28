@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<users>
+  <!-- 
+    Bing Webmaster Tools Site Authentication
+    Replace USER_ID with your actual Bing Webmaster Tools user ID
+    Get your ID from: https://www.bing.com/webmasters/
+  -->
+  <user>YOUR_BING_WEBMASTER_USER_ID</user>
+</users>
