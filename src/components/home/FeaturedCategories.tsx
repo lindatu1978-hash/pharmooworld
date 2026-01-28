@@ -72,14 +72,14 @@ const FeaturedCategories = () => {
   ];
 
   return (
-    <section className="py-4 bg-muted/30 overflow-hidden">
+    <section className="py-6 bg-muted/30">
       <div className="container-pharma">
-        <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-1">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           {categories.map((category) => (
             <Link 
               key={category.slug} 
               to={`/products?category=${category.slug}`}
-              className="group flex items-center gap-2 px-4 py-2 bg-background border border-border rounded-full hover:border-primary hover:bg-primary/5 transition-all duration-200 whitespace-nowrap flex-shrink-0"
+              className="group flex items-center gap-2 px-4 py-2 bg-background border border-border rounded-full hover:border-primary hover:bg-primary/5 transition-all duration-200"
             >
               <category.icon className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
