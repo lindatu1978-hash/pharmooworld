@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEO, { createProductSchema, createBreadcrumbSchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -133,31 +133,22 @@ const ProductDetail = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{product.name} | Pharmoo World</title>
-        <meta 
-          name="description" 
-          content={product.description || `Buy ${product.name} from Pharmoo World. ${product.regulatory_status}. Global shipping available.`} 
-        />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": product.name,
-            "description": product.description,
-            "brand": {
-              "@type": "Brand",
-              "name": product.manufacturer
-            },
-            "offers": {
-              "@type": "Offer",
-              "price": product.price,
-              "priceCurrency": "USD",
-              "availability": product.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-            }
-          })}
-        </script>
-      </Helmet>
+      <SEO
+        title={`${product.name} - Buy Wholesale`}
+        description={product.description || `Buy ${product.name} from Pharmoo World. ${product.regulatory_status || "GMP Certified"}. ${product.manufacturer ? `By ${product.manufacturer}.` : ""} Global shipping available.`}
+        keywords={`${product.name}, ${product.manufacturer || ""}, ${category?.name || "pharmaceutical"}, wholesale, buy online`}
+        canonical={`/product/${product.slug}`}
+        type="product"
+        structuredData={createProductSchema({
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          manufacturer: product.manufacturer,
+          inStock: product.in_stock,
+          image: product.image_url,
+          slug: product.slug,
+        })}
+      />
 
       <Layout>
         {/* Breadcrumb */}

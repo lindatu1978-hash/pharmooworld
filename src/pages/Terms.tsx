@@ -1,14 +1,16 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Terms = () => {
   return (
     <>
-      <Helmet>
-        <title>Terms & Conditions | Pharmoo World</title>
-        <meta name="description" content="Terms and conditions for purchasing pharmaceutical and medical products from Pharmoo World." />
-      </Helmet>
+      <SEO
+        title="Terms & Conditions"
+        description="Terms and conditions for purchasing pharmaceutical and medical products from Pharmoo World. Sales conditions, regulatory compliance, and buyer responsibilities."
+        canonical="/terms"
+        noindex={false}
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">

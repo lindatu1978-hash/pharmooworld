@@ -1,16 +1,14 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 
 const Privacy = () => {
   return (
     <>
-      <Helmet>
-        <title>Privacy Policy - Pharmoo World</title>
-        <meta 
-          name="description" 
-          content="Pharmoo World Privacy Policy - Learn how we collect, use, and protect your personal information." 
-        />
-      </Helmet>
+      <SEO
+        title="Privacy Policy"
+        description="Pharmoo World Privacy Policy - Learn how we collect, use, and protect your personal information. Your data security is our priority."
+        canonical="/privacy"
+      />
 
       <Layout>
         <div className="bg-background">

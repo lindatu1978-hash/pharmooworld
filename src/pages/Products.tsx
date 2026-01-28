@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -116,13 +116,12 @@ const Products = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{currentCategory ? `${currentCategory.name} | Pharmoo World` : "Products | Pharmoo World"}</title>
-        <meta 
-          name="description" 
-          content={`Browse our selection of ${currentCategory?.name || "pharmaceutical products"} from certified manufacturers worldwide.`} 
-        />
-      </Helmet>
+      <SEO
+        title={currentCategory ? `${currentCategory.name} - Pharmaceutical Products` : "Products - Pharmaceutical & Medical Supplies"}
+        description={`Browse our selection of ${currentCategory?.name || "pharmaceutical products, APIs, medical devices, and hospital supplies"} from GMP-certified manufacturers worldwide. Wholesale pricing available.`}
+        keywords={`${currentCategory?.name || "pharmaceutical products"}, wholesale, GMP certified, medical supplies, buy online`}
+        canonical={`/products${selectedCategory ? `?category=${selectedCategory}` : ""}`}
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">

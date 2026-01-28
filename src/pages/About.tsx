@@ -1,17 +1,16 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Truck, HeadphonesIcon, Clock, RotateCcw, Building2, Mail, MapPin } from "lucide-react";
 
 const About = () => {
   return (
     <>
-      <Helmet>
-        <title>About Us - Pharmoo World</title>
-        <meta 
-          name="description" 
-          content="Pharmoo World is a wholesale supplier of Dermal Fillers, Implants, Cosmetics, Orthopedics, Botulinum, and Surgical Equipment with global reach." 
-        />
-      </Helmet>
+      <SEO
+        title="About Us - Global Pharmaceutical Supplier"
+        description="Pharmoo World is a trusted wholesale supplier of Dermal Fillers, Botulinum, Implants, Cosmetics, Orthopedics, and Surgical Equipment with global reach to 50+ countries."
+        keywords="pharmaceutical supplier, wholesale distributor, dermal fillers supplier, medical supplies, global shipping"
+        canonical="/about"
+      />
 
       <Layout>
         <div className="bg-gradient-to-b from-primary/5 to-background">

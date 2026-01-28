@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Star, Quote, MapPin } from "lucide-react";
 
@@ -40,13 +40,12 @@ const testimonials = [
 const Testimonials = () => {
   return (
     <>
-      <Helmet>
-        <title>Customer Reviews - Pharmoo World</title>
-        <meta 
-          name="description" 
-          content="Read what our fantastic customers say about Pharmoo World - authentic reviews from doctors and users worldwide." 
-        />
-      </Helmet>
+      <SEO
+        title="Customer Reviews & Testimonials"
+        description="Read authentic reviews from doctors and healthcare professionals worldwide. See what our customers say about Pharmoo World pharmaceutical services."
+        keywords="customer reviews, testimonials, pharmaceutical supplier reviews, doctor reviews"
+        canonical="/testimonials"
+      />
 
       <Layout>
         <div className="bg-gradient-to-b from-primary/5 to-background">
