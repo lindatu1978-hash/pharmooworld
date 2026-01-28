@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import HeroSection from "@/components/home/HeroSection";
 import TrustedBy from "@/components/home/TrustedBy";
@@ -12,39 +12,12 @@ import CTASection from "@/components/home/CTASection";
 const Index = () => {
   return (
     <>
-      <Helmet>
-        <title>Pharmoo World - Global Pharmaceutical & Medical Supplies</title>
-        <meta 
-          name="description" 
-          content="Trusted pharmaceutical supplier offering GMP-certified medicines, APIs, medical devices, and hospital supplies. WHO compliant with global shipping." 
-        />
-        <meta name="keywords" content="pharmaceutical supplier, buy medicines online wholesale, API supplier, medical supplies distributor, pharmaceutical exporter, GMP certified, Botox wholesale, dermal fillers supplier" />
-        <link rel="canonical" href="https://www.pharmooworld.com" />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content="Pharmoo World - Global Pharmaceutical & Medical Supplies" />
-        <meta property="og:description" content="Trusted pharmaceutical supplier offering GMP-certified medicines, APIs, and medical supplies worldwide." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.pharmooworld.com" />
-        
-        {/* Schema.org structured data */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "Pharmoo World",
-            "description": "Global pharmaceutical and medical supplies distributor",
-            "url": "https://www.pharmooworld.com",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+401-232-4508",
-              "contactType": "sales",
-              "availableLanguage": ["English"]
-            },
-            "sameAs": []
-          })}
-        </script>
-      </Helmet>
+      <SEO
+        title="Pharmoo World - Global Pharmaceutical & Medical Supplies"
+        description="Trusted pharmaceutical supplier offering GMP-certified medicines, APIs, medical devices, and hospital supplies. WHO compliant with global shipping to 50+ countries."
+        keywords="pharmaceutical supplier, buy medicines online wholesale, API supplier, medical supplies distributor, pharmaceutical exporter, GMP certified, Botox wholesale, dermal fillers supplier, hospital supplies"
+        canonical="/"
+      />
 
       <Layout>
         <HeroSection />

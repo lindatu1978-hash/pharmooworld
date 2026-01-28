@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO, { createFAQSchema } from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import {
   Accordion,
@@ -162,15 +162,20 @@ const faqCategories = [
 ];
 
 const FAQ = () => {
+  // Flatten all FAQs for structured data
+  const allFaqs = faqCategories.flatMap(cat => 
+    cat.questions.map(q => ({ question: q.question, answer: q.answer }))
+  );
+
   return (
     <>
-      <Helmet>
-        <title>FAQ - Frequently Asked Questions | Pharmoo World</title>
-        <meta 
-          name="description" 
-          content="Find answers to common questions about ordering, shipping, products, payments, and returns at Pharmoo World." 
-        />
-      </Helmet>
+      <SEO
+        title="FAQ - Frequently Asked Questions"
+        description="Find answers to common questions about ordering, shipping, products, payments, and returns at Pharmoo World pharmaceutical supplier."
+        keywords="pharmaceutical FAQ, shipping questions, payment methods, returns policy, product certification"
+        canonical="/faq"
+        structuredData={createFAQSchema(allFaqs)}
+      />
 
       <Layout>
         <div className="bg-gradient-to-b from-primary/5 to-background">

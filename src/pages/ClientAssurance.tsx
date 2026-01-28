@@ -1,58 +1,60 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Award, CheckCircle, Users, Lock, Clock, FileCheck, HeadphonesIcon } from "lucide-react";
 
-const ClientAssurance = () => {
-  const assurances = [
-    {
-      icon: Shield,
-      title: "GMP & Regulatory Verified Suppliers",
-      description: "All our suppliers are verified to meet Good Manufacturing Practice standards and comply with international pharmaceutical regulations including WHO, FDA, and EMA guidelines."
-    },
-    {
-      icon: FileCheck,
-      title: "Transparent Sourcing",
-      description: "Complete supply chain transparency with full documentation including Certificates of Analysis, Material Safety Data Sheets, and batch traceability records."
-    },
-    {
-      icon: Lock,
-      title: "Secure Transactions",
-      description: "Bank-grade encryption for all transactions. Multiple secure payment options including verified bank transfers and escrow services for large orders."
-    },
-    {
-      icon: CheckCircle,
-      title: "Confidentiality",
-      description: "Strict confidentiality protocols for all client information, orders, and business relationships. Your data is protected and never shared with third parties."
-    },
-    {
-      icon: Award,
-      title: "Quality Guarantee",
-      description: "Every product is quality-verified before shipment. We stand behind our products with a comprehensive quality guarantee and dispute resolution process."
-    },
-    {
-      icon: Users,
-      title: "Dedicated Account Managers",
-      description: "Each verified client is assigned a dedicated account manager who understands your business needs and provides personalized service and support."
-    },
-    {
-      icon: Clock,
-      title: "24/7 Support",
-      description: "Round-the-clock technical and customer support. Our team is available to assist with orders, documentation, and any questions you may have."
-    },
-    {
-      icon: HeadphonesIcon,
-      title: "Expert Consultation",
-      description: "Access to pharmaceutical experts for product selection, regulatory guidance, and technical specifications to ensure you get exactly what you need."
-    }
-  ];
+const assurances = [
+  {
+    icon: Shield,
+    title: "GMP & Regulatory Verified Suppliers",
+    description: "All our suppliers are verified to meet Good Manufacturing Practice standards and comply with international pharmaceutical regulations including WHO, FDA, and EMA guidelines."
+  },
+  {
+    icon: FileCheck,
+    title: "Transparent Sourcing",
+    description: "Complete supply chain transparency with full documentation including Certificates of Analysis, Material Safety Data Sheets, and batch traceability records."
+  },
+  {
+    icon: Lock,
+    title: "Secure Transactions",
+    description: "Bank-grade encryption for all transactions. Multiple secure payment options including verified bank transfers and escrow services for large orders."
+  },
+  {
+    icon: CheckCircle,
+    title: "Confidentiality",
+    description: "Strict confidentiality protocols for all client information, orders, and business relationships. Your data is protected and never shared with third parties."
+  },
+  {
+    icon: Award,
+    title: "Quality Guarantee",
+    description: "Every product is quality-verified before shipment. We stand behind our products with a comprehensive quality guarantee and dispute resolution process."
+  },
+  {
+    icon: Users,
+    title: "Dedicated Account Managers",
+    description: "Each verified client is assigned a dedicated account manager who understands your business needs and provides personalized service and support."
+  },
+  {
+    icon: Clock,
+    title: "24/7 Support",
+    description: "Round-the-clock technical and customer support. Our team is available to assist with orders, documentation, and any questions you may have."
+  },
+  {
+    icon: HeadphonesIcon,
+    title: "Expert Consultation",
+    description: "Access to pharmaceutical experts for product selection, regulatory guidance, and technical specifications to ensure you get exactly what you need."
+  }
+];
 
+const ClientAssurance = () => {
   return (
     <>
-      <Helmet>
-        <title>Client Assurance | Pharmoo World</title>
-        <meta name="description" content="Our commitment to quality, security, and customer satisfaction in pharmaceutical distribution." />
-      </Helmet>
+      <SEO
+        title="Client Assurance - Quality & Security Commitment"
+        description="Our commitment to quality, security, and customer satisfaction in pharmaceutical distribution. GMP verified suppliers, secure transactions, and 24/7 support."
+        keywords="quality assurance, GMP verified, pharmaceutical security, customer satisfaction"
+        canonical="/client-assurance"
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">

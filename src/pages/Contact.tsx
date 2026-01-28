@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +31,12 @@ const Contact = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Contact Us | Pharmoo World</title>
-        <meta name="description" content="Get in touch with Pharmoo World for pharmaceutical inquiries, quotes, and support." />
-      </Helmet>
+      <SEO
+        title="Contact Us - Get a Quote"
+        description="Contact Pharmoo World for pharmaceutical inquiries, bulk quotes, and support. Reach our sales team at +401-232-4508 or sales@pharmooworld.com."
+        keywords="contact pharmaceutical supplier, get quote, wholesale inquiry, medical supplies support"
+        canonical="/contact"
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">

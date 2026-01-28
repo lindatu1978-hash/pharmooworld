@@ -1,3 +1,4 @@
+# Pharmoo World - Robots.txt
 User-agent: Googlebot
 Allow: /
 
@@ -12,3 +13,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Sitemap
+Sitemap: https://www.pharmooworld.com/sitemap.xml
+
+# Disallow admin and cart pages from indexing
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account

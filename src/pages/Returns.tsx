@@ -1,17 +1,16 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Phone, Mail, AlertTriangle, Clock, CreditCard, Package } from "lucide-react";
 
 const Returns = () => {
   return (
     <>
-      <Helmet>
-        <title>Returns Policy - Pharmoo World</title>
-        <meta 
-          name="description" 
-          content="Pharmoo World Returns Policy - Learn about our 10-day return policy and how to request a refund." 
-        />
-      </Helmet>
+      <SEO
+        title="Returns Policy"
+        description="Pharmoo World Returns Policy - 10-day return policy for pharmaceutical products. Learn how to request a refund and return conditions."
+        keywords="returns policy, refund, pharmaceutical returns, return conditions"
+        canonical="/returns"
+      />
 
       <Layout>
         <div className="bg-background">

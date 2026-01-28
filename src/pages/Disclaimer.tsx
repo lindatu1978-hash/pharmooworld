@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
@@ -6,10 +6,11 @@ import { AlertTriangle } from "lucide-react";
 const Disclaimer = () => {
   return (
     <>
-      <Helmet>
-        <title>Legal Disclaimer | Pharmoo World</title>
-        <meta name="description" content="Legal disclaimer for pharmaceutical and medical products sold by Pharmoo World." />
-      </Helmet>
+      <SEO
+        title="Legal Disclaimer"
+        description="Legal disclaimer for pharmaceutical and medical products sold by Pharmoo World. Buyer responsibilities and regulatory compliance information."
+        canonical="/disclaimer"
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">

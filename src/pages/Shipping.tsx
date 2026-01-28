@@ -1,17 +1,16 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Truck, Package, Clock, Globe, Mail, HeadphonesIcon } from "lucide-react";
 
 const Shipping = () => {
   return (
     <>
-      <Helmet>
-        <title>Shipping & Delivery - Pharmoo World</title>
-        <meta 
-          name="description" 
-          content="Pharmoo World Shipping & Delivery Policy - Fast worldwide delivery within 3-7 working days." 
-        />
-      </Helmet>
+      <SEO
+        title="Shipping & Delivery"
+        description="Pharmoo World global shipping - Fast worldwide delivery within 3-7 working days. Temperature-controlled shipping for pharmaceutical products."
+        keywords="pharmaceutical shipping, worldwide delivery, cold chain shipping, fast delivery"
+        canonical="/shipping"
+      />
 
       <Layout>
         <div className="bg-background">
