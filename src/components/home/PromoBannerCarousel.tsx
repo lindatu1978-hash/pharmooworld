@@ -47,8 +47,8 @@ const promoBanners: PromoBanner[] = [
     badgeIcon: Percent,
     ctaText: "View Bulk Pricing",
     ctaLink: "/products",
-    gradient: "from-secondary/90 via-secondary to-secondary/80",
-    accentColor: "bg-secondary-foreground/20",
+    gradient: "from-orange-500 via-orange-600 to-orange-500",
+    accentColor: "bg-orange-300/30",
   },
   {
     id: "free-shipping",
@@ -83,8 +83,8 @@ const promoBanners: PromoBanner[] = [
     badgeIcon: Star,
     ctaText: "See Bestsellers",
     ctaLink: "/products?sort=popular",
-    gradient: "from-chart-4/90 via-chart-4 to-chart-4/80",
-    accentColor: "bg-foreground/10",
+    gradient: "from-gray-600 via-gray-700 to-gray-600",
+    accentColor: "bg-gray-400/30",
   },
 ];
 
