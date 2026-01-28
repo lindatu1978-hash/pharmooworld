@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, User, Building2 } from "lucide-react";
+import { useAdmin } from "@/hooks/useAdmin";
+import { Mail, Lock, Building2, LogOut, Package, Settings, ShieldCheck } from "lucide-react";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAdmin } = useAdmin();
 
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({
@@ -23,6 +28,41 @@ const Auth = () => {
     confirmPassword: "",
     companyName: "",
   });
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+        setProfile(profileData);
+      }
+      setCheckingAuth(false);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+        setProfile(profileData);
+      } else {
+        setUser(null);
+        setProfile(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +80,6 @@ const Auth = () => {
         title: "Welcome back!",
         description: "You have successfully signed in.",
       });
-      navigate("/");
     } catch (error: any) {
       toast({
         title: "Login failed",
@@ -94,6 +133,132 @@ const Auth = () => {
       setIsLoading(false);
     }
   };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Signed out",
+      description: "You have been signed out successfully.",
+    });
+  };
+
+  if (checkingAuth) {
+    return (
+      <Layout>
+        <div className="container-pharma py-12 flex justify-center">
+          <div className="animate-pulse text-muted-foreground">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Logged in view
+  if (user) {
+    return (
+      <>
+        <Helmet>
+          <title>My Account | Pharmoo World</title>
+          <meta name="description" content="Manage your Pharmoo World account" />
+        </Helmet>
+
+        <Layout>
+          <div className="bg-secondary/30 py-8">
+            <div className="container-pharma">
+              <h1 className="text-3xl lg:text-4xl font-bold text-foreground">
+                My Account
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                Welcome back, {profile?.company_name || user.email}
+              </p>
+            </div>
+          </div>
+
+          <div className="container-pharma py-12">
+            <div className="max-w-2xl mx-auto space-y-6">
+              {/* Account Info */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Account Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="font-medium">{user.email}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Company</p>
+                      <p className="font-medium">{profile?.company_name || "Not set"}</p>
+                    </div>
+                    {profile?.phone && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Phone</p>
+                        <p className="font-medium">{profile.phone}</p>
+                      </div>
+                    )}
+                    {profile?.country && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Country</p>
+                        <p className="font-medium">{profile.country}</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="grid sm:grid-cols-2 gap-4">
+                  <Link to="/orders">
+                    <Button variant="outline" className="w-full justify-start h-auto py-4">
+                      <Package className="h-5 w-5 mr-3" />
+                      <div className="text-left">
+                        <p className="font-medium">My Orders</p>
+                        <p className="text-xs text-muted-foreground">View history & invoices</p>
+                      </div>
+                    </Button>
+                  </Link>
+                  <Link to="/products">
+                    <Button variant="outline" className="w-full justify-start h-auto py-4">
+                      <Settings className="h-5 w-5 mr-3" />
+                      <div className="text-left">
+                        <p className="font-medium">Browse Products</p>
+                        <p className="text-xs text-muted-foreground">Explore our catalog</p>
+                      </div>
+                    </Button>
+                  </Link>
+                  {isAdmin && (
+                    <Link to="/admin" className="sm:col-span-2">
+                      <Button variant="outline" className="w-full justify-start h-auto py-4 border-primary/50 bg-primary/5">
+                        <ShieldCheck className="h-5 w-5 mr-3 text-primary" />
+                        <div className="text-left">
+                          <p className="font-medium">Admin Dashboard</p>
+                          <p className="text-xs text-muted-foreground">Manage products, orders & banners</p>
+                        </div>
+                      </Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Logout */}
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </Layout>
+      </>
+    );
+  }
 
   return (
     <>

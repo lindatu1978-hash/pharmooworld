@@ -188,6 +188,15 @@ const Header = () => {
                   My Account
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/orders"
+                  className="block px-4 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary rounded-md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  My Orders
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
