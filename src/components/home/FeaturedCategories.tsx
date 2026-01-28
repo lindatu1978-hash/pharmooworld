@@ -45,11 +45,11 @@ const FeaturedCategories = () => {
 
   const categories = [
     { name: "Botulinum", slug: "Botulinum-products", icon: Syringe },
-    { name: "Dermal Fillers", slug: "Dermal-Fillers", icon: Sparkles },
-    { name: "Pharmaceuticals", slug: "finished-pharmaceuticals", icon: Pill },
-    { name: "APIs & Raw Materials", slug: "apis-raw-materials", icon: FlaskConical },
-    { name: "Medical Devices", slug: "medical-devices", icon: Stethoscope },
-    { name: "Hospital Supplies", slug: "hospital-supplies", icon: Building2 },
+    { name: "Fillers", slug: "Dermal-Fillers", icon: Sparkles },
+    { name: "Pharma", slug: "finished-pharmaceuticals", icon: Pill },
+    { name: "APIs", slug: "apis-raw-materials", icon: FlaskConical },
+    { name: "Devices", slug: "medical-devices", icon: Stethoscope },
+    { name: "Supplies", slug: "hospital-supplies", icon: Building2 },
   ];
 
   return (
