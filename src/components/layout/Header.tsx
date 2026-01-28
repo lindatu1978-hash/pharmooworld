@@ -16,6 +16,7 @@ const Header = () => {
     { name: "Dermal Fillers", slug: "Dermal-Fillers" },
     { name: "Hydrogel Injection", slug: "hydrogel-injection" },
     { name: "Snake Venom", slug: "snake-venom" },
+    { name: "Implants", slug: "implants" },
     { name: "Hospital Supplies", slug: "hospital-supplies" },
     { name: "Medical Devices", slug: "medical-devices" },
     { name: "OTC Products", slug: "otc-products" },
