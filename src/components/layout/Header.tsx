@@ -14,6 +14,7 @@ const Header = () => {
     { name: "APIs & Raw Materials", slug: "apis-raw-materials" },
     { name: "Botulinum", slug: "Botulinum-products" },
     { name: "Dermal Fillers", slug: "Dermal-Fillers" },
+    { name: "Hydrogel Injection", slug: "hydrogel-injection" },
     { name: "Hospital Supplies", slug: "hospital-supplies" },
     { name: "Medical Devices", slug: "medical-devices" },
     { name: "OTC Products", slug: "otc-products" },
