@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, X } from "lucide-react";
+import { Loader2, Save, X, Sparkles } from "lucide-react";
 import { z } from "zod";
 
 const productSchema = z.object({
@@ -67,6 +67,7 @@ const ProductForm = ({ productId, onComplete }: ProductFormProps) => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   // Fetch categories
   const { data: categories } = useQuery({
@@ -211,6 +212,48 @@ const ProductForm = ({ productId, onComplete }: ProductFormProps) => {
     },
   });
 
+  const handleGenerateImage = async () => {
+    if (!productId) {
+      toast({
+        title: "Save product first",
+        description: "Please save the product before generating an image.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeneratingImage(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-product-image", {
+        body: {
+          productId,
+          productName: formData.name,
+          productDescription: formData.description,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        setFormData((prev) => ({ ...prev, image_url: data.imageUrl }));
+        queryClient.invalidateQueries({ queryKey: ["product", productId] });
+        queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+        toast({
+          title: "Image generated",
+          description: "AI product image has been created successfully.",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Image generation failed",
+        description: error.message || "Failed to generate product image.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -315,17 +358,42 @@ const ProductForm = ({ productId, onComplete }: ProductFormProps) => {
 
             <div className="space-y-2">
               <Label htmlFor="image_url">Image URL</Label>
-              <Input
-                id="image_url"
-                type="url"
-                value={formData.image_url || ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, image_url: e.target.value }))
-                }
-                placeholder="https://..."
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="image_url"
+                  type="url"
+                  value={formData.image_url || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, image_url: e.target.value }))
+                  }
+                  placeholder="https://..."
+                  className="flex-1"
+                />
+                {isEditing && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleGenerateImage}
+                    disabled={isGeneratingImage}
+                    title="Generate AI image"
+                  >
+                    {isGeneratingImage ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4" />
+                    )}
+                  </Button>
+                )}
+              </div>
               {errors.image_url && (
                 <p className="text-sm text-destructive">{errors.image_url}</p>
+              )}
+              {formData.image_url && (
+                <img 
+                  src={formData.image_url} 
+                  alt="Product preview" 
+                  className="mt-2 h-24 w-24 object-cover rounded-md border"
+                />
               )}
             </div>
           </CardContent>
