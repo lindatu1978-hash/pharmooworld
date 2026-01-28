@@ -133,11 +133,11 @@ const FeaturedProducts = () => {
                       )}
                     </div>
 
-                    {/* Quick Add Button */}
-                    <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {/* Quick Add Button - Always visible */}
+                    <div className="absolute bottom-3 right-3">
                       <Button
                         size="icon"
-                        className="h-10 w-10 rounded-full gradient-medical shadow-lg"
+                        className="h-10 w-10 rounded-full gradient-medical shadow-lg hover:scale-110 transition-transform"
                         onClick={(e) => handleAddToCart(e, product.id)}
                       >
                         <ShoppingCart className="h-4 w-4 text-white" />
