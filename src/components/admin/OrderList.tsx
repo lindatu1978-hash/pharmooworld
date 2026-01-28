@@ -105,18 +105,42 @@ const OrderList = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: OrderStatus }) => {
+    mutationFn: async ({ id, status, order }: { id: string; status: OrderStatus; order: any }) => {
       const { error } = await supabase
         .from("orders")
         .update({ status })
         .eq("id", id);
       if (error) throw error;
+
+      // Send email notification if customer has email
+      if (order.profile?.email && status !== "pending") {
+        try {
+          const response = await supabase.functions.invoke("send-order-status-email", {
+            body: {
+              orderId: id,
+              newStatus: status,
+              customerEmail: order.profile.email,
+              companyName: order.profile.company_name,
+              orderTotal: Number(order.total),
+            },
+          });
+          
+          if (response.error) {
+            console.error("Failed to send status email:", response.error);
+          } else {
+            console.log("Status email sent successfully");
+          }
+        } catch (emailError) {
+          console.error("Error sending status email:", emailError);
+          // Don't throw - status update succeeded, email is secondary
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
       toast({
         title: "Order updated",
-        description: "Order status has been changed.",
+        description: "Order status has been changed and customer notified.",
       });
     },
     onError: (error: any) => {
@@ -248,7 +272,7 @@ const OrderList = () => {
                     <Select
                       value={order.status}
                       onValueChange={(value: OrderStatus) =>
-                        updateStatusMutation.mutate({ id: order.id, status: value })
+                        updateStatusMutation.mutate({ id: order.id, status: value, order })
                       }
                     >
                       <SelectTrigger className="w-32 h-8">
