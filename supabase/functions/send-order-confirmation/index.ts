@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,6 +30,10 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
     const {
       orderId,
       customerEmail,
@@ -46,6 +49,14 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const orderIdShort = orderId.substring(0, 8).toUpperCase();
+
+    // Format payment method for display
+    const paymentMethodDisplay: Record<string, string> = {
+      bank_transfer: "Bank Transfer (T/T)",
+      crypto: "Cryptocurrency",
+      corporate_invoice: "Corporate Invoice",
+    };
+    const paymentDisplay = paymentMethodDisplay[paymentMethod] || paymentMethod;
 
     const itemsHtml = items
       .map(
@@ -98,7 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; color: #6b7280;">Payment Method:</td>
-                    <td style="padding: 8px 0; color: #111827; font-weight: 600; text-align: right;">${paymentMethod}</td>
+                    <td style="padding: 8px 0; color: #111827; font-weight: 600; text-align: right;">${paymentDisplay}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; color: #6b7280;">Shipping Address:</td>
@@ -141,6 +152,13 @@ const handler = async (req: Request): Promise<Response> => {
                 </ol>
               </div>
               
+              <!-- CTA Button -->
+              <div style="text-align: center; margin-bottom: 24px;">
+                <a href="https://pharmooworld.lovable.app/orders" style="display: inline-block; background: linear-gradient(135deg, #0066CC, #004499); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                  View My Orders
+                </a>
+              </div>
+              
               <!-- Contact Info -->
               <div style="text-align: center; padding: 24px; background-color: #f9fafb; border-radius: 12px;">
                 <p style="color: #6b7280; font-size: 14px; margin: 0 0 8px 0;">Questions about your order?</p>
@@ -153,7 +171,7 @@ const handler = async (req: Request): Promise<Response> => {
             <!-- Footer -->
             <div style="background-color: #1f2937; padding: 24px; text-align: center;">
               <p style="color: #9ca3af; font-size: 12px; margin: 0 0 8px 0;">
-                © 2026 Pharmoo World. All rights reserved.
+                © ${new Date().getFullYear()} Pharmoo World. All rights reserved.
               </p>
               <p style="color: #6b7280; font-size: 11px; margin: 0;">
                 GMP Certified | WHO Compliant | Global Shipping
@@ -164,16 +182,30 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    const emailResponse = await resend.emails.send({
-      from: "Pharmoo World <orders@pharmooworld.com>",
-      to: [customerEmail],
-      subject: `Order Confirmed - #${orderIdShort}`,
-      html: emailHtml,
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "Pharmoo World <orders@pharmooworld.com>",
+        to: [customerEmail],
+        subject: `Order Confirmed - #${orderIdShort}`,
+        html: emailHtml,
+      }),
     });
 
+    if (!res.ok) {
+      const errorData = await res.text();
+      console.error("Resend API error:", errorData);
+      throw new Error(`Failed to send email: ${errorData}`);
+    }
+
+    const emailResponse = await res.json();
     console.log("Order confirmation email sent successfully:", emailResponse);
 
-    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
+    return new Response(JSON.stringify({ success: true, ...emailResponse }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
