@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Package, ArrowRight, Star } from "lucide-react";
+import { ShoppingCart, Package, ArrowRight } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 
 interface Product {
@@ -56,20 +56,21 @@ const FeaturedProducts = () => {
 
   if (isLoading) {
     return (
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-20 lg:py-24">
         <div className="container-pharma">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Featured Products
-            </h2>
+            <h2 className="text-foreground mb-4">Featured Products</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-4">
-                  <div className="aspect-square bg-muted rounded-lg mb-4" />
-                  <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                  <div className="h-3 bg-muted rounded w-1/2" />
+              <Card key={i} className="animate-pulse border-border">
+                <CardContent className="p-0">
+                  <div className="aspect-square bg-muted" />
+                  <div className="p-4 space-y-3">
+                    <div className="h-3 bg-muted rounded w-1/3" />
+                    <div className="h-4 bg-muted rounded w-3/4" />
+                    <div className="h-5 bg-muted rounded w-1/4" />
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -80,16 +81,14 @@ const FeaturedProducts = () => {
   }
 
   return (
-    <section className="py-20 lg:py-28 bg-background">
+    <section className="py-20 lg:py-24">
       <div className="container-pharma">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-12">
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider">Our Products</p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
-              Featured Products
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
+            <p className="text-sm font-medium text-primary">Our Products</p>
+            <h2 className="text-foreground">Featured Products</h2>
+            <p className="text-muted-foreground max-w-xl">
               Browse our selection of high-quality pharmaceutical and medical products.
             </p>
           </div>
@@ -105,39 +104,40 @@ const FeaturedProducts = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <Link key={product.id} to={`/product/${product.slug}`}>
-              <Card className="group h-full border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 overflow-hidden">
+              <Card className="group h-full border-border hover:border-primary/30 hover:shadow-lg transition-all duration-200 overflow-hidden">
                 <CardContent className="p-0">
                   {/* Product Image */}
-                  <div className="relative aspect-square bg-secondary/30 flex items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square bg-muted/50 flex items-center justify-center overflow-hidden">
                     {product.image_url ? (
                       <img
                         src={product.image_url}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
-                      <Package className="h-20 w-20 text-muted-foreground/30" />
+                      <Package className="h-16 w-16 text-muted-foreground/30" />
                     )}
                     
                     {/* Badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-2">
                       {product.regulatory_status && (
-                        <Badge className="bg-primary/90 text-primary-foreground text-xs">
+                        <Badge className="bg-primary text-primary-foreground text-xs font-medium">
                           {product.regulatory_status}
                         </Badge>
                       )}
                       {product.bulk_price && (
-                        <Badge className="bg-accent/90 text-accent-foreground text-xs">
+                        <Badge className="bg-accent text-accent-foreground text-xs font-medium">
                           Bulk Deal
                         </Badge>
                       )}
                     </div>
 
-                    {/* Quick Add Button - Always visible */}
+                    {/* Quick Add Button */}
                     <div className="absolute bottom-3 right-3">
                       <Button
                         size="icon"
-                        className="h-10 w-10 rounded-full gradient-medical shadow-lg hover:scale-110 transition-transform"
+                        className="h-10 w-10 rounded-full gradient-medical shadow-md hover:shadow-lg hover:scale-105 transition-all"
                         onClick={(e) => handleAddToCart(e, product.id)}
                       >
                         <ShoppingCart className="h-4 w-4 text-white" />
@@ -146,14 +146,14 @@ const FeaturedProducts = () => {
                   </div>
 
                   {/* Product Info */}
-                  <div className="p-4 space-y-3">
+                  <div className="p-4 space-y-2">
                     {product.manufacturer && (
-                      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                         {product.manufacturer}
                       </p>
                     )}
                     
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                       {product.name}
                     </h3>
                     
@@ -163,14 +163,14 @@ const FeaturedProducts = () => {
                       </p>
                     )}
 
-                    <div className="flex items-end justify-between pt-2 border-t border-border">
+                    <div className="flex items-end justify-between pt-3 border-t border-border">
                       <div>
-                        <p className="text-xl font-bold text-foreground">
+                        <p className="text-lg font-bold text-foreground">
                           ${product.price.toFixed(2)}
                         </p>
                         {product.bulk_price && product.bulk_min_quantity && (
                           <p className="text-xs text-accent font-medium">
-                            ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+ units
+                            ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+
                           </p>
                         )}
                       </div>
