@@ -125,7 +125,7 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
   };
 
   const handleProductClick = (slug: string) => {
-    navigate(`/products/${slug}`);
+    navigate(`/product/${slug}`);
     setQuery("");
     setIsOpen(false);
     onClose?.();
