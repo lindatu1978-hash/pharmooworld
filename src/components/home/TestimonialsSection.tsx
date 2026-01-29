@@ -30,23 +30,23 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-24 bg-muted/30">
+    <section className="py-12 lg:py-16">
       <div className="container-pharma">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-sm font-medium text-primary mb-3">Testimonials</p>
-          <h2 className="text-foreground mb-4">
-            Trusted by Healthcare Professionals Worldwide
+        {/* Section Header - compact like product page sections */}
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <p className="text-sm font-medium text-primary mb-2">Testimonials</p>
+          <h2 className="text-foreground mb-3">
+            Trusted by Healthcare Professionals
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Hear from our partners about their experience working with Pharmoo World.
           </p>
         </div>
 
-        {/* Testimonials Grid */}
+        {/* Testimonials Grid - Card style like product page */}
         <div className="grid md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="border-border hover:shadow-md hover:border-primary/20 transition-all duration-200">
+            <Card key={index} className="border-border hover:border-primary/30 hover:shadow-md transition-all duration-200">
               <CardContent className="p-6 space-y-4">
                 {/* Quote Icon */}
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -61,11 +61,11 @@ const TestimonialsSection = () => {
                 </div>
 
                 {/* Content */}
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed text-sm">
                   "{testimonial.content}"
                 </p>
 
-                {/* Author */}
+                {/* Author - like product manufacturer info */}
                 <div className="pt-4 border-t border-border">
                   <p className="font-medium text-foreground">{testimonial.name}</p>
                   <p className="text-sm text-muted-foreground">{testimonial.role}</p>
