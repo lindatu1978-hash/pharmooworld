@@ -30,23 +30,23 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-secondary/30">
+    <section className="py-20 lg:py-24 bg-muted/30">
       <div className="container-pharma">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">Testimonials</p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+          <p className="text-sm font-medium text-primary mb-3">Testimonials</p>
+          <h2 className="text-foreground mb-4">
             Trusted by Healthcare Professionals Worldwide
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-muted-foreground">
             Hear from our partners about their experience working with Pharmoo World.
           </p>
         </div>
 
         {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="border-border hover:shadow-lg transition-shadow">
+            <Card key={index} className="border-border hover:shadow-md hover:border-primary/20 transition-all duration-200">
               <CardContent className="p-6 space-y-4">
                 {/* Quote Icon */}
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -54,7 +54,7 @@ const TestimonialsSection = () => {
                 </div>
 
                 {/* Stars */}
-                <div className="flex gap-1">
+                <div className="flex gap-0.5">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-warning text-warning" />
                   ))}
@@ -67,7 +67,7 @@ const TestimonialsSection = () => {
 
                 {/* Author */}
                 <div className="pt-4 border-t border-border">
-                  <p className="font-semibold text-foreground">{testimonial.name}</p>
+                  <p className="font-medium text-foreground">{testimonial.name}</p>
                   <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                   <p className="text-sm text-muted-foreground">{testimonial.company}, {testimonial.location}</p>
                 </div>

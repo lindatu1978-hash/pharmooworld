@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ShoppingCart, User, Phone, Mail, ChevronDown } from "lucide-react";
+import { Menu, X, ShoppingCart, User, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import ProductSearch from "@/components/search/ProductSearch";
@@ -36,57 +36,37 @@ const Header = () => {
   const allCategories = [...mainCategories, ...moreCategories];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-card border-b border-border shadow-sm">
-      {/* Top Bar */}
-      <div className="bg-primary text-primary-foreground">
-        <div className="container-pharma py-2 flex justify-between items-center text-sm">
-          <div className="flex items-center gap-4">
-            <a href="tel:+4012324508" className="flex items-center gap-1 hover:opacity-80">
-              <Phone className="h-3 w-3" />
-              <span className="hidden sm:inline">+401 - 232 - 4508</span>
-            </a>
-            <a href="mailto:info@pharmooworld.com" className="flex items-center gap-1 hover:opacity-80">
-              <Mail className="h-3 w-3" />
-              <span className="hidden sm:inline">info@pharmooworld.com</span>
-            </a>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="hidden md:inline">GMP Certified • WHO Compliant • Global Shipping</span>
-          </div>
-        </div>
-      </div>
-
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border">
       {/* Main Header */}
       <div className="container-pharma py-4">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-6">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-lg gradient-medical flex items-center justify-center">
-              <span className="text-white font-bold text-xl">P</span>
+          <Link to="/" className="flex items-center gap-2 shrink-0">
+            <div className="h-9 w-9 rounded-lg gradient-medical flex items-center justify-center">
+              <span className="text-white font-bold text-lg">P</span>
             </div>
-            <div>
-              <span className="text-xl font-bold text-foreground">Pharmoo</span>
-              <span className="text-xl font-bold text-primary">World</span>
-            </div>
+            <span className="text-xl font-bold text-foreground hidden sm:block">
+              Pharmoo<span className="text-primary">World</span>
+            </span>
           </Link>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-xl mx-8">
+          <div className="hidden lg:flex flex-1 max-w-lg">
             <ProductSearch className="w-full" />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Link to="/account">
-              <Button variant="ghost" size="icon" className="hidden sm:flex">
+              <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-foreground">
                 <User className="h-5 w-5" />
               </Button>
             </Link>
             <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                 <ShoppingCart className="h-5 w-5" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center font-medium">
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
                     {itemCount}
                   </span>
                 )}
@@ -95,7 +75,7 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden text-muted-foreground hover:text-foreground"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -109,14 +89,14 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="hidden lg:block border-t border-border bg-secondary/50">
+      {/* Navigation - Desktop */}
+      <nav className="hidden lg:block border-t border-border">
         <div className="container-pharma">
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-1 -mx-2">
             <li>
               <Link
                 to="/products"
-                className="block px-4 py-3 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary transition-colors rounded-md"
+                className="block px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 All Products
               </Link>
@@ -125,7 +105,7 @@ const Header = () => {
               <li key={category.slug}>
                 <Link
                   to={`/products?category=${category.slug}`}
-                  className="block px-4 py-3 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary transition-colors rounded-md whitespace-nowrap"
+                  className="block px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                 >
                   {category.name}
                 </Link>
@@ -133,16 +113,13 @@ const Header = () => {
             ))}
             <li>
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary transition-colors rounded-md">
+                <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   More <ChevronDown className="h-4 w-4" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="bg-card border border-border shadow-lg z-50">
+                <DropdownMenuContent align="start" className="bg-background border border-border shadow-lg">
                   {moreCategories.map((category) => (
                     <DropdownMenuItem key={category.slug} asChild>
-                      <Link
-                        to={`/products?category=${category.slug}`}
-                        className="cursor-pointer"
-                      >
+                      <Link to={`/products?category=${category.slug}`} className="cursor-pointer">
                         {category.name}
                       </Link>
                     </DropdownMenuItem>
@@ -156,13 +133,13 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-card border-t border-border">
+        <div className="lg:hidden bg-background border-t border-border">
           <nav className="container-pharma py-4">
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               <li>
                 <Link
                   to="/products"
-                  className="block px-4 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary rounded-md"
+                  className="block px-4 py-3 text-sm font-medium text-foreground hover:bg-muted rounded-lg"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   All Products
@@ -172,7 +149,7 @@ const Header = () => {
                 <li key={category.slug}>
                   <Link
                     to={`/products?category=${category.slug}`}
-                    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary rounded-md"
+                    className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {category.name}
@@ -182,7 +159,7 @@ const Header = () => {
               <li className="border-t border-border pt-2 mt-2">
                 <Link
                   to="/account"
-                  className="block px-4 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary rounded-md"
+                  className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   My Account
@@ -191,7 +168,7 @@ const Header = () => {
               <li>
                 <Link
                   to="/orders"
-                  className="block px-4 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary rounded-md"
+                  className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   My Orders
