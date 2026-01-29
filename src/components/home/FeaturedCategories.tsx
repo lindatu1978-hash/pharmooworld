@@ -49,7 +49,7 @@ const FeaturedCategories = () => {
     { name: "Pharma", slug: "finished-pharmaceuticals", icon: Pill },
     { name: "APIs", slug: "apis-raw-materials", icon: FlaskConical },
     { name: "Devices", slug: "medical-devices", icon: Stethoscope },
-    { name: "Supplies", slug: "hospital-supplies", icon: Building2 },
+    { name: "Surgical", slug: "hospital-supplies", icon: Building2 },
   ];
 
   return (
