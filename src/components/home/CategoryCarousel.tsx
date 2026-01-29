@@ -109,21 +109,24 @@ const CategoryCarousel = memo(() => {
             {/* Category Items */}
             {categoryItems.map((category) => (
               <CarouselItem key={category.id} className="pl-3 basis-1/3 md:basis-1/5 lg:basis-1/7">
-                <Link to={`/products?category=${category.slug}`}>
+                <Link to={`/products?category=${category.slug}`} aria-label={`Browse ${category.name} products`}>
                   <Card className="border-border hover:border-primary/30 hover:shadow-md transition-all cursor-pointer h-full">
                     <CardContent className="flex flex-col items-center justify-center p-4 text-center h-32">
                       {category.image ? (
-                        <div className="h-12 w-12 rounded-lg overflow-hidden mb-2">
+                        <figure className="h-12 w-12 rounded-lg overflow-hidden mb-2">
                           <img 
                             src={category.image} 
-                            alt={category.name}
+                            alt={`${category.name} category - pharmaceutical products`}
+                            title={`Shop ${category.name}`}
+                            width={48}
+                            height={48}
                             loading="lazy"
                             decoding="async"
                             className="w-full h-full object-cover"
                           />
-                        </div>
+                        </figure>
                       ) : (
-                        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-2">
+                        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-2" aria-hidden="true">
                           <category.Icon className="h-6 w-6 text-primary" />
                         </div>
                       )}
