@@ -1,11 +1,11 @@
 import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
-import HeroSection from "@/components/home/HeroSection";
-import TrustedBy from "@/components/home/TrustedBy";
-import PromoBannerCarousel from "@/components/home/PromoBannerCarousel";
-import FeaturedCategories from "@/components/home/FeaturedCategories";
-import FeaturedProducts from "@/components/home/FeaturedProducts";
-import WhyChooseUs from "@/components/home/WhyChooseUs";
+import AnnouncementBar from "@/components/home/AnnouncementBar";
+import CategoryCarousel from "@/components/home/CategoryCarousel";
+import HeroBanner from "@/components/home/HeroBanner";
+import BrandsSection from "@/components/home/BrandsSection";
+import ValueProposition from "@/components/home/ValueProposition";
+import TabbedProducts from "@/components/home/TabbedProducts";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import CTASection from "@/components/home/CTASection";
 
@@ -19,13 +19,15 @@ const Index = () => {
         canonical="/"
       />
 
+      {/* Announcement Bar - outside Layout for full-width */}
+      <AnnouncementBar />
+
       <Layout>
-        <HeroSection />
-        <TrustedBy />
-        <PromoBannerCarousel />
-        <FeaturedCategories />
-        <FeaturedProducts />
-        <WhyChooseUs />
+        <CategoryCarousel />
+        <HeroBanner />
+        <ValueProposition />
+        <TabbedProducts />
+        <BrandsSection />
         <TestimonialsSection />
         <CTASection />
       </Layout>
