@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,16 +18,39 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      company: formData.get("company") as string,
+      subject: formData.get("subject") as string,
+      message: formData.get("message") as string,
+    };
 
-    toast({
-      title: "Message sent!",
-      description: "We'll get back to you within 24-48 hours.",
-    });
+    try {
+      const { error } = await supabase.functions.invoke("send-contact-form", {
+        body: data,
+      });
 
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
+      if (error) throw error;
+
+      toast({
+        title: "Message sent!",
+        description: "We'll get back to you within 24-48 hours.",
+      });
+      (e.target as HTMLFormElement).reset();
+    } catch (error: any) {
+      console.error("Error sending contact form:", error);
+      toast({
+        title: "Failed to send message",
+        description: "Please try again or email us directly at info@pharmooworld.com",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -144,39 +168,40 @@ const Contact = () => {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="firstName">First Name</Label>
-                        <Input id="firstName" placeholder="John" required />
+                        <Input id="firstName" name="firstName" placeholder="John" required />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lastName">Last Name</Label>
-                        <Input id="lastName" placeholder="Doe" required />
+                        <Input id="lastName" name="lastName" placeholder="Doe" required />
                       </div>
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="john@company.com" required />
+                        <Input id="email" name="email" type="email" placeholder="john@company.com" required />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">Phone</Label>
-                        <Input id="phone" type="tel" placeholder="+401 - 232 - 4508" />
+                        <Input id="phone" name="phone" type="tel" placeholder="+401 - 232 - 4508" />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="company">Company Name</Label>
-                      <Input id="company" placeholder="Your Company Ltd" required />
+                      <Input id="company" name="company" placeholder="Your Company Ltd" required />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="subject">Subject</Label>
-                      <Input id="subject" placeholder="Product inquiry, Quote request, etc." required />
+                      <Input id="subject" name="subject" placeholder="Product inquiry, Quote request, etc." required />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="message">Message</Label>
                       <Textarea
                         id="message"
+                        name="message"
                         placeholder="Please describe your requirements..."
                         rows={5}
                         required
