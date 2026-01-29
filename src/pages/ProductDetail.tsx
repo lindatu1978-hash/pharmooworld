@@ -97,6 +97,17 @@ const ProductDetail = () => {
 
   const totalPrice = currentPrice * quantity;
 
+  // Generate descriptive alt text for SEO
+  const getImageAltText = () => {
+    if (!product) return "";
+    const parts = [product.name];
+    if (product.manufacturer) parts.push(`by ${product.manufacturer}`);
+    if (product.form) parts.push(product.form);
+    if (product.dosage) parts.push(product.dosage);
+    parts.push("pharmaceutical product for wholesale");
+    return parts.join(" - ");
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -118,7 +129,7 @@ const ProductDetail = () => {
     return (
       <Layout>
         <div className="container-pharma py-12 text-center">
-          <Package className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+          <Package className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" aria-hidden="true" />
           <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
           <p className="text-muted-foreground mb-4">
             The product you're looking for doesn't exist or has been removed.
@@ -139,6 +150,7 @@ const ProductDetail = () => {
         keywords={`${product.name}, ${product.manufacturer || ""}, ${category?.name || "pharmaceutical"}, wholesale, buy online`}
         canonical={`/product/${product.slug}`}
         type="product"
+        image={product.image_url || undefined}
         structuredData={createProductSchema({
           name: product.name,
           description: product.description,
@@ -151,50 +163,81 @@ const ProductDetail = () => {
       />
 
       <Layout>
-        {/* Breadcrumb */}
-        <div className="bg-secondary/30 py-4">
+        {/* Breadcrumb with Schema */}
+        <nav className="bg-secondary/30 py-4" aria-label="Breadcrumb">
           <div className="container-pharma">
-            <div className="flex items-center gap-2 text-sm">
-              <Link to="/" className="text-muted-foreground hover:text-foreground">Home</Link>
-              <span className="text-muted-foreground">/</span>
-              <Link to="/products" className="text-muted-foreground hover:text-foreground">Products</Link>
+            <ol 
+              className="flex items-center gap-2 text-sm"
+              itemScope
+              itemType="https://schema.org/BreadcrumbList"
+            >
+              <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                <Link to="/" className="text-muted-foreground hover:text-foreground" itemProp="item">
+                  <span itemProp="name">Home</span>
+                </Link>
+                <meta itemProp="position" content="1" />
+              </li>
+              <span className="text-muted-foreground" aria-hidden="true">/</span>
+              <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                <Link to="/products" className="text-muted-foreground hover:text-foreground" itemProp="item">
+                  <span itemProp="name">Products</span>
+                </Link>
+                <meta itemProp="position" content="2" />
+              </li>
               {category && (
                 <>
-                  <span className="text-muted-foreground">/</span>
-                  <Link to={`/products?category=${category.slug}`} className="text-muted-foreground hover:text-foreground">
-                    {category.name}
-                  </Link>
+                  <span className="text-muted-foreground" aria-hidden="true">/</span>
+                  <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                    <Link to={`/products?category=${category.slug}`} className="text-muted-foreground hover:text-foreground" itemProp="item">
+                      <span itemProp="name">{category.name}</span>
+                    </Link>
+                    <meta itemProp="position" content="3" />
+                  </li>
                 </>
               )}
-              <span className="text-muted-foreground">/</span>
-              <span className="text-foreground truncate">{product.name}</span>
-            </div>
+              <span className="text-muted-foreground" aria-hidden="true">/</span>
+              <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                <span className="text-foreground truncate" itemProp="name">{product.name}</span>
+                <meta itemProp="position" content={category ? "4" : "3"} />
+              </li>
+            </ol>
           </div>
-        </div>
+        </nav>
 
-        <div className="container-pharma py-8 lg:py-12">
+        <article 
+          className="container-pharma py-8 lg:py-12"
+          itemScope
+          itemType="https://schema.org/Product"
+        >
           <Link to="/products" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to Products
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Product Image */}
-            <div className="aspect-square bg-secondary/50 rounded-xl flex items-center justify-center overflow-hidden">
+            {/* Product Image with SEO optimization */}
+            <figure className="aspect-square bg-secondary/50 rounded-xl flex items-center justify-center overflow-hidden">
               {product.image_url ? (
                 <img
                   src={product.image_url}
-                  alt={product.name}
+                  alt={getImageAltText()}
+                  title={product.name}
+                  width={600}
+                  height={600}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   className="w-full h-full object-cover"
+                  itemProp="image"
                 />
               ) : (
-                <Package className="h-32 w-32 text-muted-foreground/50" />
+                <Package className="h-32 w-32 text-muted-foreground/50" aria-label={`${product.name} - no image available`} />
               )}
-            </div>
+            </figure>
 
             {/* Product Info */}
             <div className="space-y-6">
-              <div>
+              <header>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {product.regulatory_status && (
                     <Badge className="gradient-medical text-white border-0">
@@ -203,59 +246,71 @@ const ProductDetail = () => {
                   )}
                   {product.in_stock ? (
                     <Badge variant="outline" className="text-accent border-accent">
+                      <link itemProp="availability" href="https://schema.org/InStock" />
                       In Stock
                     </Badge>
                   ) : (
-                    <Badge variant="destructive">Out of Stock</Badge>
+                    <Badge variant="destructive">
+                      <link itemProp="availability" href="https://schema.org/OutOfStock" />
+                      Out of Stock
+                    </Badge>
                   )}
                 </div>
 
-                <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
+                <h1 
+                  className="text-3xl lg:text-4xl font-bold text-foreground mb-2"
+                  itemProp="name"
+                >
                   {product.name}
                 </h1>
 
                 {product.manufacturer && (
                   <p className="text-lg text-muted-foreground">
-                    By {product.manufacturer}
+                    By <span itemProp="brand" itemScope itemType="https://schema.org/Brand">
+                      <span itemProp="name">{product.manufacturer}</span>
+                    </span>
                   </p>
                 )}
-              </div>
+              </header>
 
               {/* Specs */}
-              <div className="grid grid-cols-2 gap-4">
+              <dl className="grid grid-cols-2 gap-4">
                 {product.dosage && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Dosage/Strength</p>
-                    <p className="font-medium">{product.dosage}</p>
+                    <dt className="text-sm text-muted-foreground">Dosage/Strength</dt>
+                    <dd className="font-medium">{product.dosage}</dd>
                   </div>
                 )}
                 {product.form && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Form</p>
-                    <p className="font-medium">{product.form}</p>
+                    <dt className="text-sm text-muted-foreground">Form</dt>
+                    <dd className="font-medium">{product.form}</dd>
                   </div>
                 )}
                 {product.origin && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Origin</p>
-                    <p className="font-medium">{product.origin}</p>
+                    <dt className="text-sm text-muted-foreground">Origin</dt>
+                    <dd className="font-medium" itemProp="countryOfOrigin">{product.origin}</dd>
                   </div>
                 )}
                 {product.shelf_life && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Shelf Life</p>
-                    <p className="font-medium">{product.shelf_life}</p>
+                    <dt className="text-sm text-muted-foreground">Shelf Life</dt>
+                    <dd className="font-medium">{product.shelf_life}</dd>
                   </div>
                 )}
-              </div>
+              </dl>
 
-              {/* Pricing */}
+              {/* Pricing with Schema */}
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-6" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                  <meta itemProp="priceCurrency" content="USD" />
+                  <link itemProp="availability" href={product.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
+                  
                   <div className="flex items-end justify-between mb-4">
                     <div>
                       <p className="text-3xl font-bold text-foreground">
-                        ${currentPrice.toFixed(2)}
+                        $<span itemProp="price" content={currentPrice.toString()}>{currentPrice.toFixed(2)}</span>
                         <span className="text-lg font-normal text-muted-foreground"> / unit</span>
                       </p>
                       {product.bulk_price && product.bulk_min_quantity && (
@@ -279,8 +334,9 @@ const ProductDetail = () => {
                         size="icon"
                         onClick={() => handleQuantityChange(quantity - 1)}
                         disabled={quantity <= 1}
+                        aria-label="Decrease quantity"
                       >
-                        <Minus className="h-4 w-4" />
+                        <Minus className="h-4 w-4" aria-hidden="true" />
                       </Button>
                       <Input
                         type="number"
@@ -289,14 +345,16 @@ const ProductDetail = () => {
                         className="w-20 text-center"
                         min={1}
                         max={999}
+                        aria-label="Product quantity"
                       />
                       <Button
                         variant="outline"
                         size="icon"
                         onClick={() => handleQuantityChange(quantity + 1)}
                         disabled={quantity >= 999}
+                        aria-label="Increase quantity"
                       >
-                        <Plus className="h-4 w-4" />
+                        <Plus className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>
@@ -307,31 +365,34 @@ const ProductDetail = () => {
                     disabled={!product.in_stock}
                     onClick={handleAddToCart}
                   >
-                    <ShoppingCart className="h-5 w-5" />
+                    <ShoppingCart className="h-5 w-5" aria-hidden="true" />
                     {product.in_stock ? "Add to Cart" : "Out of Stock"}
                   </Button>
                 </CardContent>
               </Card>
 
               {/* Trust Badges */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <Shield className="h-5 w-5 text-accent" />
+              <ul className="grid grid-cols-2 gap-4" aria-label="Product guarantees">
+                <li className="flex items-center gap-2 text-sm">
+                  <Shield className="h-5 w-5 text-accent" aria-hidden="true" />
                   <span>GMP Certified</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <FileCheck className="h-5 w-5 text-accent" />
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <FileCheck className="h-5 w-5 text-accent" aria-hidden="true" />
                   <span>COA Available</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Truck className="h-5 w-5 text-accent" />
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Truck className="h-5 w-5 text-accent" aria-hidden="true" />
                   <span>Global Shipping</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-5 w-5 text-accent" />
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-5 w-5 text-accent" aria-hidden="true" />
                   <span>Secure Payment</span>
-                </div>
-              </div>
+                </li>
+              </ul>
+
+              {/* Hidden description for schema */}
+              <meta itemProp="description" content={product.description || `${product.name} - pharmaceutical product available for wholesale purchase.`} />
             </div>
           </div>
 
@@ -359,15 +420,15 @@ const ProductDetail = () => {
                   <CardContent className="p-6">
                     <ul className="space-y-3">
                       <li className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                        <CheckCircle className="h-5 w-5 text-accent shrink-0 mt-0.5" aria-hidden="true" />
                         <span>Clinical use in hospitals and medical facilities</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                        <CheckCircle className="h-5 w-5 text-accent shrink-0 mt-0.5" aria-hidden="true" />
                         <span>Hospital and healthcare provider distribution</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                        <CheckCircle className="h-5 w-5 text-accent shrink-0 mt-0.5" aria-hidden="true" />
                         <span>Wholesale pharmaceutical distribution</span>
                       </li>
                     </ul>
@@ -383,34 +444,34 @@ const ProductDetail = () => {
                     </p>
                     <ul className="space-y-3">
                       <li className="flex items-center gap-2">
-                        <FileCheck className="h-5 w-5 text-accent" />
+                        <FileCheck className="h-5 w-5 text-accent" aria-hidden="true" />
                         <span>Certificate of Analysis (COA)</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileCheck className="h-5 w-5 text-accent" />
+                        <FileCheck className="h-5 w-5 text-accent" aria-hidden="true" />
                         <span>Material Safety Data Sheet (MSDS)</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileCheck className="h-5 w-5 text-accent" />
+                        <FileCheck className="h-5 w-5 text-accent" aria-hidden="true" />
                         <span>GMP Certificate</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileCheck className="h-5 w-5 text-accent" />
+                        <FileCheck className="h-5 w-5 text-accent" aria-hidden="true" />
                         <span>Batch Traceability Records</span>
                       </li>
                     </ul>
-                    <div className="mt-6 p-4 bg-warning/10 rounded-lg flex items-start gap-3">
-                      <AlertTriangle className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+                    <aside className="mt-6 p-4 bg-warning/10 rounded-lg flex items-start gap-3" role="note">
+                      <AlertTriangle className="h-5 w-5 text-warning shrink-0 mt-0.5" aria-hidden="true" />
                       <p className="text-sm">
                         Prescription products require valid documentation. Contact our sales team for licensing verification.
                       </p>
-                    </div>
+                    </aside>
                   </CardContent>
                 </Card>
               </TabsContent>
             </Tabs>
           </div>
-        </div>
+        </article>
       </Layout>
     </>
   );

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,45 +12,48 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-const HeroBanner = () => {
-  const banners = [
-    {
-      id: 1,
-      badge: "NEW ARRIVALS",
-      title: "Premium Dermal Fillers",
-      subtitle: "NOW AVAILABLE",
-      description: "Explore our latest collection of hyaluronic acid fillers from leading manufacturers worldwide.",
-      ctaText: "Shop Now",
-      ctaLink: "/products?category=Dermal-Fillers",
-      gradient: "from-primary via-primary/90 to-primary/80",
-      image: "/products/neauvia-intense-flux-1ml.jpg",
-    },
-    {
-      id: 2,
-      badge: "BULK SAVINGS",
-      title: "Up to 25% Off",
-      subtitle: "WHOLESALE PRICING",
-      description: "Get exclusive discounts on bulk orders. Perfect for hospitals, clinics, and distributors.",
-      ctaText: "View Bulk Pricing",
-      ctaLink: "/products",
-      gradient: "from-orange-500 via-orange-600 to-orange-500",
-      image: null,
-    },
-    {
-      id: 3,
-      badge: "MEDICAL SUPPLIES",
-      title: "Hospital Grade Equipment",
-      subtitle: "GMP CERTIFIED",
-      description: "Surgical gowns, face shields, and PPE from certified manufacturers.",
-      ctaText: "Shop Supplies",
-      ctaLink: "/products?category=hospital-supplies",
-      gradient: "from-accent via-accent/90 to-accent/80",
-      image: "/products/disposable-surgical-gowns-1.jpg",
-    },
-  ];
+const banners = [
+  {
+    id: 1,
+    badge: "NEW ARRIVALS",
+    title: "Premium Dermal Fillers",
+    subtitle: "NOW AVAILABLE",
+    description: "Explore our latest collection of hyaluronic acid fillers from leading manufacturers worldwide.",
+    ctaText: "Shop Now",
+    ctaLink: "/products?category=Dermal-Fillers",
+    gradient: "from-primary via-primary/90 to-primary/80",
+    image: "/products/neauvia-intense-flux-1ml.jpg",
+    imageAlt: "Neauvia Intense Flux 1ml dermal filler product - premium hyaluronic acid filler for cosmetic procedures",
+  },
+  {
+    id: 2,
+    badge: "BULK SAVINGS",
+    title: "Up to 25% Off",
+    subtitle: "WHOLESALE PRICING",
+    description: "Get exclusive discounts on bulk orders. Perfect for hospitals, clinics, and distributors.",
+    ctaText: "View Bulk Pricing",
+    ctaLink: "/products",
+    gradient: "from-orange-500 via-orange-600 to-orange-500",
+    image: null,
+    imageAlt: "",
+  },
+  {
+    id: 3,
+    badge: "MEDICAL SUPPLIES",
+    title: "Hospital Grade Equipment",
+    subtitle: "GMP CERTIFIED",
+    description: "Surgical gowns, face shields, and PPE from certified manufacturers.",
+    ctaText: "Shop Supplies",
+    ctaLink: "/products?category=hospital-supplies",
+    gradient: "from-accent via-accent/90 to-accent/80",
+    image: "/products/disposable-surgical-gowns-1.jpg",
+    imageAlt: "Disposable surgical gowns for medical professionals - GMP certified hospital grade PPE",
+  },
+];
 
+const HeroBanner = memo(() => {
   return (
-    <section className="py-6">
+    <section className="py-6" aria-label="Featured promotions">
       <div className="container-pharma">
         <Carousel
           opts={{
@@ -66,29 +70,36 @@ const HeroBanner = () => {
           className="w-full"
         >
           <CarouselContent>
-            {banners.map((banner) => (
+            {banners.map((banner, index) => (
               <CarouselItem key={banner.id}>
-                <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-r ${banner.gradient} min-h-[300px] md:min-h-[400px]`}>
-                  {/* Background image if available */}
+                <article 
+                  className={`relative overflow-hidden rounded-2xl bg-gradient-to-r ${banner.gradient} min-h-[300px] md:min-h-[400px]`}
+                  aria-label={`Promotion: ${banner.title}`}
+                >
+                  {/* Background image with SEO attributes */}
                   {banner.image && (
-                    <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0 opacity-20" aria-hidden="true">
                       <img 
                         src={banner.image} 
-                        alt="" 
+                        alt=""
+                        role="presentation"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        decoding={index === 0 ? "sync" : "async"}
+                        fetchPriority={index === 0 ? "high" : "auto"}
                         className="w-full h-full object-cover"
                       />
                     </div>
                   )}
                   
                   {/* Decorative blur elements */}
-                  <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+                  <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" aria-hidden="true" />
 
                   <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between h-full p-8 md:p-12 lg:p-16 gap-8">
                     {/* Content */}
                     <div className="space-y-4 text-center lg:text-left max-w-2xl">
                       <Badge className="bg-white/90 text-foreground font-semibold">
-                        <Sparkles className="h-3 w-3 mr-1" />
+                        <Sparkles className="h-3 w-3 mr-1" aria-hidden="true" />
                         {banner.badge}
                       </Badge>
                       
@@ -111,35 +122,44 @@ const HeroBanner = () => {
                           className="bg-white text-foreground hover:bg-white/90 shadow-lg mt-4"
                         >
                           {banner.ctaText}
-                          <ArrowRight className="ml-2 h-5 w-5" />
+                          <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                         </Button>
                       </Link>
                     </div>
 
-                    {/* Product image on right for larger screens */}
+                    {/* Product image with proper SEO attributes */}
                     {banner.image && (
-                      <div className="hidden lg:block w-72 h-72 rounded-2xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-sm">
+                      <figure className="hidden lg:block w-72 h-72 rounded-2xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-sm">
                         <img 
                           src={banner.image} 
-                          alt="" 
+                          alt={banner.imageAlt}
+                          title={banner.title}
+                          width={288}
+                          height={288}
+                          loading={index === 0 ? "eager" : "lazy"}
+                          decoding={index === 0 ? "sync" : "async"}
+                          fetchPriority={index === 0 ? "high" : "auto"}
                           className="w-full h-full object-cover"
+                          itemProp="image"
                         />
-                      </div>
+                      </figure>
                     )}
                   </div>
-                </div>
+                </article>
               </CarouselItem>
             ))}
           </CarouselContent>
           
           <div className="hidden md:block">
-            <CarouselPrevious className="left-4 bg-white/80 backdrop-blur-sm hover:bg-white" />
-            <CarouselNext className="right-4 bg-white/80 backdrop-blur-sm hover:bg-white" />
+            <CarouselPrevious className="left-4 bg-white/80 backdrop-blur-sm hover:bg-white" aria-label="Previous slide" />
+            <CarouselNext className="right-4 bg-white/80 backdrop-blur-sm hover:bg-white" aria-label="Next slide" />
           </div>
         </Carousel>
       </div>
     </section>
   );
-};
+});
+
+HeroBanner.displayName = "HeroBanner";
 
 export default HeroBanner;

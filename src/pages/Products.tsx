@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Package, Filter, Search, X } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 
@@ -33,6 +34,144 @@ interface Category {
   name: string;
   slug: string;
 }
+
+// SEO-optimized product image
+const ProductImage = memo(({ product }: { product: Product }) => {
+  if (!product.image_url) {
+    return <Package className="h-16 w-16 text-muted-foreground/50" aria-hidden="true" />;
+  }
+
+  const altText = [
+    product.name,
+    product.manufacturer ? `by ${product.manufacturer}` : null,
+    product.form,
+    product.dosage,
+    "pharmaceutical product"
+  ].filter(Boolean).join(" - ");
+
+  return (
+    <img
+      src={product.image_url}
+      alt={altText}
+      title={product.name}
+      width={300}
+      height={300}
+      loading="lazy"
+      decoding="async"
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+      itemProp="image"
+    />
+  );
+});
+ProductImage.displayName = "ProductImage";
+
+// Product card with schema markup
+const ProductCard = memo(({ product, onAddToCart }: { 
+  product: Product; 
+  onAddToCart: (e: React.MouseEvent, id: string) => void;
+}) => (
+  <Link to={`/product/${product.slug}`}>
+    <article 
+      itemScope 
+      itemType="https://schema.org/Product"
+      className="h-full"
+    >
+      <Card className="group h-full hover:shadow-lg transition-all duration-300">
+        <CardContent className="p-4">
+          <figure className="aspect-square bg-secondary/50 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+            <ProductImage product={product} />
+          </figure>
+
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-1">
+              {product.regulatory_status && (
+                <Badge variant="secondary" className="text-xs">
+                  {product.regulatory_status}
+                </Badge>
+              )}
+              {!product.in_stock && (
+                <Badge variant="destructive" className="text-xs">
+                  Out of Stock
+                </Badge>
+              )}
+            </div>
+            
+            <h3 
+              className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2"
+              itemProp="name"
+            >
+              {product.name}
+            </h3>
+            
+            {(product.dosage || product.form) && (
+              <p className="text-sm text-muted-foreground">
+                {[product.dosage, product.form].filter(Boolean).join(" • ")}
+              </p>
+            )}
+            
+            {product.manufacturer && (
+              <p className="text-xs text-muted-foreground">
+                By <span itemProp="brand">{product.manufacturer}</span>
+              </p>
+            )}
+
+            <div 
+              className="flex items-center justify-between pt-2"
+              itemProp="offers" 
+              itemScope 
+              itemType="https://schema.org/Offer"
+            >
+              <div>
+                <p className="font-bold text-lg text-foreground">
+                  <span itemProp="priceCurrency" content="USD">$</span>
+                  <span itemProp="price" content={product.price.toString()}>
+                    {product.price.toFixed(2)}
+                  </span>
+                </p>
+                {product.bulk_price && product.bulk_min_quantity && (
+                  <p className="text-xs text-accent">
+                    ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+ units
+                  </p>
+                )}
+                <link 
+                  itemProp="availability" 
+                  href={product.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} 
+                />
+              </div>
+              {product.in_stock && (
+                <Button
+                  size="sm"
+                  className="gradient-medical hover:opacity-90"
+                  onClick={(e) => onAddToCart(e, product.id)}
+                  aria-label={`Add ${product.name} to cart`}
+                >
+                  <ShoppingCart className="h-4 w-4" aria-hidden="true" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </article>
+  </Link>
+));
+ProductCard.displayName = "ProductCard";
+
+// Loading skeleton
+const ProductsSkeleton = memo(() => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[...Array(6)].map((_, i) => (
+      <Card key={i}>
+        <CardContent className="p-4">
+          <Skeleton className="aspect-square w-full rounded-lg mb-4" />
+          <Skeleton className="h-4 w-3/4 mb-2" />
+          <Skeleton className="h-3 w-1/2" />
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+));
+ProductsSkeleton.displayName = "ProductsSkeleton";
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -101,11 +240,11 @@ const Products = () => {
   const manufacturers = [...new Set(products.map(p => p.manufacturer).filter(Boolean))];
   const origins = [...new Set(products.map(p => p.origin).filter(Boolean))];
 
-  const handleAddToCart = async (e: React.MouseEvent, productId: string) => {
+  const handleAddToCart = useCallback(async (e: React.MouseEvent, productId: string) => {
     e.preventDefault();
     e.stopPropagation();
     await addToCart(productId, 1);
-  };
+  }, [addToCart]);
 
   const clearFilters = () => {
     setSearchParams({});
@@ -124,7 +263,7 @@ const Products = () => {
       />
 
       <Layout>
-        <div className="bg-secondary/30 py-8">
+        <header className="bg-secondary/30 py-8">
           <div className="container-pharma">
             <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
               {currentCategory ? currentCategory.name : "All Products"}
@@ -133,21 +272,21 @@ const Products = () => {
               Browse our comprehensive range of pharmaceutical and medical products
             </p>
           </div>
-        </div>
+        </header>
 
         <div className="container-pharma py-8">
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
-            <aside className="lg:col-span-1">
+            <aside className="lg:col-span-1" aria-label="Product filters">
               <div className="sticky top-32 space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="font-semibold flex items-center gap-2">
-                    <Filter className="h-4 w-4" />
+                    <Filter className="h-4 w-4" aria-hidden="true" />
                     Filters
                   </h2>
                   {(selectedCategory || selectedManufacturer || selectedOrigin || searchQuery) && (
                     <Button variant="ghost" size="sm" onClick={clearFilters}>
-                      <X className="h-4 w-4 mr-1" />
+                      <X className="h-4 w-4 mr-1" aria-hidden="true" />
                       Clear
                     </Button>
                   )}
@@ -155,18 +294,19 @@ const Products = () => {
 
                 {/* Search */}
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   <Input
                     placeholder="Search products..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
+                    aria-label="Search products"
                   />
                 </div>
 
                 {/* Category Filter */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Category</label>
+                  <label htmlFor="category-filter" className="text-sm font-medium">Category</label>
                   <Select
                     value={selectedCategory}
                     onValueChange={(value) => {
@@ -178,7 +318,7 @@ const Products = () => {
                       setSearchParams(searchParams);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="category-filter">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
@@ -194,7 +334,7 @@ const Products = () => {
 
                 {/* Manufacturer Filter */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Manufacturer</label>
+                  <label htmlFor="manufacturer-filter" className="text-sm font-medium">Manufacturer</label>
                   <Select
                     value={selectedManufacturer}
                     onValueChange={(value) => {
@@ -206,7 +346,7 @@ const Products = () => {
                       setSearchParams(searchParams);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="manufacturer-filter">
                       <SelectValue placeholder="All Manufacturers" />
                     </SelectTrigger>
                     <SelectContent>
@@ -222,7 +362,7 @@ const Products = () => {
 
                 {/* Origin Filter */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Country of Origin</label>
+                  <label htmlFor="origin-filter" className="text-sm font-medium">Country of Origin</label>
                   <Select
                     value={selectedOrigin}
                     onValueChange={(value) => {
@@ -234,7 +374,7 @@ const Products = () => {
                       setSearchParams(searchParams);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="origin-filter">
                       <SelectValue placeholder="All Countries" />
                     </SelectTrigger>
                     <SelectContent>
@@ -251,109 +391,36 @@ const Products = () => {
             </aside>
 
             {/* Products Grid */}
-            <div className="lg:col-span-3">
-              <div className="mb-4 text-sm text-muted-foreground">
+            <main className="lg:col-span-3">
+              <p className="mb-4 text-sm text-muted-foreground" role="status">
                 Showing {filteredProducts.length} products
-              </div>
+              </p>
 
               {isLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, i) => (
-                    <Card key={i} className="animate-pulse">
-                      <CardContent className="p-4">
-                        <div className="aspect-square bg-muted rounded-lg mb-4" />
-                        <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                        <div className="h-3 bg-muted rounded w-1/2" />
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                <ProductsSkeleton />
               ) : filteredProducts.length === 0 ? (
-                <div className="text-center py-12">
-                  <Package className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No products found</h3>
+                <div className="text-center py-12" role="status">
+                  <Package className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" aria-hidden="true" />
+                  <h2 className="text-lg font-semibold mb-2">No products found</h2>
                   <p className="text-muted-foreground mb-4">
                     Try adjusting your filters or search query
                   </p>
                   <Button onClick={clearFilters}>Clear Filters</Button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div 
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  role="list"
+                  aria-label="Products list"
+                >
                   {filteredProducts.map((product) => (
-                    <Link key={product.id} to={`/product/${product.slug}`}>
-                      <Card className="group h-full hover:shadow-lg transition-all duration-300">
-                        <CardContent className="p-4">
-                          <div className="aspect-square bg-secondary/50 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
-                            {product.image_url ? (
-                              <img
-                                src={product.image_url}
-                                alt={product.name}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                              />
-                            ) : (
-                              <Package className="h-16 w-16 text-muted-foreground/50" />
-                            )}
-                          </div>
-
-                          <div className="space-y-2">
-                            <div className="flex flex-wrap gap-1">
-                              {product.regulatory_status && (
-                                <Badge variant="secondary" className="text-xs">
-                                  {product.regulatory_status}
-                                </Badge>
-                              )}
-                              {!product.in_stock && (
-                                <Badge variant="destructive" className="text-xs">
-                                  Out of Stock
-                                </Badge>
-                              )}
-                            </div>
-                            
-                            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                              {product.name}
-                            </h3>
-                            
-                            {(product.dosage || product.form) && (
-                              <p className="text-sm text-muted-foreground">
-                                {[product.dosage, product.form].filter(Boolean).join(" • ")}
-                              </p>
-                            )}
-                            
-                            {product.manufacturer && (
-                              <p className="text-xs text-muted-foreground">
-                                By {product.manufacturer}
-                              </p>
-                            )}
-
-                            <div className="flex items-center justify-between pt-2">
-                              <div>
-                                <p className="font-bold text-lg text-foreground">
-                                  ${product.price.toFixed(2)}
-                                </p>
-                                {product.bulk_price && product.bulk_min_quantity && (
-                                  <p className="text-xs text-accent">
-                                    ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+ units
-                                  </p>
-                                )}
-                              </div>
-                              {product.in_stock && (
-                                <Button
-                                  size="sm"
-                                  className="gradient-medical hover:opacity-90"
-                                  onClick={(e) => handleAddToCart(e, product.id)}
-                                >
-                                  <ShoppingCart className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                    <div key={product.id} role="listitem">
+                      <ProductCard product={product} onAddToCart={handleAddToCart} />
+                    </div>
                   ))}
                 </div>
               )}
-            </div>
+            </main>
           </div>
         </div>
       </Layout>
