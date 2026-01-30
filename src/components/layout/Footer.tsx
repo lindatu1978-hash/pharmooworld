@@ -40,10 +40,17 @@ const Footer = () => {
     name: "Disclaimer",
     href: "/disclaimer"
   }];
+  const operationLocations = [
+    "Nairobi, Kenya",
+    "Bangkok, Thailand",
+    "Hamburg, Germany",
+    "Durban, South Africa",
+    "London, United Kingdom"
+  ];
   return <footer className="bg-foreground text-primary-foreground">
       {/* Main Footer */}
       <div className="container-pharma py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
@@ -102,6 +109,23 @@ const Footer = () => {
             <div className="mt-8 p-4 bg-primary-foreground/5 rounded-lg">
               <p className="text-xs font-medium mb-1">Certifications</p>
               <p className="text-xs text-primary-foreground/60">GMP • WHO • FDA Registered</p>
+            </div>
+          </div>
+
+          {/* Operation Locations */}
+          <div>
+            <h3 className="font-semibold mb-4">Operation Locations</h3>
+            <ul className="space-y-2 text-sm text-primary-foreground/70">
+              {operationLocations.map(location => <li key={location}>
+                  {location}
+                </li>)}
+            </ul>
+            <div className="mt-6 p-4 bg-primary-foreground/5 rounded-lg">
+              <p className="text-xs font-medium mb-2">Head Office</p>
+              <p className="text-xs text-primary-foreground/70 font-medium">Pharmoo World</p>
+              <p className="text-xs text-primary-foreground/60">Dr. Hettie Morgan</p>
+              <p className="text-xs text-primary-foreground/60">1914 S Vermont Ave,</p>
+              <p className="text-xs text-primary-foreground/60">Los Angeles, CA 90006, USA</p>
             </div>
           </div>
         </div>
