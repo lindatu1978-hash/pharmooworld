@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Package, Filter, Search, X } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { cn } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -35,10 +36,13 @@ interface Category {
   slug: string;
 }
 
-// SEO-optimized product image
+// Mobile-optimized product image with loading state
 const ProductImage = memo(({ product }: { product: Product }) => {
-  if (!product.image_url) {
-    return <Package className="h-16 w-16 text-muted-foreground/50" aria-hidden="true" />;
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  if (!product.image_url || error) {
+    return <Package className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground/50" aria-hidden="true" />;
   }
 
   const altText = [
@@ -50,22 +54,32 @@ const ProductImage = memo(({ product }: { product: Product }) => {
   ].filter(Boolean).join(" - ");
 
   return (
-    <img
-      src={product.image_url}
-      alt={altText}
-      title={product.name}
-      width={300}
-      height={300}
-      loading="lazy"
-      decoding="async"
-      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-      itemProp="image"
-    />
+    <>
+      {!loaded && (
+        <div className="absolute inset-0 bg-muted/50 animate-pulse" />
+      )}
+      <img
+        src={product.image_url}
+        alt={altText}
+        title={product.name}
+        width={300}
+        height={300}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={cn(
+          "w-full h-full object-cover group-hover:scale-105 transition-transform",
+          loaded ? "opacity-100" : "opacity-0"
+        )}
+        itemProp="image"
+      />
+    </>
   );
 });
 ProductImage.displayName = "ProductImage";
 
-// Product card with schema markup
+// Product card with schema markup - Mobile optimized
 const ProductCard = memo(({ product, onAddToCart }: { 
   product: Product; 
   onAddToCart: (e: React.MouseEvent, id: string) => void;
@@ -76,61 +90,76 @@ const ProductCard = memo(({ product, onAddToCart }: {
       itemType="https://schema.org/Product"
       className="h-full"
     >
-      <Card className="group h-full hover:shadow-lg transition-all duration-300">
-        <CardContent className="p-4">
-          <figure className="aspect-square bg-secondary/50 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+      <Card className="group h-full hover:shadow-lg transition-all duration-300 active:scale-[0.98]">
+        <CardContent className="p-2 md:p-4">
+          <figure className="relative aspect-square bg-secondary/50 rounded-lg mb-2 md:mb-4 flex items-center justify-center overflow-hidden">
             <ProductImage product={product} />
-          </figure>
-
-          <div className="space-y-2">
-            <div className="flex flex-wrap gap-1">
+            
+            {/* Badges overlay */}
+            <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 flex flex-col gap-1">
               {product.regulatory_status && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-[10px] md:text-xs px-1.5 py-0.5">
                   {product.regulatory_status}
                 </Badge>
               )}
               {!product.in_stock && (
-                <Badge variant="destructive" className="text-xs">
+                <Badge variant="destructive" className="text-[10px] md:text-xs px-1.5 py-0.5">
                   Out of Stock
                 </Badge>
               )}
             </div>
             
+            {/* Add to cart button */}
+            {product.in_stock && (
+              <div className="absolute bottom-1.5 right-1.5 md:bottom-2 md:right-2">
+                <Button
+                  size="icon"
+                  className="h-9 w-9 md:h-10 md:w-10 rounded-full gradient-medical shadow-md active:scale-95"
+                  onClick={(e) => onAddToCart(e, product.id)}
+                  aria-label={`Add ${product.name} to cart`}
+                >
+                  <ShoppingCart className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
+                </Button>
+              </div>
+            )}
+          </figure>
+
+          <div className="space-y-1 md:space-y-2">
             <h3 
-              className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2"
+              className="font-semibold text-xs md:text-base text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight"
               itemProp="name"
             >
               {product.name}
             </h3>
             
             {(product.dosage || product.form) && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-[10px] md:text-sm text-muted-foreground truncate">
                 {[product.dosage, product.form].filter(Boolean).join(" • ")}
               </p>
             )}
             
             {product.manufacturer && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] md:text-xs text-muted-foreground truncate hidden md:block">
                 By <span itemProp="brand">{product.manufacturer}</span>
               </p>
             )}
 
             <div 
-              className="flex items-center justify-between pt-2"
+              className="flex items-center justify-between pt-1 md:pt-2 border-t border-border"
               itemProp="offers" 
               itemScope 
               itemType="https://schema.org/Offer"
             >
               <div>
-                <p className="font-bold text-lg text-foreground">
+                <p className="font-bold text-sm md:text-lg text-foreground">
                   <span itemProp="priceCurrency" content="USD">$</span>
                   <span itemProp="price" content={product.price.toString()}>
                     {product.price.toFixed(2)}
                   </span>
                 </p>
                 {product.bulk_price && product.bulk_min_quantity && (
-                  <p className="text-xs text-accent">
-                    ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+ units
+                  <p className="text-[10px] md:text-xs text-accent hidden md:block">
+                    ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+
                   </p>
                 )}
                 <link 
@@ -138,16 +167,6 @@ const ProductCard = memo(({ product, onAddToCart }: {
                   href={product.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} 
                 />
               </div>
-              {product.in_stock && (
-                <Button
-                  size="sm"
-                  className="gradient-medical hover:opacity-90"
-                  onClick={(e) => onAddToCart(e, product.id)}
-                  aria-label={`Add ${product.name} to cart`}
-                >
-                  <ShoppingCart className="h-4 w-4" aria-hidden="true" />
-                </Button>
-              )}
             </div>
           </div>
         </CardContent>
@@ -157,15 +176,15 @@ const ProductCard = memo(({ product, onAddToCart }: {
 ));
 ProductCard.displayName = "ProductCard";
 
-// Loading skeleton
+// Loading skeleton - Mobile optimized
 const ProductsSkeleton = memo(() => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
     {[...Array(6)].map((_, i) => (
       <Card key={i}>
-        <CardContent className="p-4">
-          <Skeleton className="aspect-square w-full rounded-lg mb-4" />
-          <Skeleton className="h-4 w-3/4 mb-2" />
-          <Skeleton className="h-3 w-1/2" />
+        <CardContent className="p-2 md:p-4">
+          <Skeleton className="aspect-square w-full rounded-lg mb-2 md:mb-4" />
+          <Skeleton className="h-3 md:h-4 w-3/4 mb-1 md:mb-2" />
+          <Skeleton className="h-2 md:h-3 w-1/2" />
         </CardContent>
       </Card>
     ))}
@@ -409,7 +428,7 @@ const Products = () => {
                 </div>
               ) : (
                 <div 
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
                   role="list"
                   aria-label="Products list"
                 >

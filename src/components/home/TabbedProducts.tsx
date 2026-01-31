@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Package, ArrowRight, Heart } from "lucide-react";
+import { ShoppingCart, Package, ArrowRight } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { cn } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -24,7 +25,7 @@ interface Product {
 
 const manufacturers = ["All", "Allergan", "Galderma", "Merz", "Ethicon", "Covidien"];
 
-// SEO-optimized product image component
+// Mobile-optimized product image component with loading state
 const ProductImage = memo(({ 
   src, 
   productName, 
@@ -34,10 +35,13 @@ const ProductImage = memo(({
   productName: string; 
   manufacturer: string | null;
 }) => {
-  if (!src) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  if (!src || error) {
     return (
       <div className="w-full h-full flex items-center justify-center" aria-label={`${productName} - no image available`}>
-        <Package className="h-12 w-12 text-muted-foreground/30" aria-hidden="true" />
+        <Package className="h-10 w-10 md:h-12 md:w-12 text-muted-foreground/30" aria-hidden="true" />
       </div>
     );
   }
@@ -47,22 +51,32 @@ const ProductImage = memo(({
     : `${productName} - pharmaceutical product for wholesale`;
 
   return (
-    <img
-      src={src}
-      alt={altText}
-      title={productName}
-      width={300}
-      height={300}
-      loading="lazy"
-      decoding="async"
-      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-      itemProp="image"
-    />
+    <>
+      {!loaded && (
+        <div className="absolute inset-0 bg-muted/50 animate-pulse" />
+      )}
+      <img
+        src={src}
+        alt={altText}
+        title={productName}
+        width={300}
+        height={300}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={cn(
+          "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+          loaded ? "opacity-100" : "opacity-0"
+        )}
+        itemProp="image"
+      />
+    </>
   );
 });
 ProductImage.displayName = "ProductImage";
 
-// Memoized product card for performance
+// Mobile-optimized product card
 const ProductCard = memo(({ product, onAddToCart }: { 
   product: Product; 
   onAddToCart: (e: React.MouseEvent, id: string) => void;
@@ -73,7 +87,7 @@ const ProductCard = memo(({ product, onAddToCart }: {
       itemScope 
       itemType="https://schema.org/Product"
     >
-      <Card className="h-full border-border hover:border-primary/30 hover:shadow-lg transition-all overflow-hidden">
+      <Card className="h-full border-border hover:border-primary/30 hover:shadow-lg transition-all overflow-hidden active:scale-[0.98]">
         <CardContent className="p-0">
           {/* Product Image */}
           <div className="relative aspect-square bg-muted/50 overflow-hidden">
@@ -83,34 +97,18 @@ const ProductCard = memo(({ product, onAddToCart }: {
               manufacturer={product.manufacturer}
             />
             
-            {/* Badges */}
+            {/* Badges - Mobile sized */}
             {product.bulk_price && (
-              <Badge className="absolute top-2 left-2 bg-accent text-accent-foreground text-xs">
-                Bulk Deal
+              <Badge className="absolute top-1.5 left-1.5 md:top-2 md:left-2 bg-accent text-accent-foreground text-[10px] md:text-xs px-1.5 py-0.5">
+                Bulk
               </Badge>
             )}
 
-            {/* Wishlist */}
-            <div className="absolute top-2 right-2">
+            {/* Quick Add - Larger touch target on mobile */}
+            <div className="absolute bottom-1.5 right-1.5 md:bottom-2 md:right-2">
               <Button
                 size="icon"
-                variant="secondary"
-                className="h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                aria-label={`Add ${product.name} to wishlist`}
-              >
-                <Heart className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              </Button>
-            </div>
-
-            {/* Quick Add */}
-            <div className="absolute bottom-2 right-2">
-              <Button
-                size="icon"
-                className="h-9 w-9 rounded-full gradient-medical shadow-md hover:shadow-lg"
+                className="h-10 w-10 md:h-9 md:w-9 rounded-full gradient-medical shadow-md hover:shadow-lg active:scale-95"
                 onClick={(e) => onAddToCart(e, product.id)}
                 aria-label={`Add ${product.name} to cart`}
               >
@@ -119,29 +117,29 @@ const ProductCard = memo(({ product, onAddToCart }: {
             </div>
           </div>
 
-          {/* Product Info */}
-          <div className="p-3 space-y-1">
+          {/* Product Info - Compact on mobile */}
+          <div className="p-2 md:p-3 space-y-0.5 md:space-y-1">
             <h3 
-              className="font-medium text-foreground text-sm line-clamp-2 group-hover:text-primary transition-colors"
+              className="font-medium text-foreground text-xs md:text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight"
               itemProp="name"
             >
               {product.name}
             </h3>
             
             <div 
-              className="flex items-center gap-2"
+              className="flex items-center gap-1 md:gap-2"
               itemProp="offers"
               itemScope
               itemType="https://schema.org/Offer"
             >
-              <p className="text-lg font-bold text-foreground">
+              <p className="text-sm md:text-lg font-bold text-foreground">
                 <span itemProp="priceCurrency" content="USD">$</span>
                 <span itemProp="price" content={product.price.toString()}>
                   {product.price.toFixed(2)}
                 </span>
               </p>
               {product.bulk_price && (
-                <p className="text-xs text-muted-foreground line-through">
+                <p className="text-[10px] md:text-xs text-muted-foreground line-through hidden md:block">
                   ${(product.price * 1.2).toFixed(2)}
                 </p>
               )}
@@ -155,14 +153,14 @@ const ProductCard = memo(({ product, onAddToCart }: {
 ));
 ProductCard.displayName = "ProductCard";
 
-// Loading skeleton
+// Loading skeleton - Mobile optimized
 const ProductsSkeleton = memo(() => (
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
     {[...Array(8)].map((_, i) => (
       <Card key={i}>
         <CardContent className="p-0">
           <Skeleton className="aspect-square w-full" />
-          <div className="p-4 space-y-2">
+          <div className="p-2 md:p-4 space-y-1 md:space-y-2">
             <Skeleton className="h-3 w-3/4" />
             <Skeleton className="h-4 w-1/2" />
           </div>
@@ -245,7 +243,7 @@ const TabbedProducts = memo(() => {
               </div>
             ) : (
               <div 
-                className="grid grid-cols-2 md:grid-cols-4 gap-4"
+                className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
                 role="list"
                 aria-label="Product list"
               >
