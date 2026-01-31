@@ -23,6 +23,7 @@ interface SEOImageProps {
  * - Eager loading for critical images
  * - Fallback for broken images
  * - Schema.org itemProp support
+ * - Mobile-optimized loading with skeleton placeholder
  */
 const SEOImage = memo(({
   src,
@@ -52,25 +53,31 @@ const SEOImage = memo(({
   }[objectFit];
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      title={title || alt}
-      width={width}
-      height={height}
-      loading={priority ? "eager" : loading}
-      decoding={priority ? "sync" : "async"}
-      fetchPriority={priority ? "high" : "auto"}
-      onError={() => setError(true)}
-      onLoad={() => setLoaded(true)}
-      itemProp={itemProp}
-      className={cn(
-        objectFitClass,
-        "transition-opacity duration-300",
-        loaded ? "opacity-100" : "opacity-0",
-        className
+    <div className="relative w-full h-full">
+      {/* Skeleton placeholder for mobile loading */}
+      {!loaded && !error && (
+        <div className="absolute inset-0 bg-muted animate-pulse rounded-lg" />
       )}
-    />
+      <img
+        src={src}
+        alt={alt}
+        title={title || alt}
+        width={width}
+        height={height}
+        loading={priority ? "eager" : loading}
+        decoding={priority ? "sync" : "async"}
+        fetchPriority={priority ? "high" : "auto"}
+        onError={() => setError(true)}
+        onLoad={() => setLoaded(true)}
+        itemProp={itemProp}
+        className={cn(
+          objectFitClass,
+          "transition-opacity duration-300 w-full h-full",
+          loaded ? "opacity-100" : "opacity-0",
+          className
+        )}
+      />
+    </div>
   );
 });
 

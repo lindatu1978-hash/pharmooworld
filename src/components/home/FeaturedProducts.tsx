@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Package, ArrowRight } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { cn } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -24,46 +25,67 @@ interface Product {
   in_stock: boolean;
 }
 
+// Image component with mobile-friendly loading
+const ProductImage = memo(({ src, alt }: { src: string | null; alt: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  if (!src || error) {
+    return <Package className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground/30" />;
+  }
+
+  return (
+    <>
+      {!loaded && (
+        <div className="absolute inset-0 bg-muted/50 animate-pulse" />
+      )}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={cn(
+          "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+          loaded ? "opacity-100" : "opacity-0"
+        )}
+      />
+    </>
+  );
+});
+ProductImage.displayName = "ProductImage";
+
 const ProductCard = memo(({ product, onAddToCart }: {
   product: Product;
   onAddToCart: (e: React.MouseEvent, id: string) => void;
 }) => (
   <Link to={`/product/${product.slug}`}>
-    <Card className="group h-full border-border hover:border-primary/30 hover:shadow-lg transition-all duration-200 overflow-hidden">
+    <Card className="group h-full border-border hover:border-primary/30 hover:shadow-lg transition-all duration-200 overflow-hidden active:scale-[0.98]">
       <CardContent className="p-0">
-        {/* Product Image */}
+        {/* Product Image - Mobile optimized with larger touch target */}
         <div className="relative aspect-square bg-muted/50 flex items-center justify-center overflow-hidden">
-          {product.image_url ? (
-            <img
-              src={product.image_url}
-              alt={product.name}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          ) : (
-            <Package className="h-16 w-16 text-muted-foreground/30" />
-          )}
+          <ProductImage src={product.image_url} alt={product.name} />
           
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {/* Badges - Smaller on mobile */}
+          <div className="absolute top-2 left-2 md:top-3 md:left-3 flex flex-col gap-1 md:gap-2">
             {product.regulatory_status && (
-              <Badge className="bg-primary text-primary-foreground text-xs font-medium">
+              <Badge className="bg-primary text-primary-foreground text-[10px] md:text-xs font-medium px-1.5 py-0.5 md:px-2 md:py-1">
                 {product.regulatory_status}
               </Badge>
             )}
             {product.bulk_price && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-medium">
-                Bulk Deal
+              <Badge className="bg-accent text-accent-foreground text-[10px] md:text-xs font-medium px-1.5 py-0.5 md:px-2 md:py-1">
+                Bulk
               </Badge>
             )}
           </div>
 
-          {/* Quick Add Button */}
-          <div className="absolute bottom-3 right-3">
+          {/* Quick Add Button - Larger touch target on mobile */}
+          <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3">
             <Button
               size="icon"
-              className="h-10 w-10 rounded-full gradient-medical shadow-md hover:shadow-lg hover:scale-105 transition-all"
+              className="h-11 w-11 md:h-10 md:w-10 rounded-full gradient-medical shadow-md hover:shadow-lg active:scale-95 transition-all"
               onClick={(e) => onAddToCart(e, product.id)}
             >
               <ShoppingCart className="h-4 w-4 text-white" />
@@ -71,31 +93,31 @@ const ProductCard = memo(({ product, onAddToCart }: {
           </div>
         </div>
 
-        {/* Product Info */}
-        <div className="p-4 space-y-2">
+        {/* Product Info - Better mobile spacing */}
+        <div className="p-3 md:p-4 space-y-1.5 md:space-y-2">
           {product.manufacturer && (
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+            <p className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wide truncate">
               {product.manufacturer}
             </p>
           )}
           
-          <h3 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+          <h3 className="font-medium text-sm md:text-base text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
             {product.name}
           </h3>
           
           {(product.dosage || product.form) && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs md:text-sm text-muted-foreground truncate">
               {[product.dosage, product.form].filter(Boolean).join(" • ")}
             </p>
           )}
 
-          <div className="flex items-end justify-between pt-3 border-t border-border">
+          <div className="flex items-end justify-between pt-2 md:pt-3 border-t border-border">
             <div>
-              <p className="text-lg font-bold text-foreground">
+              <p className="text-base md:text-lg font-bold text-foreground">
                 ${product.price.toFixed(2)}
               </p>
               {product.bulk_price && product.bulk_min_quantity && (
-                <p className="text-xs text-accent font-medium">
+                <p className="text-[10px] md:text-xs text-accent font-medium">
                   ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+
                 </p>
               )}
@@ -184,7 +206,7 @@ const FeaturedProducts = memo(() => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           {products.map((product) => (
             <ProductCard 
               key={product.id} 
