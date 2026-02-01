@@ -159,6 +159,12 @@ const ProductDetail = () => {
           inStock: product.in_stock,
           image: product.image_url,
           slug: product.slug,
+          sku: product.id,
+          category: category?.name,
+          dosage: product.dosage,
+          form: product.form,
+          origin: product.origin,
+          regulatoryStatus: product.regulatory_status,
         })}
       />
 
