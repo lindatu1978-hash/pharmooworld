@@ -34,7 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Send email to info@pharmooworld.com
-    const emailResponse = await resend.emails.send({
+    const adminEmailResponse = await resend.emails.send({
       from: "Pharmoo World Contact <noreply@pharmooworld.com>",
       to: ["info@pharmooworld.com"],
       subject: `Contact Form: ${subject}`,
@@ -71,7 +71,45 @@ const handler = async (req: Request): Promise<Response> => {
       replyTo: email,
     });
 
-    console.log("Contact form email sent successfully:", emailResponse);
+    console.log("Admin notification email sent:", adminEmailResponse);
+
+    // Send confirmation email to the customer
+    const customerEmailResponse = await resend.emails.send({
+      from: "Pharmoo World <noreply@pharmooworld.com>",
+      to: [email],
+      subject: "Thank You for Contacting Pharmoo World",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #0f766e; padding: 24px; text-align: center;">
+            <h1 style="color: white; margin: 0;">Pharmoo World</h1>
+          </div>
+          <div style="padding: 32px 24px; background-color: #f9fafb;">
+            <h2 style="color: #111827; margin-top: 0;">Hello ${firstName},</h2>
+            <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+              Thanks for contacting Pharmoo World! Our correspondent would get back soonest.
+            </p>
+            <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+              We have received your message regarding "<strong>${subject}</strong>" and our team is reviewing it now.
+            </p>
+            <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+              In the meantime, feel free to browse our products at <a href="https://pharmooworld.lovable.app/products" style="color: #0f766e;">pharmooworld.com</a>.
+            </p>
+            <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-top: 24px;">
+              Best regards,<br />
+              <strong>The Pharmoo World Team</strong>
+            </p>
+          </div>
+          <div style="background-color: #e5e7eb; padding: 16px; text-align: center;">
+            <p style="color: #6b7280; font-size: 12px; margin: 0;">
+              1914 S Vermont Ave, Los Angeles, CA 90006, USA<br />
+              Phone: +401 - 232 - 4508 | Email: info@pharmooworld.com
+            </p>
+          </div>
+        </div>
+      `,
+    });
+
+    console.log("Customer confirmation email sent:", customerEmailResponse);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
