@@ -129,9 +129,9 @@ const Contact = () => {
                     <div>
                       <h3 className="font-semibold mb-1">Address</h3>
                       <p className="text-muted-foreground">
-                        123 Medical Drive, Suite 100<br />
-                        New York, NY 10001<br />
-                        United States
+                        Dr. Hettie Morgan<br />
+                        1914 S Vermont Ave<br />
+                        Los Angeles, CA 90006, USA
                       </p>
                     </div>
                   </div>
