@@ -119,7 +119,7 @@ const SEO = ({
 
 export default SEO;
 
-// Product structured data helper
+// Product structured data helper - Enhanced for better SEO
 export const createProductSchema = (product: {
   name: string;
   description?: string | null;
@@ -128,30 +128,109 @@ export const createProductSchema = (product: {
   inStock: boolean;
   image?: string | null;
   slug: string;
-}) => ({
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: product.name,
-  description: product.description || `${product.name} - pharmaceutical grade product from ${SITE_NAME}`,
-  image: product.image || DEFAULT_IMAGE,
-  url: `${SITE_URL}/product/${product.slug}`,
-  brand: product.manufacturer ? {
-    "@type": "Brand",
-    name: product.manufacturer,
-  } : undefined,
-  offers: {
-    "@type": "Offer",
-    price: product.price,
-    priceCurrency: "USD",
-    availability: product.inStock
-      ? "https://schema.org/InStock"
-      : "https://schema.org/OutOfStock",
-    seller: {
-      "@type": "Organization",
+  sku?: string;
+  category?: string | null;
+  dosage?: string | null;
+  form?: string | null;
+  origin?: string | null;
+  regulatoryStatus?: string | null;
+}) => {
+  const additionalProperties = [];
+  
+  if (product.dosage) {
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      name: "Dosage/Strength",
+      value: product.dosage,
+    });
+  }
+  
+  if (product.form) {
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      name: "Form",
+      value: product.form,
+    });
+  }
+  
+  if (product.origin) {
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      name: "Country of Origin",
+      value: product.origin,
+    });
+  }
+  
+  if (product.regulatoryStatus) {
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      name: "Regulatory Status",
+      value: product.regulatoryStatus,
+    });
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description || `${product.name} - pharmaceutical grade product from ${SITE_NAME}`,
+    image: product.image || DEFAULT_IMAGE,
+    url: `${SITE_URL}/product/${product.slug}`,
+    sku: product.sku || product.slug,
+    mpn: product.slug,
+    category: product.category || "Pharmaceutical Products",
+    brand: product.manufacturer ? {
+      "@type": "Brand",
+      name: product.manufacturer,
+    } : {
+      "@type": "Brand",
       name: SITE_NAME,
     },
-  },
-});
+    manufacturer: product.manufacturer ? {
+      "@type": "Organization",
+      name: product.manufacturer,
+    } : undefined,
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/product/${product.slug}`,
+      price: product.price,
+      priceCurrency: "USD",
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+      priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      seller: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "Worldwide",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 3,
+            unitCode: "DAY",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 5,
+            maxValue: 14,
+            unitCode: "DAY",
+          },
+        },
+      },
+    },
+    ...(additionalProperties.length > 0 && { additionalProperty: additionalProperties }),
+  };
+};
 
 // FAQ structured data helper
 export const createFAQSchema = (faqs: { question: string; answer: string }[]) => ({
