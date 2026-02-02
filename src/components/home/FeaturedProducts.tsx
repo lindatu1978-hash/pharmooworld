@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,7 @@ import { ShoppingCart, ArrowRight } from "lucide-react";
 import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
+import { getProductImageUrl } from "@/lib/image-utils";
 
 interface Product {
   id: string;
@@ -26,10 +27,13 @@ interface Product {
   in_stock: boolean;
 }
 
-// Image component with mobile-friendly loading and priority support
+// Image component with WebP optimization, mobile-friendly loading, and priority support
 const ProductImage = memo(({ src, alt, priority = false }: { src: string | null; alt: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+
+  // Get optimized WebP URL
+  const optimizedSrc = useMemo(() => getProductImageUrl(src, 'card'), [src]);
 
   if (!src || error) {
     return <ProductPlaceholder productName={alt} />;
@@ -40,21 +44,27 @@ const ProductImage = memo(({ src, alt, priority = false }: { src: string | null;
       {!loaded && (
         <div className="absolute inset-0 bg-muted/50 animate-pulse" />
       )}
-      <img
-        src={src}
-        alt={alt}
-        width={300}
-        height={300}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
-        fetchPriority={priority ? "high" : "auto"}
-        onLoad={() => setLoaded(true)}
-        onError={() => setError(true)}
-        className={cn(
-          "w-full h-full object-cover group-hover:scale-105 transition-all duration-300",
-          loaded ? "opacity-100" : "opacity-0"
+      <picture>
+        {/* WebP version for supported browsers */}
+        {optimizedSrc && optimizedSrc !== src && (
+          <source srcSet={optimizedSrc} type="image/webp" />
         )}
-      />
+        <img
+          src={optimizedSrc || src}
+          alt={alt}
+          width={400}
+          height={400}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={priority ? "high" : "auto"}
+          onLoad={() => setLoaded(true)}
+          onError={() => setError(true)}
+          className={cn(
+            "w-full h-full object-cover group-hover:scale-105 transition-all duration-300",
+            loaded ? "opacity-100" : "opacity-0"
+          )}
+        />
+      </picture>
     </>
   );
 });
