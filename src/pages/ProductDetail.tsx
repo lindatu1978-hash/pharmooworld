@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import SEO, { createProductSchema, createBreadcrumbSchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
@@ -8,11 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingCart, Minus, Plus, FileCheck, Shield, Truck, CheckCircle, ArrowLeft, AlertTriangle, Package, Bitcoin } from "lucide-react";
+import { ShoppingCart, Minus, Plus, FileCheck, Shield, Truck, CheckCircle, ArrowLeft, AlertTriangle, Package, Bitcoin, ChevronLeft, ChevronRight } from "lucide-react";
 import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
+import { cn } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -39,14 +40,41 @@ interface Category {
   slug: string;
 }
 
+interface ProductVariation {
+  id: string;
+  name: string;
+  slug: string;
+  image_url: string | null;
+  price: number;
+}
+
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
+  const [variations, setVariations] = useState<ProductVariation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addToCart } = useCart();
   const { toast } = useToast();
+
+  // Extract base product name for finding variations
+  const getBaseProductName = (name: string): string => {
+    // Remove common suffixes like "- Standard", "- Velcro Closure", "- Side View", etc.
+    const suffixPatterns = [
+      / - [A-Za-z].*$/,    // " - Something"
+      / \([^)]+\)$/,       // " (something)"
+      / \d+x\d+.*$/,       // "1x50iu" etc
+    ];
+    
+    let baseName = name;
+    for (const pattern of suffixPatterns) {
+      baseName = baseName.replace(pattern, '');
+    }
+    return baseName.trim();
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -60,25 +88,88 @@ const ProductDetail = () => {
 
       if (error) {
         console.error("Error fetching product:", error);
-      } else {
-        setProduct(data);
-        
-        // Fetch category
-        if (data?.category_id) {
-          const { data: categoryData } = await supabase
-            .from("categories")
-            .select("id, name, slug")
-            .eq("id", data.category_id)
-            .single();
-          
-          setCategory(categoryData);
-        }
+        setIsLoading(false);
+        return;
       }
+      
+      setProduct(data);
+      setSelectedImageIndex(0);
+      
+      // Fetch category
+      if (data?.category_id) {
+        const { data: categoryData } = await supabase
+          .from("categories")
+          .select("id, name, slug")
+          .eq("id", data.category_id)
+          .single();
+        
+        setCategory(categoryData);
+      }
+
+      // Fetch related product variations based on base name
+      const baseName = getBaseProductName(data.name);
+      if (baseName && baseName.length > 3) {
+        const { data: variationsData } = await supabase
+          .from("products")
+          .select("id, name, slug, image_url, price")
+          .ilike("name", `${baseName}%`)
+          .neq("id", data.id)
+          .not("image_url", "is", null)
+          .limit(10);
+        
+        if (variationsData && variationsData.length > 0) {
+          setVariations(variationsData);
+        } else {
+          setVariations([]);
+        }
+      } else {
+        setVariations([]);
+      }
+
       setIsLoading(false);
     };
 
     fetchProduct();
   }, [slug]);
+
+  // Build gallery images array: current product + variations
+  const galleryImages = useMemo(() => {
+    const images: { url: string | null; name: string; slug: string; isCurrent: boolean }[] = [];
+    
+    if (product) {
+      images.push({
+        url: product.image_url,
+        name: product.name,
+        slug: product.slug,
+        isCurrent: true
+      });
+    }
+    
+    variations.forEach(v => {
+      if (v.image_url) {
+        images.push({
+          url: v.image_url,
+          name: v.name,
+          slug: v.slug,
+          isCurrent: false
+        });
+      }
+    });
+    
+    return images;
+  }, [product, variations]);
+
+  const handleImageNavigation = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      setSelectedImageIndex(prev => prev > 0 ? prev - 1 : galleryImages.length - 1);
+    } else {
+      setSelectedImageIndex(prev => prev < galleryImages.length - 1 ? prev + 1 : 0);
+    }
+  };
+
+  const handleVariationClick = (variationSlug: string) => {
+    navigate(`/product/${variationSlug}`);
+  };
 
   const handleQuantityChange = (value: number) => {
     if (value >= 1 && value <= 999) {
@@ -223,25 +314,119 @@ const ProductDetail = () => {
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
-            {/* Product Image with SEO optimization */}
-            <figure className="aspect-square bg-secondary/50 rounded-xl flex items-center justify-center overflow-hidden">
-              {product.image_url ? (
-                <img
-                  src={product.image_url}
-                  alt={getImageAltText()}
-                  title={product.name}
-                  width={600}
-                  height={600}
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
-                  className="w-full h-full object-cover"
-                  itemProp="image"
-                />
-              ) : (
-                <ProductPlaceholder productName={product.name} size="lg" />
+            {/* Product Image Gallery */}
+            <div className="space-y-4">
+              {/* Main Image */}
+              <figure className="relative aspect-square bg-secondary/50 rounded-xl flex items-center justify-center overflow-hidden group">
+                {galleryImages.length > 0 && galleryImages[selectedImageIndex]?.url ? (
+                  <img
+                    src={galleryImages[selectedImageIndex].url}
+                    alt={galleryImages[selectedImageIndex].name || getImageAltText()}
+                    title={galleryImages[selectedImageIndex].name || product.name}
+                    width={600}
+                    height={600}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    className="w-full h-full object-cover"
+                    itemProp="image"
+                  />
+                ) : product.image_url ? (
+                  <img
+                    src={product.image_url}
+                    alt={getImageAltText()}
+                    title={product.name}
+                    width={600}
+                    height={600}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    className="w-full h-full object-cover"
+                    itemProp="image"
+                  />
+                ) : (
+                  <ProductPlaceholder productName={product.name} size="lg" />
+                )}
+
+                {/* Navigation Arrows */}
+                {galleryImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => handleImageNavigation('prev')}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => handleImageNavigation('next')}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
+
+                {/* Image Counter */}
+                {galleryImages.length > 1 && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm text-xs font-medium">
+                    {selectedImageIndex + 1} / {galleryImages.length}
+                  </div>
+                )}
+              </figure>
+
+              {/* Thumbnail Gallery */}
+              {galleryImages.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {galleryImages.map((img, index) => (
+                    <button
+                      key={img.slug}
+                      onClick={() => {
+                        if (!img.isCurrent && img.slug !== product.slug) {
+                          handleVariationClick(img.slug);
+                        } else {
+                          setSelectedImageIndex(index);
+                        }
+                      }}
+                      className={cn(
+                        "relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all",
+                        selectedImageIndex === index 
+                          ? "border-primary ring-2 ring-primary/20" 
+                          : "border-transparent hover:border-muted-foreground/30"
+                      )}
+                      title={img.name}
+                    >
+                      {img.url ? (
+                        <img
+                          src={img.url}
+                          alt={img.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                          <Package className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      )}
+                      {!img.isCurrent && (
+                        <div className="absolute inset-0 bg-primary/10 flex items-end justify-center pb-0.5">
+                          <span className="text-[8px] font-medium bg-background/90 px-1 rounded truncate max-w-full">
+                            Variation
+                          </span>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
               )}
-            </figure>
+
+              {/* Variations Label */}
+              {variations.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Click on variation thumbnails to view other options
+                </p>
+              )}
+            </div>
 
             {/* Product Info */}
             <div className="space-y-6">
