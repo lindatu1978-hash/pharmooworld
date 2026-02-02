@@ -95,9 +95,9 @@ const HeroBanner = memo(() => {
                   <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
                   <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" aria-hidden="true" />
 
-                  <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between h-full p-5 sm:p-8 md:p-12 lg:p-16 gap-6 md:gap-8">
+                  <div className="relative z-10 flex flex-row lg:flex-row items-center justify-between h-full p-4 sm:p-6 md:p-12 lg:p-16 gap-4 md:gap-6 lg:gap-8">
                     {/* Content */}
-                    <div className="space-y-3 md:space-y-4 text-center lg:text-left max-w-2xl">
+                    <div className="space-y-2 sm:space-y-3 md:space-y-4 text-left lg:text-left max-w-2xl flex-1">
                       <Badge className="bg-white/90 text-foreground font-semibold text-xs">
                         <Sparkles className="h-3 w-3 mr-1" aria-hidden="true" />
                         {banner.badge}
@@ -127,9 +127,9 @@ const HeroBanner = memo(() => {
                       </Link>
                     </div>
 
-                    {/* Product image with proper SEO attributes */}
+                    {/* Product image with proper SEO attributes - Show on mobile too */}
                     {banner.image && (
-                      <figure className="hidden lg:block w-72 h-72 rounded-2xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-sm">
+                      <figure className="w-32 h-32 sm:w-48 sm:h-48 lg:w-72 lg:h-72 rounded-xl lg:rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl bg-white/10 backdrop-blur-sm flex-shrink-0">
                         <img 
                           src={banner.image} 
                           alt={banner.imageAlt}

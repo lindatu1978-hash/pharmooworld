@@ -178,12 +178,12 @@ const TabbedProducts = memo(() => {
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["featured-products", activeTab],
     queryFn: async () => {
+      // First try to get products with local images (more reliable)
       let query = supabase
         .from("products")
         .select("id, name, slug, price, bulk_price, bulk_min_quantity, image_url, manufacturer, in_stock")
         .eq("in_stock", true)
-        .not("image_url", "is", null)
-        .neq("image_url", "");
+        .like("image_url", "/products/%"); // Only local images that work reliably
 
       if (activeTab !== "all") {
         query = query.ilike("manufacturer", `%${activeTab}%`);
