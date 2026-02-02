@@ -23,19 +23,12 @@ const Footer = () => {
     { name: "Disclaimer", href: "/disclaimer" },
   ];
   
-  const operationLocations = [
-    "Nairobi, Kenya",
-    "Bangkok, Thailand",
-    "Hamburg, Germany",
-    "Durban, South Africa",
-    "London, United Kingdom",
-  ];
 
   return (
     <footer className="bg-foreground text-primary-foreground safe-area-bottom">
       {/* Main Footer */}
       <div className="container-pharma py-10 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand - Full width on mobile */}
           <div className="col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
@@ -117,17 +110,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Operation Locations */}
-          <div className="col-span-2 md:col-span-1">
-            <h3 className="font-semibold mb-4 text-base">Operation Locations</h3>
-            <ul className="space-y-2 text-sm text-primary-foreground/70">
-              {operationLocations.map((location) => (
-                <li key={location} className="py-1">
-                  {location}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
 
