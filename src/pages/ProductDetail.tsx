@@ -8,10 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingCart, Minus, Plus, FileCheck, Shield, Truck, CheckCircle, ArrowLeft, AlertTriangle, Package } from "lucide-react";
+import { ShoppingCart, Minus, Plus, FileCheck, Shield, Truck, CheckCircle, ArrowLeft, AlertTriangle, Package, Bitcoin } from "lucide-react";
 import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
 
 interface Product {
   id: string;
@@ -320,8 +321,9 @@ const ProductDetail = () => {
                         $<span itemProp="price" content={currentPrice.toString()}>{currentPrice.toFixed(2)}</span>
                         <span className="text-lg font-normal text-muted-foreground"> / unit</span>
                       </p>
+                      <BitcoinPriceDisplay usdAmount={currentPrice} size="sm" showRefresh />
                       {product.bulk_price && product.bulk_min_quantity && (
-                        <p className="text-sm text-accent">
+                        <p className="text-sm text-accent mt-1">
                           Bulk price: ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+ units
                         </p>
                       )}
@@ -329,6 +331,7 @@ const ProductDetail = () => {
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">Total</p>
                       <p className="text-xl font-bold">${totalPrice.toFixed(2)}</p>
+                      <BitcoinPriceDisplay usdAmount={totalPrice} size="sm" />
                     </div>
                   </div>
 
