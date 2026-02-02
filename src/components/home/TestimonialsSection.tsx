@@ -45,12 +45,12 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-12 bg-muted/30">
+    <section className="py-8 md:py-12 bg-muted/30">
       <div className="container-pharma">
         {/* Header */}
-        <div className="text-center mb-8">
-          <p className="text-sm font-medium text-primary mb-2">Testimonials</p>
-          <h2 className="text-2xl font-bold text-foreground">
+        <div className="text-center mb-6 md:mb-8">
+          <p className="text-xs md:text-sm font-medium text-primary mb-1 md:mb-2">Testimonials</p>
+          <h2 className="text-xl md:text-2xl font-bold text-foreground px-4">
             Trusted by Healthcare Professionals Worldwide
           </h2>
         </div>
@@ -63,33 +63,33 @@ const TestimonialsSection = () => {
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-4">
+          <CarouselContent className="-ml-3 md:-ml-4">
             {testimonials.map((testimonial, index) => (
-              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={index} className="pl-3 md:pl-4 basis-[85%] sm:basis-1/2 lg:basis-1/3">
                 <Card className="h-full border-border hover:border-primary/30 hover:shadow-md transition-all">
-                  <CardContent className="p-6 space-y-4 h-full flex flex-col">
+                  <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 h-full flex flex-col">
                     {/* Quote Icon */}
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Quote className="h-5 w-5 text-primary" />
+                    <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Quote className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                     </div>
 
                     {/* Stars */}
                     <div className="flex gap-0.5">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-warning text-warning" />
+                        <Star key={i} className="h-3.5 w-3.5 md:h-4 md:w-4 fill-warning text-warning" />
                       ))}
                     </div>
 
                     {/* Content */}
-                    <p className="text-muted-foreground leading-relaxed text-sm flex-grow">
+                    <p className="text-muted-foreground leading-relaxed text-xs md:text-sm flex-grow line-clamp-4 md:line-clamp-none">
                       "{testimonial.content}"
                     </p>
 
                     {/* Author */}
-                    <div className="pt-4 border-t border-border">
-                      <p className="font-medium text-foreground">{testimonial.name}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.company}, {testimonial.location}</p>
+                    <div className="pt-3 md:pt-4 border-t border-border">
+                      <p className="font-medium text-foreground text-sm md:text-base">{testimonial.name}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">{testimonial.role}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground truncate">{testimonial.company}, {testimonial.location}</p>
                     </div>
                   </CardContent>
                 </Card>

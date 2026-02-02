@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Package, Filter, Search, X } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ShoppingCart, Package, Filter, Search, X, SlidersHorizontal } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
 
@@ -114,11 +115,11 @@ const ProductCard = memo(({ product, onAddToCart }: {
               <div className="absolute bottom-1.5 right-1.5 md:bottom-2 md:right-2">
                 <Button
                   size="icon"
-                  className="h-9 w-9 md:h-10 md:w-10 rounded-full gradient-medical shadow-md active:scale-95"
+                  className="h-10 w-10 md:h-10 md:w-10 rounded-full gradient-medical shadow-md active:scale-95"
                   onClick={(e) => onAddToCart(e, product.id)}
                   aria-label={`Add ${product.name} to cart`}
                 >
-                  <ShoppingCart className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
+                  <ShoppingCart className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
             )}
@@ -192,11 +193,156 @@ const ProductsSkeleton = memo(() => (
 ));
 ProductsSkeleton.displayName = "ProductsSkeleton";
 
+// Filter content component - reused in sidebar and sheet
+const FilterContent = memo(({ 
+  searchQuery, 
+  setSearchQuery, 
+  selectedCategory, 
+  selectedManufacturer, 
+  selectedOrigin,
+  categories,
+  manufacturers,
+  origins,
+  searchParams,
+  setSearchParams,
+  clearFilters,
+  hasActiveFilters,
+}: {
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  selectedCategory: string;
+  selectedManufacturer: string;
+  selectedOrigin: string;
+  categories: Category[];
+  manufacturers: (string | null)[];
+  origins: (string | null)[];
+  searchParams: URLSearchParams;
+  setSearchParams: (params: URLSearchParams) => void;
+  clearFilters: () => void;
+  hasActiveFilters: boolean;
+}) => (
+  <div className="space-y-5">
+    <div className="flex items-center justify-between">
+      <h2 className="font-semibold flex items-center gap-2">
+        <Filter className="h-4 w-4" aria-hidden="true" />
+        Filters
+      </h2>
+      {hasActiveFilters && (
+        <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8">
+          <X className="h-4 w-4 mr-1" aria-hidden="true" />
+          Clear
+        </Button>
+      )}
+    </div>
+
+    {/* Search */}
+    <div className="relative">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+      <Input
+        placeholder="Search products..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="pl-10 h-11"
+        aria-label="Search products"
+      />
+    </div>
+
+    {/* Category Filter */}
+    <div className="space-y-2">
+      <label htmlFor="category-filter" className="text-sm font-medium">Category</label>
+      <Select
+        value={selectedCategory}
+        onValueChange={(value) => {
+          const newParams = new URLSearchParams(searchParams);
+          if (value === "all") {
+            newParams.delete("category");
+          } else {
+            newParams.set("category", value);
+          }
+          setSearchParams(newParams);
+        }}
+      >
+        <SelectTrigger id="category-filter" className="h-11">
+          <SelectValue placeholder="All Categories" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Categories</SelectItem>
+          {categories.map((category) => (
+            <SelectItem key={category.id} value={category.slug}>
+              {category.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+
+    {/* Manufacturer Filter */}
+    <div className="space-y-2">
+      <label htmlFor="manufacturer-filter" className="text-sm font-medium">Manufacturer</label>
+      <Select
+        value={selectedManufacturer}
+        onValueChange={(value) => {
+          const newParams = new URLSearchParams(searchParams);
+          if (value === "all") {
+            newParams.delete("manufacturer");
+          } else {
+            newParams.set("manufacturer", value);
+          }
+          setSearchParams(newParams);
+        }}
+      >
+        <SelectTrigger id="manufacturer-filter" className="h-11">
+          <SelectValue placeholder="All Manufacturers" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Manufacturers</SelectItem>
+          {manufacturers.map((manufacturer) => (
+            <SelectItem key={manufacturer} value={manufacturer!}>
+              {manufacturer}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+
+    {/* Origin Filter */}
+    <div className="space-y-2">
+      <label htmlFor="origin-filter" className="text-sm font-medium">Country of Origin</label>
+      <Select
+        value={selectedOrigin}
+        onValueChange={(value) => {
+          const newParams = new URLSearchParams(searchParams);
+          if (value === "all") {
+            newParams.delete("origin");
+          } else {
+            newParams.set("origin", value);
+          }
+          setSearchParams(newParams);
+        }}
+      >
+        <SelectTrigger id="origin-filter" className="h-11">
+          <SelectValue placeholder="All Countries" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Countries</SelectItem>
+          {origins.map((origin) => (
+            <SelectItem key={origin} value={origin!}>
+              {origin}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  </div>
+));
+FilterContent.displayName = "FilterContent";
+
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const { addToCart } = useCart();
 
   const selectedCategory = searchParams.get("category") || "";
@@ -270,7 +416,23 @@ const Products = () => {
     setSearchQuery("");
   };
 
+  const hasActiveFilters = !!(selectedCategory || selectedManufacturer || selectedOrigin || searchQuery);
   const currentCategory = categories.find(c => c.slug === selectedCategory);
+
+  const filterProps = {
+    searchQuery,
+    setSearchQuery,
+    selectedCategory,
+    selectedManufacturer,
+    selectedOrigin,
+    categories,
+    manufacturers,
+    origins,
+    searchParams,
+    setSearchParams,
+    clearFilters,
+    hasActiveFilters,
+  };
 
   return (
     <>
@@ -282,136 +444,56 @@ const Products = () => {
       />
 
       <Layout>
-        <header className="bg-secondary/30 py-8">
+        <header className="bg-secondary/30 py-6 md:py-8">
           <div className="container-pharma">
-            <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2">
               {currentCategory ? currentCategory.name : "All Products"}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm md:text-base text-muted-foreground">
               Browse our comprehensive range of pharmaceutical and medical products
             </p>
           </div>
         </header>
 
-        <div className="container-pharma py-8">
-          <div className="grid lg:grid-cols-4 gap-8">
-            {/* Filters Sidebar */}
-            <aside className="lg:col-span-1" aria-label="Product filters">
-              <div className="sticky top-32 space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-semibold flex items-center gap-2">
-                    <Filter className="h-4 w-4" aria-hidden="true" />
-                    Filters
-                  </h2>
-                  {(selectedCategory || selectedManufacturer || selectedOrigin || searchQuery) && (
-                    <Button variant="ghost" size="sm" onClick={clearFilters}>
-                      <X className="h-4 w-4 mr-1" aria-hidden="true" />
-                      Clear
-                    </Button>
+        <div className="container-pharma py-6 md:py-8">
+          {/* Mobile Filter Button + Product Count */}
+          <div className="flex items-center justify-between gap-4 mb-4 lg:hidden">
+            <p className="text-sm text-muted-foreground" role="status">
+              {filteredProducts.length} products
+            </p>
+            <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2 h-10">
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filters
+                  {hasActiveFilters && (
+                    <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 justify-center">
+                      !
+                    </Badge>
                   )}
-                </div>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[350px] overflow-y-auto">
+                <SheetHeader className="mb-6">
+                  <SheetTitle>Filter Products</SheetTitle>
+                </SheetHeader>
+                <FilterContent {...filterProps} />
+              </SheetContent>
+            </Sheet>
+          </div>
 
-                {/* Search */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                  <Input
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                    aria-label="Search products"
-                  />
-                </div>
-
-                {/* Category Filter */}
-                <div className="space-y-2">
-                  <label htmlFor="category-filter" className="text-sm font-medium">Category</label>
-                  <Select
-                    value={selectedCategory}
-                    onValueChange={(value) => {
-                      if (value === "all") {
-                        searchParams.delete("category");
-                      } else {
-                        searchParams.set("category", value);
-                      }
-                      setSearchParams(searchParams);
-                    }}
-                  >
-                    <SelectTrigger id="category-filter">
-                      <SelectValue placeholder="All Categories" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.slug}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Manufacturer Filter */}
-                <div className="space-y-2">
-                  <label htmlFor="manufacturer-filter" className="text-sm font-medium">Manufacturer</label>
-                  <Select
-                    value={selectedManufacturer}
-                    onValueChange={(value) => {
-                      if (value === "all") {
-                        searchParams.delete("manufacturer");
-                      } else {
-                        searchParams.set("manufacturer", value);
-                      }
-                      setSearchParams(searchParams);
-                    }}
-                  >
-                    <SelectTrigger id="manufacturer-filter">
-                      <SelectValue placeholder="All Manufacturers" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Manufacturers</SelectItem>
-                      {manufacturers.map((manufacturer) => (
-                        <SelectItem key={manufacturer} value={manufacturer!}>
-                          {manufacturer}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Origin Filter */}
-                <div className="space-y-2">
-                  <label htmlFor="origin-filter" className="text-sm font-medium">Country of Origin</label>
-                  <Select
-                    value={selectedOrigin}
-                    onValueChange={(value) => {
-                      if (value === "all") {
-                        searchParams.delete("origin");
-                      } else {
-                        searchParams.set("origin", value);
-                      }
-                      setSearchParams(searchParams);
-                    }}
-                  >
-                    <SelectTrigger id="origin-filter">
-                      <SelectValue placeholder="All Countries" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Countries</SelectItem>
-                      {origins.map((origin) => (
-                        <SelectItem key={origin} value={origin!}>
-                          {origin}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+          <div className="grid lg:grid-cols-4 gap-6 md:gap-8">
+            {/* Filters Sidebar - Desktop only */}
+            <aside className="hidden lg:block lg:col-span-1" aria-label="Product filters">
+              <div className="sticky top-32">
+                <FilterContent {...filterProps} />
               </div>
             </aside>
 
             {/* Products Grid */}
             <main className="lg:col-span-3">
-              <p className="mb-4 text-sm text-muted-foreground" role="status">
+              {/* Desktop product count */}
+              <p className="hidden lg:block mb-4 text-sm text-muted-foreground" role="status">
                 Showing {filteredProducts.length} products
               </p>
 
@@ -424,7 +506,7 @@ const Products = () => {
                   <p className="text-muted-foreground mb-4">
                     Try adjusting your filters or search query
                   </p>
-                  <Button onClick={clearFilters}>Clear Filters</Button>
+                  <Button onClick={clearFilters} className="h-11">Clear Filters</Button>
                 </div>
               ) : (
                 <div 
