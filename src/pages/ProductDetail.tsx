@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingCart, Package, Minus, Plus, FileCheck, Shield, Truck, CheckCircle, ArrowLeft, AlertTriangle } from "lucide-react";
+import { ShoppingCart, Minus, Plus, FileCheck, Shield, Truck, CheckCircle, ArrowLeft, AlertTriangle, Package } from "lucide-react";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 
@@ -237,7 +238,7 @@ const ProductDetail = () => {
                   itemProp="image"
                 />
               ) : (
-                <Package className="h-32 w-32 text-muted-foreground/50" aria-label={`${product.name} - no image available`} />
+                <ProductPlaceholder productName={product.name} size="lg" />
               )}
             </figure>
 

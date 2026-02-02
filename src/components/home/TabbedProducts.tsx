@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Package, ArrowRight } from "lucide-react";
+import { ShoppingCart, ArrowRight, Package } from "lucide-react";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
 
@@ -39,11 +40,7 @@ const ProductImage = memo(({
   const [error, setError] = useState(false);
 
   if (!src || error) {
-    return (
-      <div className="w-full h-full flex items-center justify-center" aria-label={`${productName} - no image available`}>
-        <Package className="h-10 w-10 md:h-12 md:w-12 text-muted-foreground/30" aria-hidden="true" />
-      </div>
-    );
+    return <ProductPlaceholder productName={productName} />;
   }
 
   const altText = manufacturer 

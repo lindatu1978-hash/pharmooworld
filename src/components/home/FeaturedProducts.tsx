@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Package, ArrowRight } from "lucide-react";
+import { ShoppingCart, ArrowRight } from "lucide-react";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,7 @@ const ProductImage = memo(({ src, alt }: { src: string | null; alt: string }) =>
   const [error, setError] = useState(false);
 
   if (!src || error) {
-    return <Package className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground/30" />;
+    return <ProductPlaceholder productName={alt} />;
   }
 
   return (

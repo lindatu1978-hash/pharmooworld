@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ShoppingCart, Package, Filter, Search, X, SlidersHorizontal } from "lucide-react";
+import { ShoppingCart, Filter, Search, X, SlidersHorizontal, Package } from "lucide-react";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
 
@@ -43,7 +44,7 @@ const ProductImage = memo(({ product }: { product: Product }) => {
   const [error, setError] = useState(false);
 
   if (!product.image_url || error) {
-    return <Package className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground/50" aria-hidden="true" />;
+    return <ProductPlaceholder productName={product.name} />;
   }
 
   const altText = [
