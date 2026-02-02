@@ -14,8 +14,9 @@ import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
 import { cn } from "@/lib/utils";
+import { getProductImageUrl, getThumbnailUrl } from "@/lib/image-utils";
 
-// Optimized main image with loading state
+// Optimized main image with WebP support and loading state
 const MainProductImage = memo(({ 
   src, 
   alt, 
@@ -27,6 +28,9 @@ const MainProductImage = memo(({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+
+  // Get optimized WebP URL for detail view
+  const optimizedSrc = useMemo(() => getProductImageUrl(src, 'detail'), [src]);
 
   // Reset state when src changes
   useEffect(() => {
@@ -43,30 +47,36 @@ const MainProductImage = memo(({
       {!loaded && (
         <div className="absolute inset-0 bg-muted/50 animate-pulse rounded-xl" />
       )}
-      <img
-        src={src}
-        alt={alt}
-        title={title}
-        width={600}
-        height={600}
-        loading="eager"
-        decoding="async"
-        fetchPriority="high"
-        onLoad={() => setLoaded(true)}
-        onError={() => setError(true)}
-        className={cn(
-          "w-full h-full object-cover transition-opacity duration-300",
-          loaded ? "opacity-100" : "opacity-0"
+      <picture>
+        {/* WebP version for supported browsers */}
+        {optimizedSrc && optimizedSrc !== src && (
+          <source srcSet={optimizedSrc} type="image/webp" />
         )}
-        itemProp="image"
-      />
+        <img
+          src={optimizedSrc || src}
+          alt={alt}
+          title={title}
+          width={800}
+          height={800}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          onLoad={() => setLoaded(true)}
+          onError={() => setError(true)}
+          className={cn(
+            "w-full h-full object-cover transition-opacity duration-300",
+            loaded ? "opacity-100" : "opacity-0"
+          )}
+          itemProp="image"
+        />
+      </picture>
     </>
   );
 });
 
 MainProductImage.displayName = "MainProductImage";
 
-// Optimized thumbnail with lazy loading
+// Optimized thumbnail with WebP support and lazy loading
 const ThumbnailImage = memo(({ 
   src, 
   alt,
@@ -82,6 +92,9 @@ const ThumbnailImage = memo(({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+
+  // Get compressed thumbnail URL
+  const thumbnailSrc = useMemo(() => getThumbnailUrl(src, 100), [src]);
 
   return (
     <button
@@ -99,20 +112,25 @@ const ThumbnailImage = memo(({
           {!loaded && (
             <div className="absolute inset-0 bg-muted animate-pulse" />
           )}
-          <img
-            src={src}
-            alt={alt}
-            width={80}
-            height={80}
-            loading="lazy"
-            decoding="async"
-            onLoad={() => setLoaded(true)}
-            onError={() => setError(true)}
-            className={cn(
-              "w-full h-full object-cover transition-opacity duration-200",
-              loaded ? "opacity-100" : "opacity-0"
+          <picture>
+            {thumbnailSrc && thumbnailSrc !== src && (
+              <source srcSet={thumbnailSrc} type="image/webp" />
             )}
-          />
+            <img
+              src={thumbnailSrc || src}
+              alt={alt}
+              width={100}
+              height={100}
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setLoaded(true)}
+              onError={() => setError(true)}
+              className={cn(
+                "w-full h-full object-cover transition-opacity duration-200",
+                loaded ? "opacity-100" : "opacity-0"
+              )}
+            />
+          </picture>
         </>
       ) : (
         <div className="w-full h-full bg-muted flex items-center justify-center">
