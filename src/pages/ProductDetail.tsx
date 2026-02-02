@@ -169,23 +169,23 @@ const ProductDetail = () => {
       />
 
       <Layout>
-        {/* Breadcrumb with Schema */}
-        <nav className="bg-secondary/30 py-4" aria-label="Breadcrumb">
-          <div className="container-pharma">
+        {/* Breadcrumb with Schema - Mobile optimized */}
+        <nav className="bg-secondary/30 py-3 md:py-4" aria-label="Breadcrumb">
+          <div className="container-pharma overflow-x-auto scrollbar-hide">
             <ol 
-              className="flex items-center gap-2 text-sm"
+              className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm whitespace-nowrap"
               itemScope
               itemType="https://schema.org/BreadcrumbList"
             >
               <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                <Link to="/" className="text-muted-foreground hover:text-foreground" itemProp="item">
+                <Link to="/" className="text-muted-foreground hover:text-foreground min-h-[44px] flex items-center" itemProp="item">
                   <span itemProp="name">Home</span>
                 </Link>
                 <meta itemProp="position" content="1" />
               </li>
               <span className="text-muted-foreground" aria-hidden="true">/</span>
               <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                <Link to="/products" className="text-muted-foreground hover:text-foreground" itemProp="item">
+                <Link to="/products" className="text-muted-foreground hover:text-foreground min-h-[44px] flex items-center" itemProp="item">
                   <span itemProp="name">Products</span>
                 </Link>
                 <meta itemProp="position" content="2" />
@@ -194,7 +194,7 @@ const ProductDetail = () => {
                 <>
                   <span className="text-muted-foreground" aria-hidden="true">/</span>
                   <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                    <Link to={`/products?category=${category.slug}`} className="text-muted-foreground hover:text-foreground" itemProp="item">
+                    <Link to={`/products?category=${category.slug}`} className="text-muted-foreground hover:text-foreground min-h-[44px] flex items-center" itemProp="item">
                       <span itemProp="name">{category.name}</span>
                     </Link>
                     <meta itemProp="position" content="3" />
@@ -202,8 +202,8 @@ const ProductDetail = () => {
                 </>
               )}
               <span className="text-muted-foreground" aria-hidden="true">/</span>
-              <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                <span className="text-foreground truncate" itemProp="name">{product.name}</span>
+              <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" className="max-w-[120px] md:max-w-none">
+                <span className="text-foreground truncate block" itemProp="name">{product.name}</span>
                 <meta itemProp="position" content={category ? "4" : "3"} />
               </li>
             </ol>
@@ -211,16 +211,16 @@ const ProductDetail = () => {
         </nav>
 
         <article 
-          className="container-pharma py-8 lg:py-12"
+          className="container-pharma py-6 md:py-8 lg:py-12"
           itemScope
           itemType="https://schema.org/Product"
         >
-          <Link to="/products" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+          <Link to="/products" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 md:mb-6 min-h-[44px]">
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to Products
           </Link>
 
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
             {/* Product Image with SEO optimization */}
             <figure className="aspect-square bg-secondary/50 rounded-xl flex items-center justify-center overflow-hidden">
               {product.image_url ? (
@@ -264,14 +264,14 @@ const ProductDetail = () => {
                 </div>
 
                 <h1 
-                  className="text-3xl lg:text-4xl font-bold text-foreground mb-2"
+                  className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2"
                   itemProp="name"
                 >
                   {product.name}
                 </h1>
 
                 {product.manufacturer && (
-                  <p className="text-lg text-muted-foreground">
+                  <p className="text-base md:text-lg text-muted-foreground">
                     By <span itemProp="brand" itemScope itemType="https://schema.org/Brand">
                       <span itemProp="name">{product.manufacturer}</span>
                     </span>
@@ -331,13 +331,14 @@ const ProductDetail = () => {
                     </div>
                   </div>
 
-                  {/* Quantity */}
-                  <div className="flex items-center gap-4 mb-4">
+                  {/* Quantity - Mobile optimized */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4">
                     <span className="text-sm font-medium">Quantity:</span>
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         size="icon"
+                        className="h-11 w-11"
                         onClick={() => handleQuantityChange(quantity - 1)}
                         disabled={quantity <= 1}
                         aria-label="Decrease quantity"
@@ -348,7 +349,7 @@ const ProductDetail = () => {
                         type="number"
                         value={quantity}
                         onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
-                        className="w-20 text-center"
+                        className="w-20 h-11 text-center"
                         min={1}
                         max={999}
                         aria-label="Product quantity"
@@ -356,6 +357,7 @@ const ProductDetail = () => {
                       <Button
                         variant="outline"
                         size="icon"
+                        className="h-11 w-11"
                         onClick={() => handleQuantityChange(quantity + 1)}
                         disabled={quantity >= 999}
                         aria-label="Increase quantity"
@@ -367,7 +369,7 @@ const ProductDetail = () => {
 
                   <Button
                     size="lg"
-                    className="w-full gradient-medical hover:opacity-90 gap-2"
+                    className="w-full h-12 md:h-11 gradient-medical hover:opacity-90 gap-2 text-base"
                     disabled={!product.in_stock}
                     onClick={handleAddToCart}
                   >

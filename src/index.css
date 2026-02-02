@@ -258,6 +258,15 @@
     text-wrap: balance;
   }
 
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Smooth animations */
   .animate-bounce-slow {
     animation: bounce-slow 3s ease-in-out infinite;
@@ -295,5 +304,13 @@
       opacity: 1; 
       transform: translateY(0); 
     }
+  }
+
+  /* Line clamp utilities for older browsers */
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
