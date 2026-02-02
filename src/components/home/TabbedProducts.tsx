@@ -203,35 +203,37 @@ const TabbedProducts = memo(() => {
   }, [addToCart]);
 
   return (
-    <section className="py-12" aria-label="Featured products by manufacturer">
+    <section className="py-8 md:py-12" aria-label="Featured products by manufacturer">
       <div className="container-pharma">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <h2 className="text-2xl font-bold text-foreground">Featured Products</h2>
+        {/* Header - Stack on mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 mb-6 md:mb-8">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground">Featured Products</h2>
           <Link to="/products">
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2 w-full sm:w-auto h-11 md:h-10">
               View All Products
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           </Link>
         </div>
 
-        {/* Tabs */}
+        {/* Tabs - Horizontally scrollable on mobile */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList 
-            className="w-full justify-start overflow-x-auto flex-nowrap mb-6 h-auto p-1"
-            aria-label="Filter products by manufacturer"
-          >
-            {manufacturers.map((manufacturer) => (
-              <TabsTrigger 
-                key={manufacturer} 
-                value={manufacturer.toLowerCase()}
-                className="whitespace-nowrap"
-              >
-                {manufacturer}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          <div className="-mx-4 px-4 overflow-x-auto scrollbar-hide">
+            <TabsList 
+              className="inline-flex w-auto min-w-full sm:w-full justify-start flex-nowrap mb-4 md:mb-6 h-auto p-1 gap-1"
+              aria-label="Filter products by manufacturer"
+            >
+              {manufacturers.map((manufacturer) => (
+                <TabsTrigger 
+                  key={manufacturer} 
+                  value={manufacturer.toLowerCase()}
+                  className="whitespace-nowrap px-4 py-2.5 text-sm min-h-[40px]"
+                >
+                  {manufacturer}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
           <TabsContent value={activeTab} className="mt-0">
             {isLoading ? (

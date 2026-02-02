@@ -36,16 +36,16 @@ const Header = () => {
   const allCategories = [...mainCategories, ...moreCategories];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border safe-area-top">
       {/* Main Header */}
-      <div className="container-pharma py-4">
-        <div className="flex items-center justify-between gap-6">
+      <div className="container-pharma py-3 md:py-4">
+        <div className="flex items-center justify-between gap-4 md:gap-6">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="h-9 w-9 rounded-lg gradient-medical flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-2 shrink-0 min-h-[44px]">
+            <div className="h-10 w-10 md:h-9 md:w-9 rounded-lg gradient-medical flex items-center justify-center">
               <span className="text-white font-bold text-lg">P</span>
             </div>
-            <span className="text-xl font-bold text-foreground hidden sm:block">
+            <span className="text-lg md:text-xl font-bold text-foreground hidden xs:block">
               Pharmoo<span className="text-primary">World</span>
             </span>
           </Link>
@@ -55,18 +55,18 @@ const Header = () => {
             <ProductSearch className="w-full" />
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-1">
+          {/* Actions - Touch-optimized */}
+          <div className="flex items-center gap-0.5 md:gap-1">
             <Link to="/account">
-              <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="icon" className="hidden sm:flex h-11 w-11 md:h-10 md:w-10 text-muted-foreground hover:text-foreground">
                 <User className="h-5 w-5" />
               </Button>
             </Link>
             <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="icon" className="h-11 w-11 md:h-10 md:w-10 text-muted-foreground hover:text-foreground">
                 <ShoppingCart className="h-5 w-5" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
+                  <span className="absolute top-0.5 right-0.5 md:-top-1 md:-right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
                     {itemCount}
                   </span>
                 )}
@@ -75,16 +75,17 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden text-muted-foreground hover:text-foreground"
+              className="lg:hidden h-11 w-11 md:h-10 md:w-10 text-muted-foreground hover:text-foreground"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
 
-        {/* Search Bar - Mobile */}
-        <div className="lg:hidden mt-4">
+        {/* Search Bar - Mobile - Touch-optimized */}
+        <div className="lg:hidden mt-3">
           <ProductSearch className="w-full" placeholder="Search products..." />
         </div>
       </div>
@@ -131,15 +132,15 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Touch-optimized with larger targets */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-background border-t border-border">
-          <nav className="container-pharma py-4">
-            <ul className="space-y-1">
+        <div className="lg:hidden bg-background border-t border-border max-h-[70vh] overflow-y-auto">
+          <nav className="container-pharma py-2 safe-area-bottom">
+            <ul className="divide-y divide-border">
               <li>
                 <Link
                   to="/products"
-                  className="block px-4 py-3 text-sm font-medium text-foreground hover:bg-muted rounded-lg"
+                  className="flex items-center min-h-[52px] px-4 py-3 text-base font-medium text-foreground hover:bg-muted active:bg-muted/80 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   All Products
@@ -149,28 +150,30 @@ const Header = () => {
                 <li key={category.slug}>
                   <Link
                     to={`/products?category=${category.slug}`}
-                    className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
+                    className="flex items-center min-h-[52px] px-4 py-3 text-base text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted/80 transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {category.name}
                   </Link>
                 </li>
               ))}
-              <li className="border-t border-border pt-2 mt-2">
+              <li className="pt-2 mt-2">
                 <Link
                   to="/account"
-                  className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
+                  className="flex items-center min-h-[52px] px-4 py-3 text-base text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted/80 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
+                  <User className="h-5 w-5 mr-3" />
                   My Account
                 </Link>
               </li>
               <li>
                 <Link
                   to="/orders"
-                  className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
+                  className="flex items-center min-h-[52px] px-4 py-3 text-base text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted/80 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
+                  <ShoppingCart className="h-5 w-5 mr-3" />
                   My Orders
                 </Link>
               </li>
