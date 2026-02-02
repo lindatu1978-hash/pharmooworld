@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback, memo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import SEO, { createProductSchema, createBreadcrumbSchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,123 @@ import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
 import { cn } from "@/lib/utils";
+
+// Optimized main image with loading state
+const MainProductImage = memo(({ 
+  src, 
+  alt, 
+  title 
+}: { 
+  src: string | null; 
+  alt: string; 
+  title: string; 
+}) => {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  // Reset state when src changes
+  useEffect(() => {
+    setLoaded(false);
+    setError(false);
+  }, [src]);
+
+  if (!src || error) {
+    return <ProductPlaceholder productName={title} size="lg" />;
+  }
+
+  return (
+    <>
+      {!loaded && (
+        <div className="absolute inset-0 bg-muted/50 animate-pulse rounded-xl" />
+      )}
+      <img
+        src={src}
+        alt={alt}
+        title={title}
+        width={600}
+        height={600}
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={cn(
+          "w-full h-full object-cover transition-opacity duration-300",
+          loaded ? "opacity-100" : "opacity-0"
+        )}
+        itemProp="image"
+      />
+    </>
+  );
+});
+
+MainProductImage.displayName = "MainProductImage";
+
+// Optimized thumbnail with lazy loading
+const ThumbnailImage = memo(({ 
+  src, 
+  alt,
+  isSelected,
+  onClick,
+  isVariation
+}: { 
+  src: string | null; 
+  alt: string;
+  isSelected: boolean;
+  onClick: () => void;
+  isVariation: boolean;
+}) => {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all",
+        isSelected 
+          ? "border-primary ring-2 ring-primary/20" 
+          : "border-transparent hover:border-muted-foreground/30"
+      )}
+      title={alt}
+    >
+      {src && !error ? (
+        <>
+          {!loaded && (
+            <div className="absolute inset-0 bg-muted animate-pulse" />
+          )}
+          <img
+            src={src}
+            alt={alt}
+            width={80}
+            height={80}
+            loading="lazy"
+            decoding="async"
+            onLoad={() => setLoaded(true)}
+            onError={() => setError(true)}
+            className={cn(
+              "w-full h-full object-cover transition-opacity duration-200",
+              loaded ? "opacity-100" : "opacity-0"
+            )}
+          />
+        </>
+      ) : (
+        <div className="w-full h-full bg-muted flex items-center justify-center">
+          <Package className="h-4 w-4 text-muted-foreground" />
+        </div>
+      )}
+      {isVariation && (
+        <div className="absolute inset-0 bg-primary/10 flex items-end justify-center pb-0.5">
+          <span className="text-[8px] font-medium bg-background/90 px-1 rounded truncate max-w-full">
+            Variation
+          </span>
+        </div>
+      )}
+    </button>
+  );
+});
+
+ThumbnailImage.displayName = "ThumbnailImage";
 
 interface Product {
   id: string;
@@ -318,35 +435,11 @@ const ProductDetail = () => {
             <div className="space-y-4">
               {/* Main Image */}
               <figure className="relative aspect-square bg-secondary/50 rounded-xl flex items-center justify-center overflow-hidden group">
-                {galleryImages.length > 0 && galleryImages[selectedImageIndex]?.url ? (
-                  <img
-                    src={galleryImages[selectedImageIndex].url}
-                    alt={galleryImages[selectedImageIndex].name || getImageAltText()}
-                    title={galleryImages[selectedImageIndex].name || product.name}
-                    width={600}
-                    height={600}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                    className="w-full h-full object-cover"
-                    itemProp="image"
-                  />
-                ) : product.image_url ? (
-                  <img
-                    src={product.image_url}
-                    alt={getImageAltText()}
-                    title={product.name}
-                    width={600}
-                    height={600}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                    className="w-full h-full object-cover"
-                    itemProp="image"
-                  />
-                ) : (
-                  <ProductPlaceholder productName={product.name} size="lg" />
-                )}
+                <MainProductImage 
+                  src={galleryImages.length > 0 ? galleryImages[selectedImageIndex]?.url : product.image_url}
+                  alt={galleryImages.length > 0 ? (galleryImages[selectedImageIndex]?.name || getImageAltText()) : getImageAltText()}
+                  title={galleryImages.length > 0 ? (galleryImages[selectedImageIndex]?.name || product.name) : product.name}
+                />
 
                 {/* Navigation Arrows */}
                 {galleryImages.length > 1 && (
@@ -380,8 +473,12 @@ const ProductDetail = () => {
               {galleryImages.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                   {galleryImages.map((img, index) => (
-                    <button
+                    <ThumbnailImage
                       key={img.slug}
+                      src={img.url}
+                      alt={img.name}
+                      isSelected={selectedImageIndex === index}
+                      isVariation={!img.isCurrent}
                       onClick={() => {
                         if (!img.isCurrent && img.slug !== product.slug) {
                           handleVariationClick(img.slug);
@@ -389,33 +486,7 @@ const ProductDetail = () => {
                           setSelectedImageIndex(index);
                         }
                       }}
-                      className={cn(
-                        "relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all",
-                        selectedImageIndex === index 
-                          ? "border-primary ring-2 ring-primary/20" 
-                          : "border-transparent hover:border-muted-foreground/30"
-                      )}
-                      title={img.name}
-                    >
-                      {img.url ? (
-                        <img
-                          src={img.url}
-                          alt={img.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <Package className="h-4 w-4 text-muted-foreground" />
-                        </div>
-                      )}
-                      {!img.isCurrent && (
-                        <div className="absolute inset-0 bg-primary/10 flex items-end justify-center pb-0.5">
-                          <span className="text-[8px] font-medium bg-background/90 px-1 rounded truncate max-w-full">
-                            Variation
-                          </span>
-                        </div>
-                      )}
-                    </button>
+                    />
                   ))}
                 </div>
               )}

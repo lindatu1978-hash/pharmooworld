@@ -26,8 +26,8 @@ interface Product {
   in_stock: boolean;
 }
 
-// Image component with mobile-friendly loading
-const ProductImage = memo(({ src, alt }: { src: string | null; alt: string }) => {
+// Image component with mobile-friendly loading and priority support
+const ProductImage = memo(({ src, alt, priority = false }: { src: string | null; alt: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -43,12 +43,15 @@ const ProductImage = memo(({ src, alt }: { src: string | null; alt: string }) =>
       <img
         src={src}
         alt={alt}
-        loading="lazy"
+        width={300}
+        height={300}
+        loading={priority ? "eager" : "lazy"}
         decoding="async"
+        fetchPriority={priority ? "high" : "auto"}
         onLoad={() => setLoaded(true)}
         onError={() => setError(true)}
         className={cn(
-          "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+          "w-full h-full object-cover group-hover:scale-105 transition-all duration-300",
           loaded ? "opacity-100" : "opacity-0"
         )}
       />
@@ -57,16 +60,17 @@ const ProductImage = memo(({ src, alt }: { src: string | null; alt: string }) =>
 });
 ProductImage.displayName = "ProductImage";
 
-const ProductCard = memo(({ product, onAddToCart }: {
+const ProductCard = memo(({ product, onAddToCart, priority = false }: {
   product: Product;
   onAddToCart: (e: React.MouseEvent, id: string) => void;
+  priority?: boolean;
 }) => (
   <Link to={`/product/${product.slug}`}>
     <Card className="group h-full border-border hover:border-primary/30 hover:shadow-lg transition-all duration-200 overflow-hidden active:scale-[0.98]">
       <CardContent className="p-0">
         {/* Product Image - Mobile optimized with larger touch target */}
         <div className="relative aspect-square bg-muted/50 flex items-center justify-center overflow-hidden">
-          <ProductImage src={product.image_url} alt={product.name} />
+          <ProductImage src={product.image_url} alt={product.name} priority={priority} />
           
           {/* Badges - Smaller on mobile */}
           <div className="absolute top-2 left-2 md:top-3 md:left-3 flex flex-col gap-1 md:gap-2">
@@ -206,13 +210,14 @@ const FeaturedProducts = memo(() => {
           </Link>
         </div>
 
-        {/* Products Grid */}
+        {/* Products Grid - First 4 images load with priority for above-the-fold */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <ProductCard 
               key={product.id} 
               product={product}
               onAddToCart={handleAddToCart}
+              priority={index < 4} // Priority load first 4 images
             />
           ))}
         </div>
