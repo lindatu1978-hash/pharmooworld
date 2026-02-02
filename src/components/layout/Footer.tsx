@@ -1,72 +1,62 @@
 import { Link } from "react-router-dom";
 import { Mail, MapPin } from "lucide-react";
+
 const Footer = () => {
-  const productLinks = [{
-    name: "Botulinums",
-    href: "/products?category=Botulinum-products"
-  }, {
-    name: "Dermal Fillers",
-    href: "/products?category=Dermal-Fillers"
-  }, {
-    name: "Surgical Equipment",
-    href: "/products?category=hospital-supplies"
-  }, {
-    name: "Medical Devices",
-    href: "/products?category=medical-devices"
-  }];
-  const infoLinks = [{
-    name: "About Us",
-    href: "/about"
-  }, {
-    name: "Shipping & Delivery",
-    href: "/shipping"
-  }, {
-    name: "Returns Policy",
-    href: "/returns"
-  }, {
-    name: "FAQ",
-    href: "/faq"
-  }, {
-    name: "Contact",
-    href: "/contact"
-  }];
-  const legalLinks = [{
-    name: "Terms & Conditions",
-    href: "/terms"
-  }, {
-    name: "Privacy Policy",
-    href: "/privacy"
-  }, {
-    name: "Disclaimer",
-    href: "/disclaimer"
-  }];
+  const productLinks = [
+    { name: "Botulinums", href: "/products?category=Botulinum-products" },
+    { name: "Dermal Fillers", href: "/products?category=Dermal-Fillers" },
+    { name: "Surgical Equipment", href: "/products?category=hospital-supplies" },
+    { name: "Medical Devices", href: "/products?category=medical-devices" },
+  ];
+  
+  const infoLinks = [
+    { name: "About Us", href: "/about" },
+    { name: "Shipping & Delivery", href: "/shipping" },
+    { name: "Returns Policy", href: "/returns" },
+    { name: "FAQ", href: "/faq" },
+    { name: "Contact", href: "/contact" },
+  ];
+  
+  const legalLinks = [
+    { name: "Terms & Conditions", href: "/terms" },
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Disclaimer", href: "/disclaimer" },
+  ];
+  
   const operationLocations = [
     "Nairobi, Kenya",
     "Bangkok, Thailand",
     "Hamburg, Germany",
     "Durban, South Africa",
-    "London, United Kingdom"
+    "London, United Kingdom",
   ];
-  return <footer className="bg-foreground text-primary-foreground">
+
+  return (
+    <footer className="bg-foreground text-primary-foreground safe-area-bottom">
       {/* Main Footer */}
-      <div className="container-pharma py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-          {/* Brand */}
-          <div className="lg:col-span-1">
+      <div className="container-pharma py-10 md:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12">
+          {/* Brand - Full width on mobile */}
+          <div className="col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="h-8 w-8 rounded-lg gradient-medical flex items-center justify-center">
+              <div className="h-10 w-10 md:h-8 md:w-8 rounded-lg gradient-medical flex items-center justify-center">
                 <span className="text-white font-bold">P</span>
               </div>
               <span className="text-lg font-bold">Pharmoo World</span>
             </div>
-            <p className="text-sm text-primary-foreground/70 mb-6 leading-relaxed">PharmooWorld has been around for a while and it's has also been a significant players in the exportation of a variety of Pharmaceutical products in Europe/Asia/Australia/American/Canada and African markets.  PharmoWorld pride itself with efficiency, reliability and customer satisfaction.  </p>
-            <div className="space-y-2 text-sm text-primary-foreground/70">
-              <a href="mailto:info@pharmooworld.com" className="flex items-center gap-2 hover:text-primary-foreground transition-colors">
-                <Mail className="h-4 w-4" />
+            <p className="text-sm text-primary-foreground/70 mb-6 leading-relaxed">
+              PharmooWorld has been around for a while and it's has also been a significant players in the exportation of a variety of Pharmaceutical products in Europe/Asia/Australia/American/Canada and African markets. PharmoWorld pride itself with efficiency, reliability and customer satisfaction.
+            </p>
+            <div className="space-y-3 text-sm text-primary-foreground/70">
+              <a 
+                href="mailto:info@pharmooworld.com" 
+                className="flex items-center gap-3 min-h-[44px] hover:text-primary-foreground transition-colors"
+              >
+                <Mail className="h-5 w-5" />
                 info@pharmooworld.com
               </a>
-              <div className="flex items-start gap-2">
-                <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 mt-0.5 shrink-0" />
                 <span>1914 S Vermont Ave, Los Angeles, CA 90006</span>
               </div>
             </div>
@@ -74,55 +64,72 @@ const Footer = () => {
 
           {/* Products */}
           <div>
-            <h3 className="font-semibold mb-4">Products</h3>
-            <ul className="space-y-3 text-sm">
-              {productLinks.map(link => <li key={link.name}>
-                  <Link to={link.href} className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+            <h3 className="font-semibold mb-4 text-base">Products</h3>
+            <ul className="space-y-1">
+              {productLinks.map((link) => (
+                <li key={link.name}>
+                  <Link 
+                    to={link.href} 
+                    className="block py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
+                  >
                     {link.name}
                   </Link>
-                </li>)}
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Information */}
           <div>
-            <h3 className="font-semibold mb-4">Information</h3>
-            <ul className="space-y-3 text-sm">
-              {infoLinks.map(link => <li key={link.name}>
-                  <Link to={link.href} className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+            <h3 className="font-semibold mb-4 text-base">Information</h3>
+            <ul className="space-y-1">
+              {infoLinks.map((link) => (
+                <li key={link.name}>
+                  <Link 
+                    to={link.href} 
+                    className="block py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
+                  >
                     {link.name}
                   </Link>
-                </li>)}
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
-            <ul className="space-y-3 text-sm">
-              {legalLinks.map(link => <li key={link.name}>
-                  <Link to={link.href} className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+            <h3 className="font-semibold mb-4 text-base">Legal</h3>
+            <ul className="space-y-1">
+              {legalLinks.map((link) => (
+                <li key={link.name}>
+                  <Link 
+                    to={link.href} 
+                    className="block py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
+                  >
                     {link.name}
                   </Link>
-                </li>)}
+                </li>
+              ))}
             </ul>
-            <div className="mt-8 p-4 bg-primary-foreground/5 rounded-lg">
-              <p className="text-xs font-medium mb-1">Certifications</p>
+            <div className="mt-6 p-4 bg-primary-foreground/5 rounded-lg">
+              <p className="text-sm font-medium mb-1">Certifications</p>
               <p className="text-xs text-primary-foreground/60">GMP • WHO • FDA Registered</p>
             </div>
           </div>
 
           {/* Operation Locations */}
-          <div>
-            <h3 className="font-semibold mb-4">Operation Locations</h3>
+          <div className="col-span-2 md:col-span-1">
+            <h3 className="font-semibold mb-4 text-base">Operation Locations</h3>
             <ul className="space-y-2 text-sm text-primary-foreground/70">
-              {operationLocations.map(location => <li key={location}>
+              {operationLocations.map((location) => (
+                <li key={location} className="py-1">
                   {location}
-                </li>)}
+                </li>
+              ))}
             </ul>
             <div className="mt-6 p-4 bg-primary-foreground/5 rounded-lg">
-              <p className="text-xs font-medium mb-2">Head Office</p>
-              <p className="text-xs text-primary-foreground/70 font-medium">Pharmoo World</p>
+              <p className="text-sm font-medium mb-2">Head Office</p>
+              <p className="text-sm text-primary-foreground/70 font-medium">Pharmoo World</p>
               <p className="text-xs text-primary-foreground/60">Dr. Hettie Morgan</p>
               <p className="text-xs text-primary-foreground/60">1914 S Vermont Ave,</p>
               <p className="text-xs text-primary-foreground/60">Los Angeles, CA 90006, USA</p>
@@ -139,6 +146,8 @@ const Footer = () => {
           </p>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;

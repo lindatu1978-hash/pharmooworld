@@ -73,7 +73,7 @@ const HeroBanner = memo(() => {
             {banners.map((banner, index) => (
               <CarouselItem key={banner.id}>
                 <article 
-                  className={`relative overflow-hidden rounded-2xl bg-gradient-to-r ${banner.gradient} min-h-[300px] md:min-h-[400px]`}
+                  className={`relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-r ${banner.gradient} min-h-[280px] sm:min-h-[320px] md:min-h-[400px]`}
                   aria-label={`Promotion: ${banner.title}`}
                 >
                   {/* Background image with SEO attributes */}
@@ -95,31 +95,31 @@ const HeroBanner = memo(() => {
                   <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
                   <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" aria-hidden="true" />
 
-                  <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between h-full p-8 md:p-12 lg:p-16 gap-8">
+                  <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between h-full p-5 sm:p-8 md:p-12 lg:p-16 gap-6 md:gap-8">
                     {/* Content */}
-                    <div className="space-y-4 text-center lg:text-left max-w-2xl">
-                      <Badge className="bg-white/90 text-foreground font-semibold">
+                    <div className="space-y-3 md:space-y-4 text-center lg:text-left max-w-2xl">
+                      <Badge className="bg-white/90 text-foreground font-semibold text-xs">
                         <Sparkles className="h-3 w-3 mr-1" aria-hidden="true" />
                         {banner.badge}
                       </Badge>
                       
                       <div>
-                        <p className="text-lg md:text-xl font-medium text-white/80 mb-2">
+                        <p className="text-sm sm:text-lg md:text-xl font-medium text-white/80 mb-1 md:mb-2">
                           {banner.subtitle}
                         </p>
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
                           {banner.title}
                         </h2>
                       </div>
                       
-                      <p className="text-white/80 text-base md:text-lg max-w-xl">
+                      <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-xl line-clamp-2 sm:line-clamp-none">
                         {banner.description}
                       </p>
                       
                       <Link to={banner.ctaLink}>
                         <Button 
                           size="lg" 
-                          className="bg-white text-foreground hover:bg-white/90 shadow-lg mt-4"
+                          className="bg-white text-foreground hover:bg-white/90 shadow-lg mt-2 md:mt-4 h-12 px-6 text-base"
                         >
                           {banner.ctaText}
                           <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />

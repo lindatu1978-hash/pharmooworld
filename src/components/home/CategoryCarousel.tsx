@@ -92,28 +92,28 @@ const CategoryCarousel = memo(() => {
           className="w-full"
         >
           <CarouselContent className="-ml-3">
-            {/* Sale/Featured Item */}
-            <CarouselItem className="pl-3 basis-1/3 md:basis-1/5 lg:basis-1/7">
+            {/* Sale/Featured Item - Better mobile sizing */}
+            <CarouselItem className="pl-3 basis-[30%] sm:basis-1/3 md:basis-1/5 lg:basis-1/7">
               <Link to="/products?sort=popular">
-                <Card className="border-2 border-primary bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer h-full">
-                  <CardContent className="flex flex-col items-center justify-center p-4 text-center h-32">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-                      <ShoppingBag className="h-6 w-6 text-primary" />
+                <Card className="border-2 border-primary bg-primary/5 hover:bg-primary/10 active:bg-primary/15 transition-all cursor-pointer h-full">
+                  <CardContent className="flex flex-col items-center justify-center p-3 sm:p-4 text-center h-28 sm:h-32">
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                      <ShoppingBag className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                     </div>
-                    <span className="font-semibold text-primary text-sm">SALE</span>
+                    <span className="font-semibold text-primary text-xs sm:text-sm">SALE</span>
                   </CardContent>
                 </Card>
               </Link>
             </CarouselItem>
 
-            {/* Category Items */}
+            {/* Category Items - Better mobile sizing */}
             {categoryItems.map((category) => (
-              <CarouselItem key={category.id} className="pl-3 basis-1/3 md:basis-1/5 lg:basis-1/7">
+              <CarouselItem key={category.id} className="pl-3 basis-[30%] sm:basis-1/3 md:basis-1/5 lg:basis-1/7">
                 <Link to={`/products?category=${category.slug}`} aria-label={`Browse ${category.name} products`}>
-                  <Card className="border-border hover:border-primary/30 hover:shadow-md transition-all cursor-pointer h-full">
-                    <CardContent className="flex flex-col items-center justify-center p-4 text-center h-32">
+                  <Card className="border-border hover:border-primary/30 hover:shadow-md active:scale-[0.98] transition-all cursor-pointer h-full">
+                    <CardContent className="flex flex-col items-center justify-center p-3 sm:p-4 text-center h-28 sm:h-32">
                       {category.image ? (
-                        <figure className="h-12 w-12 rounded-lg overflow-hidden mb-2">
+                        <figure className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg overflow-hidden mb-2">
                           <img 
                             src={category.image} 
                             alt={`${category.name} category - pharmaceutical products`}
@@ -126,11 +126,11 @@ const CategoryCarousel = memo(() => {
                           />
                         </figure>
                       ) : (
-                        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-2" aria-hidden="true">
-                          <category.Icon className="h-6 w-6 text-primary" />
+                        <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-muted flex items-center justify-center mb-2" aria-hidden="true">
+                          <category.Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                         </div>
                       )}
-                      <span className="font-medium text-foreground text-xs line-clamp-2">
+                      <span className="font-medium text-foreground text-[11px] sm:text-xs line-clamp-2 leading-tight">
                         {category.name}
                       </span>
                     </CardContent>

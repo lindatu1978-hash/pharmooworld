@@ -227,6 +227,30 @@
   .btn-primary:hover {
     @apply shadow-md translate-y-[-1px];
   }
+
+  /* Mobile-first touch targets - minimum 44px for accessibility */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Mobile-optimized link/button spacing */
+  .mobile-link {
+    @apply py-3 px-4 -mx-4 block min-h-[44px] flex items-center;
+  }
+
+  /* Mobile section spacing */
+  .section-mobile {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+
+  /* Safe area padding for notched devices */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0);
+  }
 }
 
 @layer utilities {

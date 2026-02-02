@@ -21,25 +21,25 @@ const ValueProposition = () => {
   ];
 
   return (
-    <section className="py-8 border-y border-border">
+    <section className="py-6 md:py-8 border-y border-border">
       <div className="container-pharma">
-        <div className="text-center mb-6">
-          <h3 className="text-lg font-semibold text-foreground">
+        <div className="text-center mb-4 md:mb-6">
+          <h3 className="text-base md:text-lg font-semibold text-foreground leading-snug px-2">
             We Pride Ourselves On Competitive Pricing, Supply Capabilities And Service
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6">
           {values.map((value, index) => (
             <Link 
               key={index}
               to={value.link}
-              className="flex items-center gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors group"
+              className="flex items-center gap-4 p-4 rounded-lg hover:bg-muted/50 active:bg-muted/70 transition-colors group min-h-[56px]"
             >
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <div className="h-11 w-11 md:h-10 md:w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <value.icon className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+              <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors leading-snug">
                 {value.title}
               </p>
             </Link>
