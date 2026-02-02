@@ -127,13 +127,6 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-            <div className="mt-6 p-4 bg-primary-foreground/5 rounded-lg">
-              <p className="text-sm font-medium mb-2">Head Office</p>
-              <p className="text-sm text-primary-foreground/70 font-medium">Pharmoo World</p>
-              <p className="text-xs text-primary-foreground/60">Dr. Hettie Morgan</p>
-              <p className="text-xs text-primary-foreground/60">1914 S Vermont Ave,</p>
-              <p className="text-xs text-primary-foreground/60">Los Angeles, CA 90006, USA</p>
-            </div>
           </div>
         </div>
       </div>
