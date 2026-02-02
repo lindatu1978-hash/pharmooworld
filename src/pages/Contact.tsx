@@ -109,10 +109,6 @@ const Contact = () => {
                       <a href="mailto:sales@pharmooworld.com" className="text-muted-foreground hover:text-primary">
                         sales@pharmooworld.com
                       </a>
-                      <br />
-                      <a href="mailto:support@pharmooworld.com" className="text-muted-foreground hover:text-primary">
-                        support@pharmooworld.com
-                      </a>
                     </div>
                   </div>
                 </CardContent>
