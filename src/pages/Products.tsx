@@ -398,10 +398,24 @@ const Products = () => {
     setSearchQuery(urlSearchQuery);
   }, [urlSearchQuery]);
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase().trim();
+    const searchTerms = query.split(/\s+/).filter(term => term.length > 0);
+    
+    const searchableText = [
+      product.name,
+      product.manufacturer,
+      product.dosage,
+      product.form,
+      product.origin,
+      product.regulatory_status,
+    ].filter(Boolean).join(" ").toLowerCase();
+    
+    // All search terms must match somewhere in the product
+    return searchTerms.every(term => searchableText.includes(term));
+  });
 
   const manufacturers = [...new Set(products.map(p => p.manufacturer).filter(Boolean))];
   const origins = [...new Set(products.map(p => p.origin).filter(Boolean))];
