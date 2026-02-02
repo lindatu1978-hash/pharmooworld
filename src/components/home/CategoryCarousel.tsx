@@ -31,12 +31,14 @@ const iconMap: Record<string, React.ElementType> = {
   "medical-devices": Stethoscope,
   "hospital-supplies": Building2,
   "face-masks-ppe": Heart,
+  "snake-venom": FlaskConical,
 };
 
 const imageMap: Record<string, string> = {
   "Dermal-Fillers": "/products/neauvia-intense-flux-1ml.jpg",
   "hospital-supplies": "/products/disposable-surgical-gowns-1.jpg",
   "face-masks-ppe": "/products/face-shield-1.jpg",
+  "snake-venom": "/products/black-mamba-snake-venom.jpg",
 };
 
 const CategoryCarousel = memo(() => {
