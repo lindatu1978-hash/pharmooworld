@@ -1,4 +1,4 @@
-import { useEffect, useState, memo, useCallback, useMemo } from "react";
+import { useEffect, useState, memo, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,7 +14,6 @@ import { ShoppingCart, Filter, Search, X, SlidersHorizontal, Package } from "luc
 import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
-import { getProductImageUrl } from "@/lib/image-utils";
 
 interface Product {
   id: string;
@@ -39,13 +38,10 @@ interface Category {
   slug: string;
 }
 
-// Mobile-optimized product image with WebP support and loading state
+// Optimized product image with loading state
 const ProductImage = memo(({ product }: { product: Product }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
-
-  // Get optimized WebP URL
-  const optimizedSrc = useMemo(() => getProductImageUrl(product.image_url, 'card'), [product.image_url]);
 
   if (!product.image_url || error) {
     return <ProductPlaceholder productName={product.name} />;
@@ -64,28 +60,22 @@ const ProductImage = memo(({ product }: { product: Product }) => {
       {!loaded && (
         <div className="absolute inset-0 bg-muted/50 animate-pulse" />
       )}
-      <picture>
-        {/* WebP version for supported browsers */}
-        {optimizedSrc && optimizedSrc !== product.image_url && (
-          <source srcSet={optimizedSrc} type="image/webp" />
+      <img
+        src={product.image_url}
+        alt={altText}
+        title={product.name}
+        width={400}
+        height={400}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={cn(
+          "w-full h-full object-cover group-hover:scale-105 transition-transform",
+          loaded ? "opacity-100" : "opacity-0"
         )}
-        <img
-          src={optimizedSrc || product.image_url}
-          alt={altText}
-          title={product.name}
-          width={400}
-          height={400}
-          loading="lazy"
-          decoding="async"
-          onLoad={() => setLoaded(true)}
-          onError={() => setError(true)}
-          className={cn(
-            "w-full h-full object-cover group-hover:scale-105 transition-transform",
-            loaded ? "opacity-100" : "opacity-0"
-          )}
-          itemProp="image"
-        />
-      </picture>
+        itemProp="image"
+      />
     </>
   );
 });
