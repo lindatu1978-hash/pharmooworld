@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Loader2, Package, ArrowRight } from "lucide-react";
+import { Search, Loader2, Package, ArrowRight, Clock, TrendingUp, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,48 @@ interface ProductSearchProps {
   onClose?: () => void;
 }
 
+const RECENT_SEARCHES_KEY = "pharmoo_recent_searches";
+const MAX_RECENT_SEARCHES = 5;
+
+const POPULAR_SEARCHES = [
+  "Belotero",
+  "Ethicon",
+  "Surgical Gowns",
+  "Snake Venom",
+  "Dermal Fillers",
+  "Face Shield",
+];
+
+const getRecentSearches = (): string[] => {
+  try {
+    const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+};
+
+const saveRecentSearch = (query: string) => {
+  try {
+    const recent = getRecentSearches();
+    const filtered = recent.filter((s) => s.toLowerCase() !== query.toLowerCase());
+    const updated = [query, ...filtered].slice(0, MAX_RECENT_SEARCHES);
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+  } catch {
+    // Silently fail if localStorage is unavailable
+  }
+};
+
+const removeRecentSearch = (query: string) => {
+  try {
+    const recent = getRecentSearches();
+    const updated = recent.filter((s) => s.toLowerCase() !== query.toLowerCase());
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+  } catch {
+    // Silently fail
+  }
+};
+
 const ProductSearch = ({ className, placeholder = "Search products, APIs, medical supplies...", onClose }: ProductSearchProps) => {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
@@ -34,9 +76,16 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  // Load recent searches on mount
+  useEffect(() => {
+    setRecentSearches(getRecentSearches());
+  }, []);
 
   // Debounced search
   useEffect(() => {
@@ -46,6 +95,8 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
       setIsOpen(false);
       return;
     }
+
+    setShowSuggestions(false);
 
     const timer = setTimeout(async () => {
       setIsLoading(true);
@@ -83,6 +134,7 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setShowSuggestions(false);
       }
     };
 
@@ -92,6 +144,35 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (showSuggestions) {
+      const totalSuggestions = recentSearches.length + POPULAR_SEARCHES.length;
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setSelectedIndex((prev) => (prev < totalSuggestions - 1 ? prev + 1 : 0));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : totalSuggestions - 1));
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (selectedIndex >= 0) {
+            const isRecent = selectedIndex < recentSearches.length;
+            const suggestion = isRecent
+              ? recentSearches[selectedIndex]
+              : POPULAR_SEARCHES[selectedIndex - recentSearches.length];
+            handleSuggestionClick(suggestion);
+          }
+          break;
+        case "Escape":
+          setShowSuggestions(false);
+          inputRef.current?.blur();
+          break;
+      }
+      return;
+    }
+
     const totalItems = categories.length + products.length + 1; // +1 for "view all" option
 
     switch (e.key) {
@@ -125,6 +206,10 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
   };
 
   const handleProductClick = (slug: string) => {
+    if (query.trim()) {
+      saveRecentSearch(query.trim());
+      setRecentSearches(getRecentSearches());
+    }
     navigate(`/product/${slug}`);
     setQuery("");
     setIsOpen(false);
@@ -132,6 +217,10 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
   };
 
   const handleCategoryClick = (slug: string) => {
+    if (query.trim()) {
+      saveRecentSearch(query.trim());
+      setRecentSearches(getRecentSearches());
+    }
     navigate(`/products?category=${slug}`);
     setQuery("");
     setIsOpen(false);
@@ -139,13 +228,39 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
   };
 
   const handleViewAll = () => {
+    if (query.trim()) {
+      saveRecentSearch(query.trim());
+      setRecentSearches(getRecentSearches());
+    }
     navigate(`/products?search=${encodeURIComponent(query)}`);
     setQuery("");
     setIsOpen(false);
     onClose?.();
   };
 
+  const handleSuggestionClick = (suggestion: string) => {
+    setQuery(suggestion);
+    setShowSuggestions(false);
+    setSelectedIndex(-1);
+  };
+
+  const handleRemoveRecent = (e: React.MouseEvent, search: string) => {
+    e.stopPropagation();
+    removeRecentSearch(search);
+    setRecentSearches(getRecentSearches());
+  };
+
+  const handleFocus = () => {
+    if (query.length >= 2) {
+      setIsOpen(true);
+    } else if (query.length < 2 && (recentSearches.length > 0 || POPULAR_SEARCHES.length > 0)) {
+      setShowSuggestions(true);
+      setSelectedIndex(-1);
+    }
+  };
+
   const hasResults = products.length > 0 || categories.length > 0;
+  const hasSuggestions = recentSearches.length > 0 || POPULAR_SEARCHES.length > 0;
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
@@ -155,8 +270,13 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => query.length >= 2 && setIsOpen(true)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            if (e.target.value.length < 2) {
+              setShowSuggestions(true);
+            }
+          }}
+          onFocus={handleFocus}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className="pl-10 pr-10 w-full"
@@ -166,7 +286,79 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
         )}
       </div>
 
-      {/* Dropdown */}
+      {/* Suggestions Dropdown (when no query) */}
+      {showSuggestions && query.length < 2 && hasSuggestions && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto">
+          {/* Recent Searches */}
+          {recentSearches.length > 0 && (
+            <div className="p-2 border-b border-border">
+              <p className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                Recent Searches
+              </p>
+              {recentSearches.map((search, index) => (
+                <button
+                  key={`recent-${search}`}
+                  onClick={() => handleSuggestionClick(search)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2 text-left rounded-md transition-colors group",
+                    selectedIndex === index
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted"
+                  )}
+                >
+                  <Clock className={cn(
+                    "h-4 w-4 flex-shrink-0",
+                    selectedIndex === index ? "text-primary-foreground" : "text-muted-foreground"
+                  )} />
+                  <span className="flex-1 font-medium">{search}</span>
+                  <button
+                    onClick={(e) => handleRemoveRecent(e, search)}
+                    className={cn(
+                      "p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/20",
+                      selectedIndex === index ? "text-primary-foreground" : "text-muted-foreground hover:text-destructive"
+                    )}
+                    aria-label="Remove from recent searches"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Popular Searches */}
+          <div className="p-2">
+            <p className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase flex items-center gap-1">
+              <TrendingUp className="h-3 w-3" />
+              Popular Searches
+            </p>
+            {POPULAR_SEARCHES.map((search, index) => {
+              const itemIndex = recentSearches.length + index;
+              return (
+                <button
+                  key={`popular-${search}`}
+                  onClick={() => handleSuggestionClick(search)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2 text-left rounded-md transition-colors",
+                    selectedIndex === itemIndex
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted"
+                  )}
+                >
+                  <TrendingUp className={cn(
+                    "h-4 w-4 flex-shrink-0",
+                    selectedIndex === itemIndex ? "text-primary-foreground" : "text-muted-foreground"
+                  )} />
+                  <span className="font-medium">{search}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Search Results Dropdown */}
       {isOpen && query.length >= 2 && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto">
           {!hasResults && !isLoading && (
