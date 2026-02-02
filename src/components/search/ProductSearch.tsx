@@ -55,8 +55,8 @@ const ProductSearch = ({ className, placeholder = "Search products, APIs, medica
           supabase
             .from("products")
             .select("id, name, slug, manufacturer, category_id, price, image_url")
-            .or(`name.ilike.%${query}%,manufacturer.ilike.%${query}%,description.ilike.%${query}%`)
-            .limit(6),
+            .or(`name.ilike.%${query}%,manufacturer.ilike.%${query}%,description.ilike.%${query}%,dosage.ilike.%${query}%,form.ilike.%${query}%,origin.ilike.%${query}%`)
+            .limit(8),
           supabase
             .from("categories")
             .select("id, name, slug")
