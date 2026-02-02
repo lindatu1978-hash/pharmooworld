@@ -12,6 +12,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { Package, Shield, Truck, ArrowLeft, CreditCard, Building2, Bitcoin } from "lucide-react";
+import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
+import { BitcoinPaymentDetails } from "@/components/bitcoin/BitcoinPaymentDetails";
 
 const Checkout = () => {
   const { items, total, clearCart } = useCart();
@@ -314,15 +316,15 @@ const Checkout = () => {
                         </Label>
                       </div>
 
-                      <div className="flex items-start gap-3 p-4 border rounded-lg hover:bg-secondary/50 cursor-pointer">
+                      <div className="flex items-start gap-3 p-4 border rounded-lg hover:bg-secondary/50 cursor-pointer border-orange-500/30 bg-orange-500/5">
                         <RadioGroupItem value="crypto" id="crypto" />
                         <Label htmlFor="crypto" className="flex-1 cursor-pointer">
                           <div className="flex items-center gap-2 mb-1">
-                            <Bitcoin className="h-4 w-4" />
-                            <span className="font-medium">Cryptocurrency</span>
+                            <Bitcoin className="h-4 w-4 text-orange-500" />
+                            <span className="font-medium">Bitcoin (BTC)</span>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            Pay with Bitcoin, USDT, or USDC. Wallet addresses provided after confirmation.
+                            Pay with Bitcoin. Live conversion rate with QR code and wallet address.
                           </p>
                         </Label>
                       </div>
@@ -340,6 +342,13 @@ const Checkout = () => {
                         </Label>
                       </div>
                     </RadioGroup>
+
+                    {/* Show Bitcoin payment details when crypto is selected */}
+                    {paymentMethod === "crypto" && (
+                      <div className="mt-6">
+                        <BitcoinPaymentDetails usdAmount={total} showQrCode />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -383,7 +392,12 @@ const Checkout = () => {
 
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <div className="text-right">
+                        <span>${total.toFixed(2)}</span>
+                        <div className="font-normal">
+                          <BitcoinPriceDisplay usdAmount={total} size="sm" />
+                        </div>
+                      </div>
                     </div>
 
                     <Button
