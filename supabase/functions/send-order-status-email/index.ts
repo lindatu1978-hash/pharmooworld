@@ -147,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
                       <table width="100%" cellpadding="0" cellspacing="0">
                         <tr>
                           <td align="center">
-                            <a href="https://pharmooworld.lovable.app/orders" style="display: inline-block; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                            <a href="https://www.pharmooworld.com/orders" style="display: inline-block; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;">
                               View My Orders
                             </a>
                           </td>

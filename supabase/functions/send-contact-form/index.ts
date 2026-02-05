@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
               We have received your message regarding "<strong>${subject}</strong>" and our team is reviewing it now.
             </p>
             <p style="color: #374151; font-size: 16px; line-height: 1.6;">
-              In the meantime, feel free to browse our products at <a href="https://pharmooworld.lovable.app/products" style="color: #0f766e;">pharmooworld.com</a>.
+              In the meantime, feel free to browse our products at <a href="https://www.pharmooworld.com/products" style="color: #0f766e;">pharmooworld.com</a>.
             </p>
             <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-top: 24px;">
               Best regards,<br />

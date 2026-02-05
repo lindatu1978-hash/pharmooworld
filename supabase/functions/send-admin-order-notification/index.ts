@@ -176,7 +176,7 @@ const handler = async (req: Request): Promise<Response> => {
               </table>
 
               <div style="text-align: center; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-                <a href="https://pharmooworld.lovable.app/admin" style="display: inline-block; background: linear-gradient(135deg, #059669, #10b981); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                <a href="https://www.pharmooworld.com/admin" style="display: inline-block; background: linear-gradient(135deg, #059669, #10b981); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;">
                   View in Admin Dashboard
                 </a>
               </div>
