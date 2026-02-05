@@ -17,14 +17,24 @@
      const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
      const supabase = createClient(supabaseUrl, supabaseKey);
  
+     // Fetch all categories
+     const { data: categories, error: categoriesError } = await supabase
+       .from("categories")
+       .select("slug")
+       .order("name", { ascending: true });
+ 
+     if (categoriesError) {
+       throw categoriesError;
+     }
+ 
      // Fetch all products
-     const { data: products, error } = await supabase
+     const { data: products, error: productsError } = await supabase
        .from("products")
        .select("slug, updated_at")
        .order("name", { ascending: true });
  
-     if (error) {
-       throw error;
+     if (productsError) {
+       throw productsError;
      }
  
      // Static pages
@@ -61,6 +71,17 @@
      <lastmod>${today}</lastmod>
      <changefreq>${page.changefreq}</changefreq>
      <priority>${page.priority}</priority>
+   </url>`;
+     }
+ 
+     // Add category pages
+     for (const category of categories || []) {
+       xml += `
+   <url>
+     <loc>${SITE_URL}/products?category=${category.slug}</loc>
+     <lastmod>${today}</lastmod>
+     <changefreq>daily</changefreq>
+     <priority>0.85</priority>
    </url>`;
      }
  
