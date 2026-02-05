@@ -109,10 +109,10 @@ Disallow: /orders
 Disallow: /api/
 Disallow: /*.json$
 
-# ===========================================
-# Sitemaps
-# ===========================================
-Sitemap: https://www.pharmooworld.com/sitemap.xml
+ # ===========================================
+ # Sitemaps (Dynamic sitemap with all product pages)
+ # ===========================================
+ Sitemap: https://rutasxqwqxdyzjdzmxrk.supabase.co/functions/v1/sitemap
 
 # ===========================================
 # Host Directive
