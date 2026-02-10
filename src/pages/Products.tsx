@@ -36,6 +36,7 @@ interface Category {
   id: string;
   name: string;
   slug: string;
+  description: string | null;
 }
 
 // Optimized product image with loading state
@@ -357,7 +358,7 @@ const Products = () => {
       // Fetch categories
       const { data: categoriesData } = await supabase
         .from("categories")
-        .select("id, name, slug")
+        .select("id, name, slug, description")
         .order("name");
       
       setCategories(categoriesData || []);
@@ -459,14 +460,23 @@ const Products = () => {
       />
 
       <Layout>
-        <header className="bg-secondary/30 py-6 md:py-8">
+        <header className="bg-secondary/30 py-8 md:py-12">
           <div className="container-pharma">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2 md:mb-3">
               {currentCategory ? currentCategory.name : "All Products"}
             </h1>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Browse our comprehensive range of pharmaceutical and medical products
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl">
+              {currentCategory?.description 
+                ? currentCategory.description 
+                : "Browse our comprehensive range of pharmaceutical and medical products from GMP-certified manufacturers worldwide."}
             </p>
+            {currentCategory && (
+              <div className="flex items-center gap-2 mt-3 md:mt-4">
+                <Badge variant="outline" className="text-xs md:text-sm">
+                  {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
+                </Badge>
+              </div>
+            )}
           </div>
         </header>
 
