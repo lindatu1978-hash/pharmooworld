@@ -14,6 +14,7 @@ import { ShoppingCart, Filter, Search, X, SlidersHorizontal, Package } from "luc
 import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
+import BotulinumContent from "@/components/category-content/BotulinumContent";
 
 interface Product {
   id: string;
@@ -546,6 +547,9 @@ const Products = () => {
                   ))}
                 </div>
               )}
+
+              {/* Category-specific content */}
+              {selectedCategory === "Botulinum-products" && <BotulinumContent />}
             </main>
           </div>
         </div>
