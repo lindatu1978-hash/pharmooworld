@@ -1,13 +1,18 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { Calendar, ArrowRight } from "lucide-react";
 
 const venomProducts = [
-  { product: "Black Mamba Snake Venom (Lyophilized)", price: "$450" },
-  { product: "King Cobra Venom (1g)", price: "$520" },
-  { product: "Rattlesnake Venom (Lyophilized, 1g)", price: "$480" },
-  { product: "Saw-Scaled Viper Venom (1g)", price: "$390" },
-  { product: "Gaboon Viper Venom (1g)", price: "$410" },
+  { product: "Black Mamba Snake Venom (Lyophilized)", price: "$500" },
+  { product: "King Cobra Venom (1g)", price: "$500" },
+  { product: "Deathstalker Scorpion Venom (1g)", price: "$4,000" },
+  { product: "Blue Scorpion Venom (1g)", price: "$4,000" },
+  { product: "Horseshoe Crab Blood (100ml)", price: "$1,500" },
+  { product: "Saw-Scaled Viper Venom (1g)", price: "$1,326" },
+  { product: "Jararaca Pit Viper Venom (1g)", price: "$500" },
 ];
 
 const researchApplications = [
@@ -48,6 +53,45 @@ const faqItems = [
   { q: "What quality controls does PharmooWorld apply to venom products?", a: "All venom products undergo rigorous quality testing including protein electrophoresis (SDS-PAGE), HPLC analysis, enzymatic activity assays, and sterility testing. Each batch is verified for purity, potency, and species authenticity before release." },
   { q: "Are there legal restrictions on purchasing snake venom?", a: "Yes, snake venom is a controlled biological substance in many jurisdictions. PharmooWorld complies with all international regulations including CITES where applicable. Buyers are responsible for ensuring compliance with their local laws and institutional policies." },
   { q: "What is the shelf life of lyophilized snake venom?", a: "When stored properly at -20°C or below, lyophilized snake venom maintains its bioactivity for 3-5 years. PharmooWorld provides expiration dates and storage recommendations with every product to ensure optimal research results." },
+];
+
+const blogPosts = [
+  {
+    id: 1,
+    category: "Venom-Derived Drugs",
+    title: "Lethal Poisons Transformed Into Life-Saving Medicines",
+    excerpt: "How deadly snake and scorpion venoms are being repurposed by pharmaceutical researchers to create breakthrough treatments for cardiovascular disease, chronic pain, and neurological disorders.",
+    date: "Feb 13, 2026",
+    image: "https://images.unsplash.com/photo-1585095595205-e68428a9e205?w=600&h=400&fit=crop",
+    readTime: "8 min read",
+  },
+  {
+    id: 2,
+    category: "Cancer Treatment",
+    title: "Venom and Cancer: A Revolutionary Approach to Healthcare",
+    excerpt: "Scorpion venom peptides like chlorotoxin are showing remarkable selectivity for cancer cells. Discover how Deathstalker scorpion venom is being used in tumor imaging and targeted therapy research.",
+    date: "Jan 28, 2026",
+    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?w=600&h=400&fit=crop",
+    readTime: "6 min read",
+  },
+  {
+    id: 3,
+    category: "Toad Venom Research",
+    title: "Bufo Alvarius & 5-MeO-DMT: The Psychedelic Medicine Revolution",
+    excerpt: "Colorado River Toad venom contains 5-MeO-DMT, one of the most potent naturally occurring psychoactive compounds. Researchers are exploring its potential for treatment-resistant depression and PTSD.",
+    date: "Jan 15, 2026",
+    image: "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=400&fit=crop",
+    readTime: "7 min read",
+  },
+  {
+    id: 4,
+    category: "Medical Applications",
+    title: "Harnessing the Power of Venoms: From Snake Bites to Pain Relief",
+    excerpt: "Natural pain relief alternatives derived from animal venoms are advancing rapidly. Black Mamba dendrotoxins and cone snail conotoxins offer non-opioid analgesic pathways with fewer side effects.",
+    date: "Dec 20, 2025",
+    image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=400&fit=crop",
+    readTime: "5 min read",
+  },
 ];
 
 const SnakeVenomContent = () => {
@@ -172,6 +216,54 @@ const SnakeVenomContent = () => {
           <li><strong>Global compliance</strong> — adherence to CITES and international biological material regulations</li>
           <li><strong>Expert support</strong> — dedicated team to assist with product selection and regulatory questions</li>
         </ul>
+      </div>
+
+      {/* Blog Section */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Latest from Our Venom Research Blog</h2>
+        </div>
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+          Stay informed with the latest developments in venom-based pharmaceutical research, new product discoveries, and industry insights from our team of experts.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {blogPosts.map((post) => (
+            <Card key={post.id} className="group overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="relative aspect-[3/2] overflow-hidden">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute top-3 left-3">
+                  <Badge className="bg-primary text-primary-foreground text-xs font-medium">
+                    {post.category}
+                  </Badge>
+                </div>
+                <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm rounded-md px-2 py-1">
+                  <span className="text-xs font-medium text-foreground">{post.readTime}</span>
+                </div>
+              </div>
+              <CardContent className="p-4 md:p-5 space-y-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calendar className="h-3.5 w-3.5" />
+                  <time>{post.date}</time>
+                </div>
+                <h3 className="font-bold text-sm md:text-base leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                  {post.title}
+                </h3>
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                  {post.excerpt}
+                </p>
+                <div className="flex items-center gap-1 text-primary text-xs md:text-sm font-medium pt-1">
+                  <span>Read more</span>
+                  <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* FAQ */}
