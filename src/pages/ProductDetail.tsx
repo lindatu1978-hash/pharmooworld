@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ShoppingCart, Minus, Plus, FileCheck, Shield, Truck, CheckCircle, ArrowLeft, AlertTriangle, Package, Bitcoin, ChevronLeft, ChevronRight } from "lucide-react";
 import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
@@ -165,6 +166,36 @@ interface ProductVariation {
   price: number;
 }
 
+// Snake venom size options with pricing multipliers
+const VENOM_CATEGORY_ID = "a7fe3548-28e4-47c5-82a0-da705a9285a8";
+
+interface VenomSizeOption {
+  label: string;
+  value: string;
+  multiplier: number;
+}
+
+const getVenomSizeOptions = (product: Product): VenomSizeOption[] => {
+  if (!product.bulk_price) return [];
+  
+  // Check if it's horseshoe crab (liquid product)
+  const isLiquid = product.dosage?.toLowerCase().includes('ml') || product.dosage?.toLowerCase().includes('liquid');
+  
+  if (isLiquid) {
+    return [
+      { label: "100ml", value: "100ml", multiplier: 1 },
+      { label: "500ml", value: "500ml", multiplier: 4 },
+      { label: "1 Liter", value: "1L", multiplier: (product.bulk_price * 10) / product.price },
+    ];
+  }
+  
+  return [
+    { label: "1 Gram", value: "1g", multiplier: 1 },
+    { label: "5 Grams", value: "5g", multiplier: 5 * (product.bulk_price / product.price) },
+    { label: "10 Grams", value: "10g", multiplier: 10 * (product.bulk_price / product.price) },
+  ];
+};
+
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -173,6 +204,7 @@ const ProductDetail = () => {
   const [variations, setVariations] = useState<ProductVariation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addToCart } = useCart();
   const { toast } = useToast();
@@ -299,13 +331,18 @@ const ProductDetail = () => {
     await addToCart(product.id, quantity);
   };
 
-  const currentPrice = product?.bulk_price && 
-                       product?.bulk_min_quantity && 
-                       quantity >= product.bulk_min_quantity
-    ? product.bulk_price
-    : product?.price || 0;
+  const isVenomProduct = product?.category_id === VENOM_CATEGORY_ID;
+  const venomSizes = product ? getVenomSizeOptions(product) : [];
+  const selectedSizeOption = venomSizes.find(s => s.value === selectedSize);
+  
+  const currentPrice = isVenomProduct && selectedSizeOption
+    ? product!.price * selectedSizeOption.multiplier
+    : product?.bulk_price && product?.bulk_min_quantity && quantity >= product.bulk_min_quantity
+      ? product.bulk_price
+      : product?.price || 0;
 
-  const totalPrice = currentPrice * quantity;
+  const totalPrice = isVenomProduct ? currentPrice * quantity : currentPrice * quantity;
+  const displayUnitPrice = isVenomProduct && selectedSizeOption ? currentPrice : (product?.price || 0);
 
   // Generate descriptive alt text for SEO
   const getImageAltText = () => {
@@ -571,29 +608,65 @@ const ProductDetail = () => {
                   <meta itemProp="priceCurrency" content="USD" />
                   <link itemProp="availability" href={product.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
                   
-                  <div className="flex items-end justify-between mb-4">
-                    <div>
-                      <p className="text-3xl font-bold text-foreground">
-                        $<span itemProp="price" content={currentPrice.toString()}>{currentPrice.toFixed(2)}</span>
-                        <span className="text-lg font-normal text-muted-foreground"> / unit</span>
+                  {/* Price Range for venom products */}
+                  {isVenomProduct && venomSizes.length > 0 ? (
+                    <div className="mb-4">
+                      <p className="text-2xl md:text-3xl font-bold text-foreground">
+                        ${product.price.toFixed(2)} – ${(product.price * venomSizes[venomSizes.length - 1].multiplier).toFixed(2)}
                       </p>
                       <BitcoinPriceDisplay usdAmount={currentPrice} size="sm" showRefresh />
-                      {product.bulk_price && product.bulk_min_quantity && (
-                        <p className="text-sm text-accent mt-1">
-                          Bulk price: ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+ units
+                    </div>
+                  ) : (
+                    <div className="flex items-end justify-between mb-4">
+                      <div>
+                        <p className="text-3xl font-bold text-foreground">
+                          $<span itemProp="price" content={currentPrice.toString()}>{currentPrice.toFixed(2)}</span>
+                          <span className="text-lg font-normal text-muted-foreground"> / unit</span>
+                        </p>
+                        <BitcoinPriceDisplay usdAmount={currentPrice} size="sm" showRefresh />
+                        {product.bulk_price && product.bulk_min_quantity && (
+                          <p className="text-sm text-accent mt-1">
+                            Bulk price: ${product.bulk_price.toFixed(2)} for {product.bulk_min_quantity}+ units
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Total</p>
+                        <p className="text-xl font-bold">${totalPrice.toFixed(2)}</p>
+                        <BitcoinPriceDisplay usdAmount={totalPrice} size="sm" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Venom Size Selector */}
+                  {isVenomProduct && venomSizes.length > 0 && (
+                    <div className="space-y-3 mb-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                        <label className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Quantity</label>
+                        <Select value={selectedSize} onValueChange={setSelectedSize}>
+                          <SelectTrigger className="h-11 w-full sm:w-[200px]">
+                            <SelectValue placeholder="Choose an option" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {venomSizes.map((size) => (
+                              <SelectItem key={size.value} value={size.value}>
+                                {size.label} — ${(product.price * size.multiplier).toFixed(2)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      {selectedSize && (
+                        <p className="text-sm text-accent font-medium">
+                          Selected: {selectedSizeOption?.label} — ${currentPrice.toFixed(2)}
                         </p>
                       )}
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Total</p>
-                      <p className="text-xl font-bold">${totalPrice.toFixed(2)}</p>
-                      <BitcoinPriceDisplay usdAmount={totalPrice} size="sm" />
-                    </div>
-                  </div>
+                  )}
 
-                  {/* Quantity - Mobile optimized */}
+                  {/* Quantity counter + Total */}
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4">
-                    <span className="text-sm font-medium">Quantity:</span>
+                    <span className="text-sm font-medium">{isVenomProduct ? "Units:" : "Quantity:"}</span>
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
@@ -625,16 +698,22 @@ const ProductDetail = () => {
                         <Plus className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </div>
+                    {(selectedSize || !isVenomProduct) && (
+                      <div className="sm:ml-auto text-right">
+                        <p className="text-sm text-muted-foreground">Total</p>
+                        <p className="text-xl font-bold">${totalPrice.toFixed(2)}</p>
+                      </div>
+                    )}
                   </div>
 
                   <Button
                     size="lg"
                     className="w-full h-12 md:h-11 gradient-medical hover:opacity-90 gap-2 text-base"
-                    disabled={!product.in_stock}
+                    disabled={!product.in_stock || (isVenomProduct && venomSizes.length > 0 && !selectedSize)}
                     onClick={handleAddToCart}
                   >
                     <ShoppingCart className="h-5 w-5" aria-hidden="true" />
-                    {product.in_stock ? "Add to Cart" : "Out of Stock"}
+                    {!product.in_stock ? "Out of Stock" : isVenomProduct && !selectedSize ? "Select Size" : "Add to Cart"}
                   </Button>
                 </CardContent>
               </Card>
