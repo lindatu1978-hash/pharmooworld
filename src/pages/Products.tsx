@@ -15,6 +15,7 @@ import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
 import BotulinumContent from "@/components/category-content/BotulinumContent";
+import DermalFillersContent from "@/components/category-content/DermalFillersContent";
 
 interface Product {
   id: string;
@@ -550,6 +551,7 @@ const Products = () => {
 
               {/* Category-specific content */}
               {selectedCategory === "Botulinum-products" && <BotulinumContent />}
+              {selectedCategory === "Dermal-Fillers" && <DermalFillersContent />}
             </main>
           </div>
         </div>
