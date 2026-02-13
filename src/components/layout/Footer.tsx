@@ -108,6 +108,21 @@ const Footer = () => {
               <p className="text-sm font-medium mb-1">Certifications</p>
               <p className="text-xs text-primary-foreground/60">GMP • WHO • FDA Registered</p>
             </div>
+            <div className="mt-4">
+              <h3 className="font-semibold mb-2 text-base">Partner Sites</h3>
+              <ul className="space-y-1">
+                <li>
+                  <a 
+                    href="https://www.rcchemicallab.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
+                  >
+                    RC Chemical Lab
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
 
         </div>
