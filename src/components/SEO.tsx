@@ -8,7 +8,7 @@ interface SEOProps {
   type?: "website" | "article" | "product";
   image?: string;
   noindex?: boolean;
-  structuredData?: object;
+  structuredData?: object | object[];
 }
 
 const SITE_URL = "https://www.pharmooworld.com";
@@ -39,19 +39,17 @@ const SEO = ({
     contactPoint: {
       "@type": "ContactPoint",
       telephone: "+401-232-4508",
-      contactType: "sales",
+      contactType: "Customer Service",
       areaServed: "Worldwide",
       availableLanguage: ["English"],
     },
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "1914 S Vermont Ave",
-      addressLocality: "Los Angeles",
-      addressRegion: "CA",
-      postalCode: "90006",
-      addressCountry: "US",
-    },
-    sameAs: [],
+    sameAs: [
+      "https://www.facebook.com/pharmooworld",
+      "https://www.instagram.com/pharmooworld",
+      "https://twitter.com/pharmooworld",
+      "https://www.youtube.com/@pharmooworld",
+      "https://www.pinterest.com/pharmooworld",
+    ],
   };
 
   // WebSite schema for search functionality
@@ -109,9 +107,17 @@ const SEO = ({
         {JSON.stringify(websiteSchema)}
       </script>
       {structuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
+        Array.isArray(structuredData) 
+          ? structuredData.map((data, i) => (
+              <script key={i} type="application/ld+json">
+                {JSON.stringify(data)}
+              </script>
+            ))
+          : (
+            <script type="application/ld+json">
+              {JSON.stringify(structuredData)}
+            </script>
+          )
       )}
     </Helmet>
   );
@@ -169,37 +175,36 @@ export const createProductSchema = (product: {
     });
   }
 
-  return {
+  const productSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description || `${product.name} - pharmaceutical grade product from ${SITE_NAME}`,
-    image: product.image || DEFAULT_IMAGE,
+    image: [product.image || DEFAULT_IMAGE],
     url: `${SITE_URL}/product/${product.slug}`,
     sku: product.sku || product.slug,
     mpn: product.slug,
     category: product.category || "Pharmaceutical Products",
-    brand: product.manufacturer ? {
+    brand: {
       "@type": "Brand",
-      name: product.manufacturer,
-    } : {
-      "@type": "Brand",
-      name: SITE_NAME,
+      name: product.manufacturer || SITE_NAME,
     },
-    manufacturer: product.manufacturer ? {
-      "@type": "Organization",
-      name: product.manufacturer,
-    } : undefined,
+    ...(product.manufacturer && {
+      manufacturer: {
+        "@type": "Organization",
+        name: product.manufacturer,
+      },
+    }),
     offers: {
       "@type": "Offer",
       url: `${SITE_URL}/product/${product.slug}`,
-      price: product.price,
+      price: product.price.toFixed(2),
       priceCurrency: "USD",
+      priceValidUntil: "2030-12-31",
       availability: product.inStock
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
-      priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       seller: {
         "@type": "Organization",
         name: SITE_NAME,
@@ -230,7 +235,26 @@ export const createProductSchema = (product: {
     },
     ...(additionalProperties.length > 0 && { additionalProperty: additionalProperties }),
   };
+
+  return productSchema;
 };
+
+// MedicalEntity structured data helper for pharmaceutical/medical products
+export const createMedicalEntitySchema = (product: {
+  name: string;
+  description?: string | null;
+  slug: string;
+  form?: string | null;
+  dosage?: string | null;
+}) => ({
+  "@context": "https://schema.org",
+  "@type": "MedicalEntity",
+  name: product.name,
+  description: product.description || `${product.name} - pharmaceutical grade product`,
+  url: `${SITE_URL}/product/${product.slug}`,
+  ...(product.form && { drugClass: product.form }),
+  ...(product.dosage && { activeIngredient: product.dosage }),
+});
 
 // FAQ structured data helper
 export const createFAQSchema = (faqs: { question: string; answer: string }[]) => ({
