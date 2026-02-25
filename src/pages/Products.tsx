@@ -1,6 +1,6 @@
 import { useEffect, useState, memo, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import SEO from "@/components/SEO";
+import SEO, { createBreadcrumbSchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -460,6 +460,11 @@ const Products = () => {
         description={`Browse our selection of ${currentCategory?.name || "pharmaceutical products, APIs, medical devices, and hospital supplies"} from GMP-certified manufacturers worldwide. Wholesale pricing available.`}
         keywords={`${currentCategory?.name || "pharmaceutical products"}, wholesale, GMP certified, medical supplies, buy online`}
         canonical={`/products${selectedCategory ? `?category=${selectedCategory}` : ""}`}
+        structuredData={createBreadcrumbSchema([
+          { name: "Home", url: "/" },
+          { name: "Products", url: "/products" },
+          ...(currentCategory ? [{ name: currentCategory.name, url: `/products?category=${currentCategory.slug}` }] : []),
+        ])}
       />
 
       <Layout>

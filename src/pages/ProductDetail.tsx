@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, memo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import SEO, { createProductSchema, createBreadcrumbSchema } from "@/components/SEO";
+import SEO, { createProductSchema, createBreadcrumbSchema, createMedicalEntitySchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -398,21 +398,36 @@ const ProductDetail = () => {
         canonical={`/product/${product.slug}`}
         type="product"
         image={product.image_url || undefined}
-        structuredData={createProductSchema({
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          manufacturer: product.manufacturer,
-          inStock: product.in_stock,
-          image: product.image_url,
-          slug: product.slug,
-          sku: product.id,
-          category: category?.name,
-          dosage: product.dosage,
-          form: product.form,
-          origin: product.origin,
-          regulatoryStatus: product.regulatory_status,
-        })}
+        structuredData={[
+          createProductSchema({
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            manufacturer: product.manufacturer,
+            inStock: product.in_stock,
+            image: product.image_url,
+            slug: product.slug,
+            sku: product.id,
+            category: category?.name,
+            dosage: product.dosage,
+            form: product.form,
+            origin: product.origin,
+            regulatoryStatus: product.regulatory_status,
+          }),
+          createMedicalEntitySchema({
+            name: product.name,
+            description: product.description,
+            slug: product.slug,
+            form: product.form,
+            dosage: product.dosage,
+          }),
+          createBreadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Products", url: "/products" },
+            ...(category ? [{ name: category.name, url: `/products?category=${category.slug}` }] : []),
+            { name: product.name, url: `/product/${product.slug}` },
+          ]),
+        ]}
       />
 
       <Layout>
