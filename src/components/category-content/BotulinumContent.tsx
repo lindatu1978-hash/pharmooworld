@@ -1,6 +1,16 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { createFAQSchema } from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
+
+interface BotulinumProduct {
+  name: string;
+  slug: string;
+  price: number;
+}
 
 const botoxPricing = [
   { product: "Botox 50 Units", price: "$299" },
@@ -19,115 +29,218 @@ const licenseTypes = [
   { abbr: "DDS", title: "Doctor of Dental Surgery", desc: "A dental professional trained in surgical procedures, often using Botox for therapeutic and cosmetic purposes." },
   { abbr: "DMD", title: "Doctor of Medical Dentistry", desc: "A dental practitioner with medical training, qualified to use Botox in dental and facial treatments." },
   { abbr: "DPM", title: "Doctor of Podiatric Medicine", desc: "A specialist in foot and ankle care, often using Botox for medical treatments like pain management and muscle conditions." },
-  { abbr: "DVM", title: "Doctor of Veterinary Medicine", desc: "A licensed veterinarian who may use Botox for specific animal treatments and medical applications." },
-  { abbr: "PA", title: "Physician Assistant", desc: "A licensed medical professional who works under a physician's supervision and is trained to administer treatments like Botox." },
   { abbr: "NP", title: "Nurse Practitioner", desc: "An advanced practice nurse with the authority to diagnose, prescribe, and administer treatments, including Botox." },
+  { abbr: "PA", title: "Physician Assistant", desc: "A licensed medical professional who works under a physician's supervision and is trained to administer treatments like Botox." },
   { abbr: "ARNP", title: "Advanced Registered Nurse Practitioner", desc: "A highly trained nurse practitioner with advanced clinical skills and the ability to provide medical treatments." },
-  { abbr: "APRN", title: "Advanced Practice Registered Nurse", desc: "A nurse with advanced training, qualified to administer medications and perform medical procedures." },
-  { abbr: "APN", title: "Advanced Practice Nurse", desc: "A certified nurse with specialized training, authorized to provide advanced medical care, including Botox administration." },
-  { abbr: "FNP", title: "Family Nurse Practitioner", desc: "A nurse practitioner specializing in family medicine, qualified to prescribe and administer a wide range of treatments, including Botox." },
-];
-
-const medicalConditions = [
-  "Blepharospasm",
-  "Cerebral palsy",
-  "Limb spasticity",
-  "Overactive bladder",
-  "Urinary retention",
-  "Severe primary axillary hyperhidrosis",
-  "Chronic migraine",
-  "Episodic migraine",
-  "Cervical dystonia",
-  "Neck pain",
-];
-
-const contraindications = [
-  "Resistance (or, in other words, insensitivity) to Botox",
-  "Pregnancy and breast-feeding",
-  "Violation of the skin integrity at the injection area",
-  "Oncological diseases",
-  "Chronic diseases in the phase of exacerbation (at the moment of injection)",
-];
-
-const sideEffects = [
-  "Pain at the injection site",
-  "Redness",
-  "Swelling",
-  "Itching",
-  "Bruising",
-  "Skin sensitivity",
-  "Tissue discoloration",
-  "Headache",
-  "Nausea",
-];
-
-const cosmeticInjectionSites = [
-  "Forehead",
-  "Glabellar region",
-  "Periorbital area",
-  "Perioral area",
 ];
 
 const faqItems = [
-  { q: "Why should I choose PharmooWorld for my purchases?", a: "PharmooWorld offers a wide range of benefits to its customers, including an extensive selection of brand-name products, competitive wholesale discounts, reliable shipping options, and more—ensuring the best possible shopping experience." },
-  { q: "Who is eligible to order from PharmooWorld?", a: "Since PharmooWorld sells aesthetic products intended for professional use, only certified healthcare providers with a valid medical license are eligible to place orders." },
-  { q: "How much can I save when shopping with PharmooWorld?", a: "Thanks to wholesale discounts and special offers, PharmooWorld allows you to save up to 40% on authentic dermal fillers, botulinum toxins, and other cosmetic injectables." },
-  { q: "What happens if I find a lower price elsewhere?", a: "If you find a lower price for a specific dermal filler, botulinum toxin, or other cosmetic injectable offered by PharmooWorld, contact one of our sales managers to discuss the possibility of a price match." },
-  { q: "How does PharmooWorld's discount system work?", a: "PharmooWorld offers generous wholesale discounts—the more products you order in bulk, the greater the discount you will receive." },
-  { q: "Are the products available at PharmooWorld authentic?", a: "Yes, all products available at PharmooWorld are 100% authentic. We offer only original dermal fillers, botulinum toxins, and other cosmetic injectables." },
-  { q: "What types of medical licenses does PharmooWorld accept?", a: "PharmooWorld accepts officially issued licenses from accredited healthcare providers. Our sales managers manually verify the license you provide during the order approval process." },
-  { q: "Where is the best place to purchase Botox online?", a: "When buying Botox, it's important to choose a trustworthy supplier like PharmooWorld. This ensures you'll receive a high-quality, original product at an affordable price." },
-  { q: "How can I order Botox as a provider through PharmooWorld?", a: "To order Botox from PharmooWorld, simply follow these three easy steps: create an account, add Botox to your shopping cart, and fill in your delivery and billing details. You can also contact our sales managers by phone or text for assistance during the order process." },
-  { q: "Does PharmooWorld offer wholesale pricing?", a: "Yes, PharmooWorld provides attractive wholesale pricing for bulk purchases." },
-  { q: "Can I purchase Botox injection supplies on PharmooWorld?", a: "Yes, PharmooWorld offers a wide range of authentic botulinum toxins, including Botox." },
-  { q: "What are the licensing requirements for buying Botox from PharmooWorld?", a: "To order Botox from PharmooWorld, you must possess an officially issued license from an accredited healthcare provider. This license will be manually verified by our sales managers." },
-  { q: "Does PharmooWorld guarantee the authenticity of all products sold?", a: "Yes, PharmooWorld guarantees the authenticity of all products sold. We only offer original brand-name dermal fillers, botulinum toxins, and other cosmetic injectables from world-renowned brands." },
+  { q: "What is Botulinum Toxin Type A?", a: "Botulinum Toxin Type A is a neurotoxin protein produced by the bacterium Clostridium botulinum. In medical and aesthetic practice, purified formulations of this protein — such as Allergan Botox — are used to temporarily relax targeted muscles by blocking acetylcholine release at the neuromuscular junction. This mechanism makes it effective for treating dynamic wrinkles, chronic migraine, cervical dystonia, hyperhidrosis, and other neuromuscular conditions." },
+  { q: "Who can legally purchase and administer Botulinum Toxin?", a: "Botulinum toxin products are prescription-only medical devices intended exclusively for certified healthcare professionals. Eligible buyers include Medical Doctors (MD), Osteopathic Doctors (DO), Dentists (DDS/DMD), Nurse Practitioners (NP), Physician Assistants (PA), and other licensed practitioners with appropriate training. PharmooWorld verifies all professional licenses before processing orders." },
+  { q: "How should Botulinum Toxin be stored?", a: "Unopened botulinum toxin vials must be stored between 2°C and 8°C (36°F–46°F) in a refrigerator. Do not freeze. Once reconstituted, the product should be used within 24 hours and stored at 2–8°C. PharmooWorld ships all botulinum products in temperature-controlled packaging with cold chain monitoring to ensure product integrity upon delivery." },
+  { q: "What is the difference between Botox and other neurotoxin brands?", a: "While all approved neurotoxins contain botulinum toxin type A, they differ in formulation, unit dosing, onset time, diffusion characteristics, and duration. Allergan Botox (onabotulinumtoxinA) is the most widely studied, with over 30 years of clinical data. Other FDA/EMA-approved options include Dysport (abobotulinumtoxinA), Xeomin (incobotulinumtoxinA), and Jeuveau (prabotulinumtoxinA). Each has distinct clinical profiles suitable for different indications." },
+  { q: "Does PharmooWorld guarantee product authenticity?", a: "Yes. PharmooWorld guarantees 100% authenticity of all products sold. Every botulinum toxin shipment includes lot numbers, expiration dates, and certificates of authenticity. We source exclusively from authorized manufacturers and licensed distributors, and all products undergo quality verification before dispatch." },
+  { q: "What wholesale pricing is available for bulk orders?", a: "PharmooWorld offers tiered wholesale pricing — the larger your order volume, the greater the discount. Bulk orders of 10+ units qualify for automatic wholesale pricing shown on product pages. For orders exceeding 50 units or for custom contracts, contact our sales team at sales@pharmooworld.com for personalized quotes." },
+  { q: "How is Botulinum Toxin shipped internationally?", a: "All botulinum toxin shipments use temperature-controlled cold chain logistics. Products are packaged in insulated containers with gel packs or dry ice to maintain the required 2–8°C range. We ship worldwide via express couriers (DHL, FedEx, UPS) with real-time temperature monitoring and customs-ready documentation including commercial invoices, certificates of analysis, and import permits where required." },
+  { q: "What medical conditions can Botulinum Toxin treat?", a: "Beyond cosmetic wrinkle reduction, botulinum toxin is FDA-approved for chronic migraine, cervical dystonia (neck muscle spasms), blepharospasm (eyelid twitching), upper and lower limb spasticity, overactive bladder, severe axillary hyperhidrosis (excessive sweating), and strabismus (crossed eyes). Ongoing research continues to expand its therapeutic applications." },
 ];
 
 const BotulinumContent = () => {
+  const [products, setProducts] = useState<BotulinumProduct[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data } = await supabase
+        .from("products")
+        .select("name, slug, price")
+        .eq("category_id", "c13570dc-4f92-4c46-b982-f9938975f2a5")
+        .order("name");
+      if (data) setProducts(data);
+    };
+    fetchProducts();
+  }, []);
+
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Botulinum Toxin Type A Products",
+    itemListElement: products.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://www.pharmooworld.com/product/${p.slug}`,
+      name: p.name,
+    })),
+  };
+
+  const faqSchema = createFAQSchema(faqItems.map(f => ({ question: f.q, answer: f.a })));
+
   return (
     <section className="mt-12 md:mt-16 space-y-10 md:space-y-14 text-foreground">
-      {/* Intro */}
+      <Helmet>
+        {products.length > 0 && (
+          <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
+        )}
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
+
+      {/* H1 – Primary Keyword Target */}
       <div className="space-y-4">
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">PharmooWorld – The Best Place to Buy Botox Online</h2>
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
+          Botulinum Toxin Type A Products – Wholesale Medical Supply
+        </h1>
         <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          PharmooWorld is an international retail &amp; wholesale supplier of Botox, botulinum toxins, and other solutions of aesthetic medicine and skincare products (hyaluronidase, anesthetics, creams, threads, or ophthalmology drugs).
+          PharmooWorld is a licensed international distributor of botulinum toxin type A products, serving board-certified medical professionals, aesthetic clinics, hospitals, and pharmaceutical wholesalers worldwide. Our catalog includes Allergan Botox and other FDA/EMA-approved neurotoxin formulations available at competitive wholesale prices with temperature-controlled global shipping.
         </p>
       </div>
 
-      {/* How to buy */}
+      {/* H2: What Is Botulinum Toxin Type A? */}
       <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">How to buy Allergan Botox in a bottle at PharmooWorld?</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">You can safely purchase a Botox kit in one of the following ways:</p>
-        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-1 pl-2">
-          <li>By adding Botox to your cart and submitting the order</li>
-          <li>By contacting us via email at <a href="mailto:info@PharmooWorld.com" className="text-primary hover:underline">info@PharmooWorld.com</a></li>
-        </ul>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">What Is Botulinum Toxin Type A?</h2>
         <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          At PharmooWorld online store, every registered customer can order high-quality Botox online both retail and wholesale. Our store offers discounts to those who buy in large quantities and Free 1–5 day fast shipping over $750. Feel free to check PharmooWorld wholesale prices by visiting the product pages, such as Botox 100 Units, 50 Units, and many others.
+          Botulinum toxin type A is a highly purified neurotoxin protein derived from the bacterium <em>Clostridium botulinum</em>. When injected in controlled, therapeutic doses, it acts as a potent neuromodulator by blocking the release of acetylcholine at the neuromuscular junction. This mechanism produces temporary, localized muscle relaxation — the foundational principle behind both its medical and aesthetic applications.
         </p>
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+          The neuromodulator mechanism of botulinum toxin involves a multi-step process. After injection into the target muscle, the toxin binds to specific receptors on the nerve terminal, is internalized into the nerve cell, and then cleaves SNARE proteins (specifically SNAP-25) that are essential for the fusion of acetylcholine-containing vesicles with the cell membrane. Without acetylcholine release, the nerve impulse cannot reach the muscle, resulting in temporary muscle paralysis that typically lasts 3 to 6 months.
+        </p>
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+          In aesthetic medicine, this temporary muscle relaxation is used to smooth dynamic wrinkles — expression lines caused by repeated facial muscle contractions over time. Common cosmetic treatment areas include glabellar lines (frown lines between the eyebrows), horizontal forehead lines, and lateral canthal lines (crow's feet). The treatment is minimally invasive, typically takes 10–15 minutes, and produces visible results within 3–7 days.
+        </p>
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+          Beyond aesthetics, botulinum toxin has broad therapeutic indications approved by the FDA and EMA. These include chronic migraine prevention (for patients experiencing 15+ headache days per month), cervical dystonia (involuntary neck muscle contractions), blepharospasm (uncontrollable eyelid twitching), upper and lower limb spasticity in adults and children with cerebral palsy, overactive bladder with urinary incontinence, severe primary axillary hyperhidrosis (excessive underarm sweating), and strabismus (misalignment of the eyes). Ongoing clinical trials continue to explore new applications including depression, premature ejaculation, and neuropathic pain management.
+        </p>
+        <div className="bg-secondary/40 rounded-lg p-4 md:p-6 mt-4">
+          <p className="text-sm md:text-base font-semibold text-foreground">⚠️ Professional Use Only</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Botulinum toxin type A is a prescription-only neurotoxin intended exclusively for administration by trained, licensed healthcare professionals. Improper use can cause serious adverse effects including difficulty swallowing, breathing problems, and muscle weakness beyond the injection site. All purchasers must provide valid professional credentials.
+          </p>
+        </div>
       </div>
 
-      {/* Is it legal */}
+      {/* H2: Available Botulinum Products */}
+      <div className="space-y-6">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">Available Botulinum Products</h2>
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+          PharmooWorld maintains a comprehensive inventory of botulinum toxin type A formulations from leading pharmaceutical manufacturers. Each product is sourced from authorized channels with full traceability, lot-level documentation, and guaranteed cold chain integrity.
+        </p>
+
+        {/* H3: Allergan Botox */}
+        <div className="space-y-3 border-l-4 border-primary/30 pl-4 md:pl-6">
+          <h3 className="text-lg md:text-xl font-bold">Allergan Botox (OnabotulinumtoxinA)</h3>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            Allergan Botox is the world's most recognized and extensively studied botulinum toxin brand, with over 30 years of clinical experience and more than 3,500 published studies. Available in 50-unit and 100-unit vacuum-dried powder vials for reconstitution, Botox holds FDA approval for 11 therapeutic indications and carries CE marking for distribution across the European Economic Area.
+          </p>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            PharmooWorld stocks multiple Botox regional variants including US-market English packaging, European packaging, Polish packaging, and Indian-English packaging — all manufactured by Allergan at GMP-certified facilities. Pricing starts from $299 for 50-unit vials with volume discounts available.
+          </p>
+          <div className="rounded-lg border overflow-hidden mt-3">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="font-semibold">Product</TableHead>
+                  <TableHead className="font-semibold text-right">Price (2026)</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {botoxPricing.map((item) => (
+                  <TableRow key={item.product}>
+                    <TableCell className="text-sm">{item.product}</TableCell>
+                    <TableCell className="text-sm font-medium text-right">{item.price}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          {products.filter(p => p.name.toLowerCase().includes("botox")).length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {products.filter(p => p.name.toLowerCase().includes("botox")).map(p => (
+                <Link key={p.slug} to={`/product/${p.slug}`} className="text-sm text-primary hover:underline">
+                  → {p.name}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* H3: Other FDA/EMA Approved Neurotoxins */}
+        <div className="space-y-3 border-l-4 border-primary/30 pl-4 md:pl-6">
+          <h3 className="text-lg md:text-xl font-bold">Other FDA/EMA Approved Neurotoxins</h3>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            In addition to Allergan Botox, PharmooWorld distributes alternative botulinum toxin type A formulations that hold FDA and/or EMA approval. These include Dysport (abobotulinumtoxinA by Ipsen/Galderma), which features a smaller molecular complex that may diffuse more broadly — making it well-suited for larger treatment areas such as the forehead. Xeomin (incobotulinumtoxinA by Merz) is a "naked" neurotoxin free of complexing proteins, potentially reducing the risk of antibody formation with repeated use. Jeuveau (prabotulinumtoxinA by Evolus) is a newer entrant specifically approved for aesthetic glabellar lines.
+          </p>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            Each neurotoxin has distinct unit equivalencies — for example, Dysport units are NOT interchangeable with Botox units. Healthcare professionals should consult product-specific prescribing information for appropriate dosing conversions. PharmooWorld provides technical product data sheets and dosing guides upon request.
+          </p>
+          {products.filter(p => !p.name.toLowerCase().includes("botox")).length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {products.filter(p => !p.name.toLowerCase().includes("botox")).map(p => (
+                <Link key={p.slug} to={`/product/${p.slug}`} className="text-sm text-primary hover:underline">
+                  → {p.name}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* H3: Bulk Botulinum Distribution */}
+        <div className="space-y-3 border-l-4 border-primary/30 pl-4 md:pl-6">
+          <h3 className="text-lg md:text-xl font-bold">Bulk Botulinum Distribution</h3>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            PharmooWorld serves as a volume distributor for clinics, hospital networks, medical spas, and national distributors requiring consistent bulk supply of botulinum toxin products. Our bulk distribution program offers tiered wholesale pricing (10+ units automatic discount, 50+ units custom pricing), dedicated account management, scheduled recurring orders with guaranteed stock allocation, and priority cold chain logistics with expedited customs clearance for international clients.
+          </p>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            Contact <a href="mailto:sales@pharmooworld.com" className="text-primary hover:underline">sales@pharmooworld.com</a> for volume quotes, distribution partnership agreements, or tender pricing.
+          </p>
+        </div>
+      </div>
+
+      {/* H2: Storage & Cold Chain Requirements */}
       <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Is it Legal to Buy Botox Online?</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">Storage & Cold Chain Requirements</h2>
         <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Botox is a botulinum toxin product elaborated and patented by the French-American manufacturer Allergan and FDA approved. It is both a cosmetic and therapeutic drug. Apart from being used for aesthetic purposes, it is applied to treat such serious medical conditions as:
+          Proper storage is critical for maintaining the efficacy and safety of botulinum toxin products. All approved formulations require strict temperature control throughout the supply chain — from manufacturer to final administration.
         </p>
-        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-1 pl-2">
-          {medicalConditions.map((c) => <li key={c}>{c}</li>)}
+        <div className="grid md:grid-cols-2 gap-4 mt-4">
+          <div className="bg-secondary/40 rounded-lg p-4 md:p-6 space-y-2">
+            <p className="font-semibold text-foreground">🌡️ Temperature Range</p>
+            <p className="text-sm text-muted-foreground">Store between 2°C and 8°C (36°F–46°F). Do not freeze. Do not expose to temperatures above 25°C. Protect from light.</p>
+          </div>
+          <div className="bg-secondary/40 rounded-lg p-4 md:p-6 space-y-2">
+            <p className="font-semibold text-foreground">📦 Refrigerated Logistics</p>
+            <p className="text-sm text-muted-foreground">PharmooWorld uses insulated EPS containers with phase-change gel packs calibrated for 48–72 hour transit. Temperature data loggers accompany every shipment.</p>
+          </div>
+          <div className="bg-secondary/40 rounded-lg p-4 md:p-6 space-y-2">
+            <p className="font-semibold text-foreground">📊 Stability Control</p>
+            <p className="text-sm text-muted-foreground">Each shipment includes temperature monitoring documentation confirming product remained within the required 2–8°C range throughout transit. Temperature excursion protocols are in place.</p>
+          </div>
+          <div className="bg-secondary/40 rounded-lg p-4 md:p-6 space-y-2">
+            <p className="font-semibold text-foreground">🔬 Handling Standards</p>
+            <p className="text-sm text-muted-foreground">Products are handled in GDP-compliant (Good Distribution Practice) warehousing with continuous temperature monitoring, access control, and first-expiry-first-out (FEFO) rotation.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* H2: Wholesale Supply & Export Services */}
+      <div className="space-y-4">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">Wholesale Supply & Export Services</h2>
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+          PharmooWorld provides end-to-end wholesale supply and international export services for botulinum toxin type A products. Our distribution infrastructure supports licensed buyers across North America, Europe, Asia-Pacific, the Middle East, Africa, and Latin America.
+        </p>
+        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-2 pl-2">
+          <li><strong>Licensed Buyers Only</strong> — All purchasers must hold valid medical, dental, or pharmacy licenses. Professional credentials are manually verified by our compliance team before order fulfillment.</li>
+          <li><strong>International Shipping</strong> — We ship to 50+ countries via temperature-controlled express courier (DHL Medical Express, FedEx Custom Critical, UPS Temperature True). Transit time is typically 3–7 business days.</li>
+          <li><strong>Compliance Documentation</strong> — Every shipment includes commercial invoices, packing lists, certificates of analysis (CoA), certificates of origin, and customs declarations. We assist with import permits, end-user certificates, and regulatory filings where required.</li>
+          <li><strong>Bulk Order Support</strong> — Volume discounts start at 10 units. Custom contracts available for recurring orders of 50+ units. Dedicated account managers handle large-volume distribution partnerships.</li>
         </ul>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Botox injections should be performed only by experienced licensed professionals who have received proper training and certification in administering Botox.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Please note that the application of the product by non-professionals might be health and life-threatening. However, you can legally buy Allergan Botox online in the USA if you hold a license that proves that you are a certified medical professional. By means of providing it to us, you will obtain a right to buy and use Botox and other botulinum toxin products in your medical practice.
-        </p>
+        <div className="flex flex-wrap gap-3 mt-4">
+          <Link to="/compliance" className="text-sm text-primary hover:underline font-medium">→ View Compliance Information</Link>
+          <Link to="/shipping-cold-chain" className="text-sm text-primary hover:underline font-medium">→ Cold Chain Shipping Details</Link>
+          <Link to="/certifications" className="text-sm text-primary hover:underline font-medium">→ Our Certifications</Link>
+        </div>
       </div>
 
       {/* License types */}
       <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Types of Licenses We Accept for Buying Botox Online</h2>
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Professional Licenses We Accept</h2>
         <div className="space-y-3">
           {licenseTypes.map((l) => (
             <div key={l.abbr} className="border-l-2 border-primary/30 pl-4">
@@ -136,187 +249,20 @@ const BotulinumContent = () => {
             </div>
           ))}
         </div>
-        <div className="bg-secondary/40 rounded-lg p-4 md:p-6 space-y-2 mt-4">
-          <p className="text-sm md:text-base font-semibold">In case of having a license, you can safely place an Allergan Botox order online on PharmooWorld:</p>
-          <ol className="list-decimal list-inside text-sm md:text-base text-muted-foreground space-y-1 pl-2">
-            <li>Register your personal account</li>
-            <li>Fill in all the required information</li>
-            <li>Select the needed products and add them to your cart</li>
-            <li>Provide your medical license or prescription</li>
-            <li>Proceed with the payment</li>
-            <li>Wait for your license to be verified by our managers</li>
-          </ol>
-        </div>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          In case you need any assistance with the registration, payment, or any other aspect of the purchasing process, <Link to="/contact" className="text-primary hover:underline">contact the PharmooWorld team</Link>. Remember, the PharmooWorld customer support service is always ready to help you out. When deciding to order Botox online or dermal fillers online on PharmooWorld.com, you might be sure that you buy 100% authentic top-quality products with lot numbers and, therefore, guarantee your patient the best possible result after the procedure.
-        </p>
-      </div>
-
-      {/* Pricing */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">How Much Does Botox Vials Cost?</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          The average Botox price depends on several factors. Namely, it is determined by the product's type, volume, package, and supplier.
-        </p>
-        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-2 pl-2">
-          <li>There exist two main types of Botox, namely medical and cosmetic. While the first is used to treat muscle-related health issues, the latter is applied in aesthetic medicine. In most cases, medical Botox tends to be more expensive than the cosmetic one.</li>
-          <li>Botox is usually sold in a variety of different volumes. Among the most popular ones are Botox 50IU and Botox 100IU. Naturally, the bigger the product's volume is, the more it will cost.</li>
-          <li>Depending on the market Botox is targeted to, it is advertised in different packages, such as European, Polish, Indian, and so on.</li>
-          <li>Each supplier of cosmetic injectables sets its own Botox price. As well, it might or might not provide its customers with wholesale discounts, special deals, and other price benefits.</li>
-        </ul>
-        <div className="rounded-lg border overflow-hidden mt-4">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="font-semibold">Product</TableHead>
-                <TableHead className="font-semibold text-right">Price (2026)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {botoxPricing.map((item) => (
-                <TableRow key={item.product}>
-                  <TableCell className="text-sm">{item.product}</TableCell>
-                  <TableCell className="text-sm font-medium text-right">{item.price}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
-      {/* Basic info */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">What Basic Information Should You Know About Botox?</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Apart from their therapeutic purposes, injections of Botox (Botulin toxin A) are famous to be the powerful means to fight the signs of natural aging. Namely, they are used to efficiently eliminate dynamic wrinkles on the forehead, under the eyes, and around the mouth. Due to the fact that recent implications of Botox have gone even further, there are lots of studies and cases of adult patients being treated with Botox to lift breasts, take care of erectile dysfunction, manage premature ejaculation, eliminate the effect of a gummy smile, or fight excessive sweating.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Moreover, scientists are not going to stop exploring new and new applications of botulinum toxin to improve people's health and quality of life.
-        </p>
-      </div>
-
-      {/* History */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">A Few Words on the History of Botox</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Botulin toxin type A is synthesized by anaerobic bacteria (microorganisms) that belong to the Clostridium family. The first medical application of Botox occurred in 1960.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Before this time, it was considered to be a dreadful poison that caused a health condition called botulism, which might be characterized as poisoning (mainly a result of eating poisoned meat products) that is accompanied by full or partial paralysis of the organism with the possibility of fatal consequences.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          However, a group of Canadian scientists managed to "tame" the dangerous poison, providing a great number of patients with an opportunity to cure a variety of diseases (not only cosmetic issues) and, therefore, radically change their lives. In 1960, doctors used Botox to treat partial and complete paralysis of the facial nerve, lower and upper limb spasticity, urge urinary incontinence, overactive bladder, hyperhidrosis, migraine, etc.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          These days, doctors apply Botox to treat heavy headaches, cerebral palsy, strabismus, and other diseases of the nervous system. In addition, botulin therapy might be used by orthodontists to cure bruxism (or, as it is also called, teeth grinding).
-        </p>
-      </div>
-
-      {/* Working principle */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Botox Working Principle</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          The working principle of botulinum toxin is pretty straightforward. Under normal circumstances, it acts locally. Namely, the substance has the power to disrupt the transmission of the nerve impulse from the nerve end to the muscle, thereby relaxing this particular muscle.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          The method botulinum toxin helps to eliminate mimic wrinkles depends directly on the way they form. Facial expressions such as laughing, smiling, crying, frowning, etc., involve an active movement and contraction of facial muscles.
-        </p>
-        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-2 pl-2">
-          <li><strong>At a young age</strong>, the skin has lots of collagen and elastin. These substances quickly fill in the creases that occurred as a result of smiling. Therefore, there is not even a trace of them on the skin surface.</li>
-          <li><strong>At a more senior age</strong>, active facial expressions lead to the formation of creases. The main reason for it is that the skin deposits of hyaluronic acid and collagen decrease as a person gets older. Therefore, there occur pronounced wrinkles around the eyes, as well as furrow lines on the forehead or between the eyebrows.</li>
-        </ul>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Luckily, the Botox working principle comes in handy to treat the above-mentioned wrinkles. Here is how it works: when botulinum toxin penetrates the dermal tissues, its molecules bind to the proteins on the edges of the nerve fibers, preventing them from receiving brain signals. As a result, the tension in the tissues gradually decreases, muscles relax, and wrinkles vanish.
-        </p>
-      </div>
-
-      {/* Expected result */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Expected Botox Result</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          When speaking about the expected result of the cosmetic application of Botox, it is essential to mention that it will be observed on the second day after the procedure. It will gradually show up and become clearly visible in two weeks after the treatment. The final result will persist for 3–5 months and gradually weaken afterward.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          So the injection of Botox should be repeated from time to time if the patient wants to remain smooth and wrinkle-free skin.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Botox acts in several stages. It is the main reason why the first effect of it might become visible in 2–7 days after the injection. While the peak of Botox action, in its turn, will occur near the end of the second month after the procedure. After that, it gradually weakens as the organism starts to grow new nerve fibers.
-        </p>
-      </div>
-
-      {/* Contraindications */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Contraindications</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Botulinum toxin that is used in modern products (including Botox), is highly purified and refined. Therefore, it is safe to be used for the treatment of both adults and children. Moreover, it is one of the best well-studied medications with hundreds of clinical trials and experiments.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Thus, it rarely leads to serious complications. Nevertheless, Botox treatment is not for everybody. Patients with the following health conditions are not regarded to be suitable candidates for both therapeutic and cosmetic Botox injections:
-        </p>
-        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-1 pl-2">
-          {contraindications.map((c) => <li key={c}>{c}</li>)}
-        </ul>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Only patients with none of the above-mentioned diagnoses are allowed to undergo the procedure of Botox injection.
-        </p>
-      </div>
-
-      {/* Side effects */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Possible Side Effects</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Those who do not have any contraindications to the administration of Botox should be informed about its possible side effects. Botulinum toxin is a foreign substance, so the body might react to it in certain ways, such as:
-        </p>
-        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-1 pl-2">
-          {sideEffects.map((s) => <li key={s}>{s}</li>)}
-        </ul>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          These are temporary reactions of the organism that should disappear in a few hours or days after the treatment. In case of worsening of the patient's well-being, it is recommended to contact the doctor immediately. To minimize the pain, the patient can use painkillers or apply a pack of ice to the area of the treatment.
-        </p>
-      </div>
-
-      {/* Cosmetic treatment */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Cosmetic Treatment with Botox</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Initially, Botox has been used only for therapeutic purposes. However, while treating blepharospasm by means of administering botulinum toxin in the eye muscle, the scientists noticed that the substance smoothed out the under-eye wrinkles so that the patients acquired a younger appearance.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          It has set a start to a cosmetic era of Botox for the elimination of mimic wrinkles with the aim of facial rejuvenation. These days, it is extensively used for wrinkle reduction on the forehead, nose bridge, and near the eye. Moreover, it is applied to correct the skin imperfections in the lower third of the face. The most common Botox injection sites:
-        </p>
-        <ul className="list-disc list-inside text-sm md:text-base text-muted-foreground space-y-1 pl-2">
-          {cosmeticInjectionSites.map((s) => <li key={s}>{s}</li>)}
-        </ul>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          The usage of Botox for cosmetic purposes requires a doctor to be specially trained, skilled, and experienced. Otherwise, there is a possibility to relax the wrong muscle, which might harm a patient's appearance, create facial asymmetry, make mouth corners drop, and so on. Thus, injections of botulin toxin require excellent knowledge of human anatomy.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          It is also important to understand that botulin toxin is not able to smooth out static wrinkles completely. However, botulinotherapy is very effective in treating dynamic wrinkles and preventing the formation of new ones. If a patient needs to eliminate static wrinkles rather than dynamic ones, injections of dermal fillers might be considered.
-        </p>
-      </div>
-
-      {/* Hyperhidrosis */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Botox for the Treatment of Hyperhidrosis</h2>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          Wrinkle smoothing is not the only application of Botox therapy. In addition, botulin toxin is also used to temporarily weaken the activity of sweat glands, and, therefore, solve the unpleasant problem of excessive sweating.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          For the treatment of the so-called hyperhidrosis, Botox might be injected into the armpits, palms, feet, and groins. When being more precise, it should be administered superficially and in large quantities in order to stop sweat secretion. The halt of excessive sweating is achieved due to the violation of the transmission of the nerve impulse to the sweat gland. As a result, a patient notices a considerable decrease in sweat secretion for the time period that equals 4–6 months.
-        </p>
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-          While injecting botulin toxin into one area (for instance, underarms), the cosmetologist should warn the patient that sweat may start to exude from another area (for example, back). However, it will happen only in extreme conditions, such as high temperatures, active sports, etc. Please keep in mind that botulin toxin cannot be injected in all places at the same time, while sweating is a necessary process for controlling the body temperature.
-        </p>
       </div>
 
       {/* FAQ */}
       <div className="space-y-4">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Frequently Asked Questions</h2>
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">Frequently Asked Questions — Botulinum Toxin</h2>
         <Accordion type="single" collapsible className="w-full">
-          {faqItems.map((faq, i) => (
-            <AccordionItem key={i} value={`faq-${i}`}>
-              <AccordionTrigger className="text-left text-sm md:text-base">{faq.q}</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground">{faq.a}</AccordionContent>
+          {faqItems.map((item, index) => (
+            <AccordionItem key={index} value={`faq-${index}`}>
+              <AccordionTrigger className="text-left text-sm md:text-base font-medium">
+                {item.q}
+              </AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                {item.a}
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
