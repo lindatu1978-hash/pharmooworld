@@ -28,6 +28,11 @@ const FAQ = lazy(() => import("./pages/FAQ"));
 const Disclaimer = lazy(() => import("./pages/Disclaimer"));
 const ClientAssurance = lazy(() => import("./pages/ClientAssurance"));
 const Orders = lazy(() => import("./pages/Orders"));
+const Compliance = lazy(() => import("./pages/Compliance"));
+const ShippingColdChain = lazy(() => import("./pages/ShippingColdChain"));
+const Certifications = lazy(() => import("./pages/Certifications"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Lazy load chatbot since it's not critical for initial render
@@ -70,6 +75,11 @@ const App = () => (
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/disclaimer" element={<Disclaimer />} />
                 <Route path="/client-assurance" element={<ClientAssurance />} />
+                <Route path="/compliance" element={<Compliance />} />
+                <Route path="/shipping-cold-chain" element={<ShippingColdChain />} />
+                <Route path="/certifications" element={<Certifications />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <ProductChatbot />
