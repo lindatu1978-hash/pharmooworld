@@ -226,6 +226,9 @@ const AdminDashboard = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Bulk Image Generator */}
+      <BulkImageGenerator />
     </div>
   );
 };
