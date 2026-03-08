@@ -130,8 +130,8 @@ serve(async (req) => {
         console.log(`✓ Generated image for: ${product.name}`);
         results.push({ id: product.id, name: product.name, status: "success", imageUrl });
 
-        // Small delay between generations to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Longer delay between generations to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
       } catch (err) {
         console.error(`Error processing ${product.name}:`, err);

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Package, ShoppingCart, Image, DollarSign, TrendingUp, Users } from "lucide-react";
+import BulkImageGenerator from "./BulkImageGenerator";
 
 const AdminDashboard = () => {
   const { data: stats, isLoading } = useQuery({
@@ -225,6 +226,9 @@ const AdminDashboard = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Bulk Image Generator */}
+      <BulkImageGenerator />
     </div>
   );
 };
