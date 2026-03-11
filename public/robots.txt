@@ -3,10 +3,24 @@
 # https://www.pharmooworld.com
 
 # ===========================================
+# Disallowed Pages (Private/Admin/Redirect pages)
+# These pages require authentication and redirect
+# unauthenticated users, causing indexing issues.
+# ===========================================
+
+# ===========================================
 # Google Crawlers
 # ===========================================
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
+Disallow: /api/
+Disallow: /*.json$
 Crawl-delay: 1
 
 User-agent: Googlebot-Image
@@ -27,6 +41,14 @@ Allow: /product/
 # ===========================================
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
+Disallow: /api/
+Disallow: /*.json$
 Crawl-delay: 1
 
 User-agent: BingPreview
@@ -43,6 +65,11 @@ Allow: /
 # ===========================================
 User-agent: Slurp
 Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
 Crawl-delay: 1
 
 # ===========================================
@@ -50,13 +77,28 @@ Crawl-delay: 1
 # ===========================================
 User-agent: DuckDuckBot
 Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
 
 User-agent: Baiduspider
 Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
 Crawl-delay: 2
 
 User-agent: YandexBot
 Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
 Crawl-delay: 2
 
 # ===========================================
@@ -97,12 +139,9 @@ Crawl-delay: 5
 # ===========================================
 User-agent: *
 Allow: /
-
-# ===========================================
-# Disallowed Pages (Private/Admin)
-# ===========================================
 Disallow: /admin
 Disallow: /admin/
+Disallow: /account
 Disallow: /cart
 Disallow: /checkout
 Disallow: /orders
