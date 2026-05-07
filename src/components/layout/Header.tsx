@@ -56,20 +56,24 @@ const Header = () => {
           </div>
 
           {/* Actions - Touch-optimized */}
-          <div className="flex items-center gap-0.5 md:gap-1">
+          <div className="flex items-center gap-1 md:gap-2">
             <Link to="/account">
-              <Button variant="ghost" size="icon" className="hidden sm:flex h-11 w-11 md:h-10 md:w-10 text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" className="hidden sm:flex h-11 md:h-10 px-3 gap-2 text-muted-foreground hover:text-foreground">
                 <User className="h-5 w-5" />
+                <span className="text-sm font-medium">Sign In</span>
               </Button>
             </Link>
             <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon" className="h-11 w-11 md:h-10 md:w-10 text-muted-foreground hover:text-foreground">
-                <ShoppingCart className="h-5 w-5" />
-                {itemCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 md:-top-1 md:-right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
-                    {itemCount}
-                  </span>
-                )}
+              <Button variant="ghost" className="h-11 md:h-10 px-3 gap-2 text-muted-foreground hover:text-foreground">
+                <div className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
+                      {itemCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-sm font-medium hidden sm:inline">Cart</span>
               </Button>
             </Link>
             <Button
