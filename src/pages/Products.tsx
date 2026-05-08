@@ -184,7 +184,7 @@ ProductCard.displayName = "ProductCard";
 
 // Loading skeleton - Mobile optimized
 const ProductsSkeleton = memo(() => (
-  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5 lg:gap-6">
     {[...Array(6)].map((_, i) => (
       <Card key={i}>
         <CardContent className="p-2 md:p-4">
