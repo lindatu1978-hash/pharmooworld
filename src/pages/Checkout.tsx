@@ -25,6 +25,20 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const totalUnits = items.reduce((s, i) => s + i.quantity, 0);
+  const hasColdChain = items.some((i) => /botox|dysport|xeomin|jeuveau|neuronox|botulinum|nabota|innotox/i.test(i.product.name));
+  const shipping = useMemo(
+    () => estimateShipping({
+      country: formData?.country || "",
+      subtotal: total,
+      totalUnits,
+      hasColdChain,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [formData?.country, total, totalUnits, hasColdChain],
+  );
+  const grandTotal = total + shipping.cost;
+
   const [formData, setFormData] = useState({
     companyName: "",
     contactName: "",
