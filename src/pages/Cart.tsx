@@ -71,11 +71,11 @@ const Cart = () => {
                   
                   return (
                     <Card key={item.id}>
-                      <CardContent className="p-4 lg:p-6">
-                        <div className="flex gap-4">
+                      <CardContent className="p-3 sm:p-4 lg:p-6">
+                        <div className="flex gap-3 sm:gap-4">
                           {/* Image */}
                           <Link to={`/product/${item.product.slug}`} className="shrink-0">
-                            <div className="h-24 w-24 bg-secondary/50 rounded-lg flex items-center justify-center overflow-hidden">
+                            <div className="h-20 w-20 sm:h-24 sm:w-24 bg-secondary/50 rounded-lg flex items-center justify-center overflow-hidden">
                               {item.product.image_url ? (
                                 <img
                                   src={item.product.image_url}
@@ -90,27 +90,34 @@ const Cart = () => {
 
                           {/* Details */}
                           <div className="flex-1 min-w-0">
-                            <Link to={`/product/${item.product.slug}`}>
-                              <h3 className="font-semibold text-foreground hover:text-primary transition-colors line-clamp-1">
-                                {item.product.name}
-                              </h3>
-                            </Link>
-                            
-                            <div className="mt-1 text-sm text-muted-foreground">
+                            <div className="flex items-start justify-between gap-2">
+                              <Link to={`/product/${item.product.slug}`} className="min-w-0 flex-1">
+                                <h3 className="font-semibold text-sm sm:text-base text-foreground hover:text-primary transition-colors line-clamp-2">
+                                  {item.product.name}
+                                </h3>
+                              </Link>
+                              {/* Price */}
+                              <p className="font-bold text-sm sm:text-lg whitespace-nowrap shrink-0">
+                                ${(price * item.quantity).toFixed(2)}
+                              </p>
+                            </div>
+
+                            <div className="mt-1 text-xs sm:text-sm text-muted-foreground">
                               ${price.toFixed(2)} / unit
                               {isBulkPrice && (
-                                <span className="text-accent ml-2">(Bulk price applied)</span>
+                                <span className="text-accent ml-2 hidden sm:inline">(Bulk price applied)</span>
                               )}
                             </div>
 
                             {/* Quantity Controls */}
-                            <div className="flex items-center gap-4 mt-3">
-                              <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-3">
+                              <div className="flex items-center gap-1.5 sm:gap-2">
                                 <Button
                                   variant="outline"
                                   size="icon"
-                                  className="h-8 w-8"
+                                  className="h-9 w-9 sm:h-8 sm:w-8"
                                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                  aria-label="Decrease quantity"
                                 >
                                   <Minus className="h-3 w-3" />
                                 </Button>
@@ -118,14 +125,15 @@ const Cart = () => {
                                   type="number"
                                   value={item.quantity}
                                   onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
-                                  className="w-16 h-8 text-center text-sm"
+                                  className="w-14 sm:w-16 h-9 sm:h-8 text-center text-sm"
                                   min={1}
                                 />
                                 <Button
                                   variant="outline"
                                   size="icon"
-                                  className="h-8 w-8"
+                                  className="h-9 w-9 sm:h-8 sm:w-8"
                                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                  aria-label="Increase quantity"
                                 >
                                   <Plus className="h-3 w-3" />
                                 </Button>
@@ -133,20 +141,13 @@ const Cart = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10 h-9 px-2"
                                 onClick={() => removeFromCart(item.id)}
                               >
-                                <Trash2 className="h-4 w-4 mr-1" />
-                                Remove
+                                <Trash2 className="h-4 w-4 sm:mr-1" />
+                                <span className="hidden sm:inline">Remove</span>
                               </Button>
                             </div>
-                          </div>
-
-                          {/* Price */}
-                          <div className="text-right shrink-0">
-                            <p className="font-bold text-lg">
-                              ${(price * item.quantity).toFixed(2)}
-                            </p>
                           </div>
                         </div>
                       </CardContent>
