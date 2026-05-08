@@ -32,13 +32,13 @@ const Cart = () => {
       </Helmet>
 
       <Layout>
-        <div className="bg-secondary/30 py-8">
+        <div className="bg-secondary/30 py-6 md:py-8">
           <div className="container-pharma">
-            <h1 className="text-3xl lg:text-4xl font-bold text-foreground flex items-center gap-3">
-              <ShoppingCart className="h-8 w-8" />
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground flex items-center gap-2 md:gap-3">
+              <ShoppingCart className="h-6 w-6 md:h-8 md:w-8" />
               Shopping Cart
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-sm md:text-base text-muted-foreground mt-1 md:mt-2">
               {itemCount} {itemCount === 1 ? "item" : "items"} in your cart
             </p>
           </div>
