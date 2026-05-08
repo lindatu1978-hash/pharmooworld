@@ -92,14 +92,19 @@ const Checkout = () => {
       // Create order
       const shippingAddress = `${formData.address}, ${formData.city}, ${formData.country}`;
       
+      const shippingNote = shipping.isFree
+        ? `Shipping: FREE (${shipping.label}, ETA ${shipping.eta})`
+        : `Shipping estimate: $${shipping.cost.toFixed(2)} (${shipping.label}, ETA ${shipping.eta})${shipping.coldChain ? " · Cold-chain" : ""}`;
+      const combinedNotes = [formData.notes, shippingNote].filter(Boolean).join("\n\n");
+
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
           user_id: user.id,
-          total,
+          total: grandTotal,
           shipping_address: shippingAddress,
           payment_method: paymentMethod,
-          notes: formData.notes,
+          notes: combinedNotes,
           status: "pending",
         })
         .select()
