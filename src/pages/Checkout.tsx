@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,9 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
-import { Package, Shield, Truck, ArrowLeft, CreditCard, Building2, Bitcoin } from "lucide-react";
+import { Package, Shield, Truck, ArrowLeft, CreditCard, Building2, Bitcoin, Snowflake, MapPin } from "lucide-react";
 import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
 import { BitcoinPaymentDetails } from "@/components/bitcoin/BitcoinPaymentDetails";
+import { Badge } from "@/components/ui/badge";
+import { estimateShipping } from "@/lib/shipping";
 
 const Checkout = () => {
   const { items, total, clearCart } = useCart();
@@ -33,6 +35,19 @@ const Checkout = () => {
     country: "",
     notes: "",
   });
+
+  const totalUnits = items.reduce((s, i) => s + i.quantity, 0);
+  const hasColdChain = items.some((i) => /botox|dysport|xeomin|jeuveau|neuronox|botulinum|nabota|innotox/i.test(i.product.name));
+  const shipping = useMemo(
+    () => estimateShipping({
+      country: formData.country,
+      subtotal: total,
+      totalUnits,
+      hasColdChain,
+    }),
+    [formData.country, total, totalUnits, hasColdChain],
+  );
+  const grandTotal = total + shipping.cost;
 
   useEffect(() => {
     const getUser = async () => {
@@ -77,14 +92,19 @@ const Checkout = () => {
       // Create order
       const shippingAddress = `${formData.address}, ${formData.city}, ${formData.country}`;
       
+      const shippingNote = shipping.isFree
+        ? `Shipping: FREE (${shipping.label}, ETA ${shipping.eta})`
+        : `Shipping estimate: $${shipping.cost.toFixed(2)} (${shipping.label}, ETA ${shipping.eta})${shipping.coldChain ? " · Cold-chain" : ""}`;
+      const combinedNotes = [formData.notes, shippingNote].filter(Boolean).join("\n\n");
+
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
           user_id: user.id,
-          total,
+          total: grandTotal,
           shipping_address: shippingAddress,
           payment_method: paymentMethod,
-          notes: formData.notes,
+          notes: combinedNotes,
           status: "pending",
         })
         .select()
@@ -116,7 +136,7 @@ const Checkout = () => {
         orderId: order.id,
         customerEmail: formData.email,
         companyName: formData.companyName,
-        orderTotal: total,
+        orderTotal: grandTotal,
         shippingAddress: `${formData.address}, ${formData.city}, ${formData.country}`,
         paymentMethod,
         items: orderItems.map((item) => ({
@@ -383,9 +403,37 @@ const Checkout = () => {
                       <span className="text-muted-foreground">Subtotal</span>
                       <span>${total.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Shipping</span>
-                      <span className="text-accent">Calculated separately</span>
+
+                    {/* Auto Shipping Estimator */}
+                    <div className="rounded-lg border bg-secondary/30 p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm font-medium">
+                          <Truck className="h-4 w-4 text-accent" />
+                          <span>Shipping Estimate</span>
+                        </div>
+                        {shipping.isFree ? (
+                          <Badge variant="secondary" className="bg-accent/15 text-accent">FREE</Badge>
+                        ) : (
+                          <span className="text-sm font-semibold">${shipping.cost.toFixed(2)}</span>
+                        )}
+                      </div>
+                      {formData.country ? (
+                        <>
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            <span>{shipping.label} · ETA {shipping.eta}</span>
+                          </div>
+                          {shipping.coldChain && (
+                            <div className="flex items-center gap-1.5 text-xs text-blue-600">
+                              <Snowflake className="h-3 w-3" />
+                              <span>Cold-chain (2–8°C) handling included</span>
+                            </div>
+                          )}
+                          <p className="text-[11px] text-muted-foreground leading-snug">{shipping.notes}</p>
+                        </>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">Enter your country to see an estimate.</p>
+                      )}
                     </div>
 
                     <hr className="border-border" />
@@ -393,9 +441,9 @@ const Checkout = () => {
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
                       <div className="text-right">
-                        <span>${total.toFixed(2)}</span>
+                        <span>${grandTotal.toFixed(2)}</span>
                         <div className="font-normal">
-                          <BitcoinPriceDisplay usdAmount={total} size="sm" />
+                          <BitcoinPriceDisplay usdAmount={grandTotal} size="sm" />
                         </div>
                       </div>
                     </div>
