@@ -398,9 +398,37 @@ const Checkout = () => {
                       <span className="text-muted-foreground">Subtotal</span>
                       <span>${total.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Shipping</span>
-                      <span className="text-accent">Calculated separately</span>
+
+                    {/* Auto Shipping Estimator */}
+                    <div className="rounded-lg border bg-secondary/30 p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm font-medium">
+                          <Truck className="h-4 w-4 text-accent" />
+                          <span>Shipping Estimate</span>
+                        </div>
+                        {shipping.isFree ? (
+                          <Badge variant="secondary" className="bg-accent/15 text-accent">FREE</Badge>
+                        ) : (
+                          <span className="text-sm font-semibold">${shipping.cost.toFixed(2)}</span>
+                        )}
+                      </div>
+                      {formData.country ? (
+                        <>
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            <span>{shipping.label} · ETA {shipping.eta}</span>
+                          </div>
+                          {shipping.coldChain && (
+                            <div className="flex items-center gap-1.5 text-xs text-blue-600">
+                              <Snowflake className="h-3 w-3" />
+                              <span>Cold-chain (2–8°C) handling included</span>
+                            </div>
+                          )}
+                          <p className="text-[11px] text-muted-foreground leading-snug">{shipping.notes}</p>
+                        </>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">Enter your country to see an estimate.</p>
+                      )}
                     </div>
 
                     <hr className="border-border" />
@@ -408,9 +436,9 @@ const Checkout = () => {
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
                       <div className="text-right">
-                        <span>${total.toFixed(2)}</span>
+                        <span>${grandTotal.toFixed(2)}</span>
                         <div className="font-normal">
-                          <BitcoinPriceDisplay usdAmount={total} size="sm" />
+                          <BitcoinPriceDisplay usdAmount={grandTotal} size="sm" />
                         </div>
                       </div>
                     </div>
