@@ -136,7 +136,7 @@ const Checkout = () => {
         orderId: order.id,
         customerEmail: formData.email,
         companyName: formData.companyName,
-        orderTotal: total,
+        orderTotal: grandTotal,
         shippingAddress: `${formData.address}, ${formData.city}, ${formData.country}`,
         paymentMethod,
         items: orderItems.map((item) => ({
