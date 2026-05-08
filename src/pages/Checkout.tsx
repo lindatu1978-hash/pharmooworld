@@ -11,9 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
-import { Package, Shield, Truck, ArrowLeft, CreditCard, Building2, Bitcoin } from "lucide-react";
+import { Package, Shield, Truck, ArrowLeft, CreditCard, Building2, Bitcoin, Snowflake, MapPin } from "lucide-react";
 import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
 import { BitcoinPaymentDetails } from "@/components/bitcoin/BitcoinPaymentDetails";
+import { Badge } from "@/components/ui/badge";
+import { estimateShipping } from "@/lib/shipping";
 
 const Checkout = () => {
   const { items, total, clearCart } = useCart();
