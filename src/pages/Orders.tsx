@@ -142,12 +142,12 @@ const Orders = () => {
 
   return (
     <>
-      <Helmet>
-        <title>My Orders | Pharmoo World</title>
-        <meta name="description" content="View your order history and download invoices" />
-        <link rel="canonical" href="https://pharmooworld.com/orders" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO
+        title="My Orders"
+        description="View your order history and download invoices"
+        canonical="/orders"
+        noindex
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">
