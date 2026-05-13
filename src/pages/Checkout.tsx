@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -197,12 +197,12 @@ const Checkout = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Checkout | Pharmoo World</title>
-        <meta name="description" content="Complete your pharmaceutical products order" />
-        <link rel="canonical" href="https://pharmooworld.com/checkout" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO
+        title="Checkout"
+        description="Complete your pharmaceutical products order"
+        canonical="/checkout"
+        noindex
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">

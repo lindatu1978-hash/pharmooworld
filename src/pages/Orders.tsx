@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
@@ -142,12 +142,12 @@ const Orders = () => {
 
   return (
     <>
-      <Helmet>
-        <title>My Orders | Pharmoo World</title>
-        <meta name="description" content="View your order history and download invoices" />
-        <link rel="canonical" href="https://pharmooworld.com/orders" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO
+        title="My Orders"
+        description="View your order history and download invoices"
+        canonical="/orders"
+        noindex
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">

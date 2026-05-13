@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -177,12 +177,12 @@ const Auth = () => {
   if (user) {
     return (
       <>
-        <Helmet>
-          <title>My Account | Pharmoo World</title>
-          <meta name="description" content="Manage your Pharmoo World account" />
-          <link rel="canonical" href="https://pharmooworld.com/account" />
-          <meta name="robots" content="noindex, nofollow" />
-        </Helmet>
+        <SEO
+          title="My Account"
+          description="Manage your Pharmoo World account"
+          canonical="/account"
+          noindex
+        />
 
         <Layout>
           {/* Compact header on mobile */}
@@ -258,12 +258,12 @@ const Auth = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Sign In | Pharmoo World</title>
-        <meta name="description" content="Sign in to your Pharmoo World account to manage orders and access wholesale pricing." />
-        <link rel="canonical" href="https://pharmooworld.com/account" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO
+        title="Sign In"
+        description="Sign in to your Pharmoo World account to manage orders and access wholesale pricing."
+        canonical="/account"
+        noindex
+      />
 
       <Layout>
         {/* Compact header on mobile */}

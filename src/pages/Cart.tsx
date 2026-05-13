@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,12 +26,12 @@ const Cart = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Shopping Cart | Pharmoo World</title>
-        <meta name="description" content="Review and checkout your pharmaceutical products order" />
-        <link rel="canonical" href="https://pharmooworld.com/cart" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO
+        title="Shopping Cart"
+        description="Review and checkout your pharmaceutical products order"
+        canonical="/cart"
+        noindex
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-6 md:py-8">
