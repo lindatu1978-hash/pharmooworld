@@ -5,7 +5,7 @@
    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
  };
  
- const SITE_URL = "https://www.pharmooworld.com";
+ const SITE_URL = "https://pharmooworld.com";
  
  Deno.serve(async (req) => {
    if (req.method === "OPTIONS") {
