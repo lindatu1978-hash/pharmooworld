@@ -29,6 +29,8 @@ const Cart = () => {
       <Helmet>
         <title>Shopping Cart | Pharmoo World</title>
         <meta name="description" content="Review and checkout your pharmaceutical products order" />
+        <link rel="canonical" href="https://pharmooworld.com/cart" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <Layout>
