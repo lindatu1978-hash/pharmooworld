@@ -1,0 +1,25 @@
+# PharmooWorld
+
+> B2B wholesale pharmaceutical marketplace specializing in dermal fillers, botulinum toxins, and exotic medical supplies including snake venom products. We serve licensed medical professionals, clinics, and research institutions worldwide.
+
+## Pages
+
+- [Home](/): Wholesale pharmaceutical marketplace for medical professionals
+- [Products](/products): Browse wholesale pharmaceuticals by category
+- [About](/about): Trusted pharmaceutical wholesaler serving licensed practitioners since 2016
+- [Contact](/contact): Sales, support, and wholesale inquiries
+- [FAQ](/faq): Common questions about ordering, shipping, and compliance
+- [Testimonials](/testimonials): Reviews from verified medical professional clients
+- [Client Assurance](/client-assurance): Authenticity verification, cold chain, and buyer protection
+- [Shipping](/shipping): Global shipping options, cold chain logistics, and delivery times
+- [Returns](/returns): Return policy and quality guarantee
+- [Terms](/terms): Terms of service and B2B wholesale conditions
+- [Privacy](/privacy): Privacy policy and data handling practices
+- [Disclaimer](/disclaimer): Medical disclaimer and regulatory information
+- [Certifications](/certifications): Quality certifications and compliance standards
+- [Compliance](/compliance): Regulatory compliance, GMP, and licensing information
+- [Blog](/blog): Industry insights, product guides, and pharmaceutical news
+
+## Optional
+
+- [Cold Chain Shipping](/shipping-cold-chain): Specialized temperature-controlled logistics for botulinum toxins
