@@ -261,6 +261,8 @@ const Auth = () => {
       <Helmet>
         <title>Sign In | Pharmoo World</title>
         <meta name="description" content="Sign in to your Pharmoo World account to manage orders and access wholesale pricing." />
+        <link rel="canonical" href="https://pharmooworld.com/account" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <Layout>
