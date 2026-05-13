@@ -197,12 +197,12 @@ const Checkout = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Checkout | Pharmoo World</title>
-        <meta name="description" content="Complete your pharmaceutical products order" />
-        <link rel="canonical" href="https://pharmooworld.com/checkout" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO
+        title="Checkout"
+        description="Complete your pharmaceutical products order"
+        canonical="/checkout"
+        noindex
+      />
 
       <Layout>
         <div className="bg-secondary/30 py-8">
