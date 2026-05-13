@@ -145,6 +145,8 @@ const Orders = () => {
       <Helmet>
         <title>My Orders | Pharmoo World</title>
         <meta name="description" content="View your order history and download invoices" />
+        <link rel="canonical" href="https://pharmooworld.com/orders" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <Layout>
