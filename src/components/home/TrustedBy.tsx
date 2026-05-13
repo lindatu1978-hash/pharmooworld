@@ -34,7 +34,7 @@ const TrustedBy = () => {
               {[...partners, ...partners].map((partner, index) => (
                 <span
                   key={index}
-                  className="text-base font-medium text-muted-foreground/50 whitespace-nowrap hover:text-muted-foreground transition-colors"
+                  className="text-base font-medium text-muted-foreground whitespace-nowrap hover:text-foreground transition-colors"
                 >
                   {partner}
                 </span>
