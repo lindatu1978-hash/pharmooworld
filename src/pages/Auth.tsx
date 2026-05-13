@@ -180,6 +180,8 @@ const Auth = () => {
         <Helmet>
           <title>My Account | Pharmoo World</title>
           <meta name="description" content="Manage your Pharmoo World account" />
+          <link rel="canonical" href="https://pharmooworld.com/account" />
+          <meta name="robots" content="noindex, nofollow" />
         </Helmet>
 
         <Layout>
