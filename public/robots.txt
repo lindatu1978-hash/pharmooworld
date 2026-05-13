@@ -151,8 +151,7 @@ Disallow: /*.json$
 # ===========================================
 # Sitemaps (Dynamic sitemap with all 255+ product pages)
 # ===========================================
-Sitemap: https://rutasxqwqxdyzjdzmxrk.supabase.co/functions/v1/sitemap
-Sitemap: https://www.pharmooworld.com/sitemap.xml
+Sitemap: https://pharmooworld.com/sitemap.xml
 
 # ===========================================
 # Host Directive
