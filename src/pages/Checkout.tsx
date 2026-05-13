@@ -200,6 +200,8 @@ const Checkout = () => {
       <Helmet>
         <title>Checkout | Pharmoo World</title>
         <meta name="description" content="Complete your pharmaceutical products order" />
+        <link rel="canonical" href="https://pharmooworld.com/checkout" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <Layout>
