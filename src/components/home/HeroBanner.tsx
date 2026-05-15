@@ -104,7 +104,7 @@ const HeroBanner = memo(() => {
                       </Badge>
                       
                       <div>
-                        <p className="text-sm sm:text-lg md:text-xl font-medium text-white/80 mb-1 md:mb-2">
+                        <p className="text-sm sm:text-lg md:text-xl font-medium text-white/90 mb-1 md:mb-2">
                           {banner.subtitle}
                         </p>
                         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
@@ -112,7 +112,7 @@ const HeroBanner = memo(() => {
                         </h2>
                       </div>
                       
-                      <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-xl line-clamp-2 sm:line-clamp-none">
+                      <p className="text-white/90 text-sm sm:text-base md:text-lg max-w-xl line-clamp-2 sm:line-clamp-none">
                         {banner.description}
                       </p>
                       

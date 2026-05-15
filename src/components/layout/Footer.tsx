@@ -41,10 +41,10 @@ const Footer = () => {
               </div>
               <span className="text-lg font-bold">Pharmoo World</span>
             </div>
-            <p className="text-sm text-primary-foreground/70 mb-4 leading-relaxed">
+            <p className="text-sm text-primary-foreground/90 mb-4 leading-relaxed">
               Licensed international pharmaceutical distributor serving medical professionals worldwide with GMP-certified products, competitive wholesale pricing, and reliable cold chain logistics.
             </p>
-            <div className="space-y-3 text-sm text-primary-foreground/70">
+            <div className="space-y-3 text-sm text-primary-foreground/90">
               <a 
                 href="mailto:sales@pharmooworld.com" 
                 className="flex items-center gap-3 min-h-[44px] hover:text-primary-foreground transition-colors"
@@ -83,7 +83,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link 
                     to={link.href} 
-                    className="block py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
+                    className="block py-2 text-sm text-primary-foreground/90 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
                   >
                     {link.name}
                   </Link>
@@ -100,7 +100,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link 
                     to={link.href} 
-                    className="block py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
+                    className="block py-2 text-sm text-primary-foreground/90 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
                   >
                     {link.name}
                   </Link>
@@ -117,7 +117,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link 
                     to={link.href} 
-                    className="block py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
+                    className="block py-2 text-sm text-primary-foreground/90 hover:text-primary-foreground transition-colors min-h-[44px] flex items-center"
                   >
                     {link.name}
                   </Link>
@@ -126,7 +126,7 @@ const Footer = () => {
             </ul>
             <div className="mt-6 p-4 bg-primary-foreground/5 rounded-lg">
               <p className="text-sm font-medium mb-1">Certifications</p>
-              <p className="text-xs text-primary-foreground/60">GMP • GDP • WHO • FDA Registered • CE</p>
+              <p className="text-xs text-primary-foreground/85">GMP • GDP • WHO • FDA Registered • CE</p>
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ const Footer = () => {
       {/* Professional Disclaimer */}
       <div className="border-t border-primary-foreground/10">
         <div className="container-pharma py-4">
-          <p className="text-xs text-primary-foreground/50 leading-relaxed text-center max-w-4xl mx-auto">
+          <p className="text-xs text-primary-foreground/80 leading-relaxed text-center max-w-4xl mx-auto">
             <strong>Professional Disclaimer:</strong> Products sold by PharmooWorld are intended for use by licensed healthcare professionals only. Botulinum toxins, dermal fillers, and other prescription-grade injectables require valid medical credentials for purchase. All professional licenses are verified before order fulfillment. PharmooWorld does not provide medical advice — consult product prescribing information and relevant clinical guidelines before use.
           </p>
         </div>
@@ -145,10 +145,10 @@ const Footer = () => {
       <div className="border-t border-primary-foreground/10">
         <div className="container-pharma py-6">
           <div className="text-center space-y-2">
-            <p className="text-xs text-primary-foreground/50">
+            <p className="text-xs text-primary-foreground/80">
               Pharmoo World LLC • Registered in the United States • 1914 S Vermont Ave, Los Angeles, CA 90006
             </p>
-            <p className="text-sm text-primary-foreground/60">
+            <p className="text-sm text-primary-foreground/85">
               © {new Date().getFullYear()} Pharmoo World LLC. All rights reserved.
             </p>
           </div>
