@@ -148,15 +148,15 @@ const WhyChooseUs = () => {
             <div className="grid grid-cols-3 gap-8 text-center text-white">
               <div>
                 <p className="text-3xl lg:text-4xl font-bold">15+</p>
-                <p className="text-sm text-white/80 mt-1">Years Experience</p>
+                <p className="text-sm text-white/90 mt-1">Years Experience</p>
               </div>
               <div>
                 <p className="text-3xl lg:text-4xl font-bold">50+</p>
-                <p className="text-sm text-white/80 mt-1">Countries Served</p>
+                <p className="text-sm text-white/90 mt-1">Countries Served</p>
               </div>
               <div>
                 <p className="text-3xl lg:text-4xl font-bold">99%</p>
-                <p className="text-sm text-white/80 mt-1">Satisfaction Rate</p>
+                <p className="text-sm text-white/90 mt-1">Satisfaction Rate</p>
               </div>
             </div>
           </CardContent>

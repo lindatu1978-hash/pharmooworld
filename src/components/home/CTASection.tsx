@@ -16,7 +16,7 @@ const CTASection = () => {
                   <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                     Ready to Partner with Us?
                   </h2>
-                  <p className="text-white/80 text-sm md:text-base lg:text-lg">
+                  <p className="text-white/90 text-sm md:text-base lg:text-lg">
                     Join thousands of healthcare providers who trust Pharmoo World for their pharmaceutical and medical supply needs.
                   </p>
                 </div>
@@ -47,7 +47,7 @@ const CTASection = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-white text-sm md:text-base">+401 - 232 - 4508</p>
-                    <p className="text-xs md:text-sm text-white/70">Mon-Fri 9AM-6PM EST</p>
+                    <p className="text-xs md:text-sm text-white/90">Mon-Fri 9AM-6PM EST</p>
                   </div>
                 </a>
 
@@ -60,7 +60,7 @@ const CTASection = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-white text-sm md:text-base truncate">sales@pharmooworld.com</p>
-                    <p className="text-xs md:text-sm text-white/70">24-48 hour response time</p>
+                    <p className="text-xs md:text-sm text-white/90">24-48 hour response time</p>
                   </div>
                 </a>
 
@@ -73,7 +73,7 @@ const CTASection = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-white text-sm md:text-base">Live Chat Support</p>
-                    <p className="text-xs md:text-sm text-white/70">Get instant assistance</p>
+                    <p className="text-xs md:text-sm text-white/90">Get instant assistance</p>
                   </div>
                 </Link>
               </div>
