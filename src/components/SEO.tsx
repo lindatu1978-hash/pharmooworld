@@ -31,7 +31,7 @@ const SEO = ({
     ? title
     : title.length + suffix.length <= 60
       ? `${title}${suffix}`
-      
+      : title;
   const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : undefined;
 
   // Default Organization schema
