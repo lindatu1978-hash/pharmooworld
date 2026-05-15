@@ -25,7 +25,13 @@ const SEO = ({
   noindex = false,
   structuredData,
 }: SEOProps) => {
-  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  // Keep <title> within Google's ~60-char limit. Append site name only when there's room.
+  const suffix = ` | ${SITE_NAME}`;
+  const fullTitle = title.includes(SITE_NAME)
+    ? title
+    : title.length + suffix.length <= 60
+      ? `${title}${suffix}`
+      
   const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : undefined;
 
   // Default Organization schema
