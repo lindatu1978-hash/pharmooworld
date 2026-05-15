@@ -74,6 +74,21 @@ const SEO = ({
     },
   };
 
+  // MedicalBusiness schema — represents the physical office (address, phone, hours)
+  const medicalBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    "@id": `${SITE_URL}/#business`,
+    name: SITE_NAME,
+    image: `${SITE_URL}/favicon.png`,
+    url: SITE_URL,
+    telephone: "+1-401-232-4508",
+    email: "sales@pharmooworld.com",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "1
+
   return (
     <Helmet>
       {/* Primary Meta Tags */}
