@@ -457,7 +457,7 @@ const Products = () => {
     <>
       <SEO
         title={currentCategory ? `${currentCategory.name} - Pharmaceutical Products` : "Products - Pharmaceutical & Medical Supplies"}
-        description={`Browse our selection of ${currentCategory?.name || "pharmaceutical products, APIs, medical devices, and hospital supplies"} from GMP-certified manufacturers worldwide. Wholesale pricing available.`}
+        description={`GMP-certified ${currentCategory?.name || "pharmaceuticals, APIs, medical devices and hospital supplies"} at wholesale pricing. Worldwide shipping.`}
         keywords={`${currentCategory?.name || "pharmaceutical products"}, wholesale, GMP certified, medical supplies, buy online`}
         canonical={`/products${selectedCategory ? `?category=${selectedCategory}` : ""}`}
         structuredData={createBreadcrumbSchema([
