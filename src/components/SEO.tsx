@@ -157,6 +157,9 @@ const SEO = ({
       <script type="application/ld+json">
         {JSON.stringify(websiteSchema)}
       </script>
+      <script type="application/ld+json">
+        {JSON.stringify(medicalBusinessSchema)}
+      </script>
       {structuredData && (
         Array.isArray(structuredData) 
           ? structuredData.map((data, i) => (
