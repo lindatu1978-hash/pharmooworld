@@ -100,8 +100,25 @@ const SEO = ({
     },
     openingHoursSpecification: [
       {
-        "@type": "O
-
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "18:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "10:00",
+        closes: "14:00",
+      },
+    ],
+    areaServed: "Worldwide",
+    sameAs: [
+      "https://www.facebook.com/pharmooworld",
+      "https://www.instagram.com/pharmooworld",
+      "https://twitter.com/pharmooworld",
+    ],
+  };
   return (
     <Helmet>
       {/* Primary Meta Tags */}
