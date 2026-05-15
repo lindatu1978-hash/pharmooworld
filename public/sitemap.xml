@@ -288,5 +288,28 @@
   <url><loc>https://pharmooworld.com/product/type-iir-medical-face-mask</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://pharmooworld.com/product/vitamin-c-tablets-otc</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://pharmooworld.com/product/xeomin-1x100iu</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pharmooworld.com/product/androctonus-amoreuxi-scorpion-venom</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pharmooworld.com/product/blue-scorpion-rhopalurus-junceus-venom</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pharmooworld.com/product/bufo-alvarius-colorado-river-toad-venom</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pharmooworld.com/product/deathstalker-leiurus-quinquestriatus-venom</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pharmooworld.com/product/horseshoe-crab-limulus-polyphemus-blood</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+
+  <!-- Trust & Compliance Pages -->
+  <url><loc>https://pharmooworld.com/compliance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/shipping-cold-chain</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/certifications</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog -->
+  <url><loc>https://pharmooworld.com/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pharmooworld.com/blog/what-is-botulinum-toxin-type-a</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/differences-between-botox-dysport-xeomin-neurotoxins</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/how-to-store-botulinum-toxin-properly</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/cold-chain-logistics-pharmaceutical-distribution</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/understanding-hyaluronic-acid-fillers</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/how-to-verify-genuine-injectable-products</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/wholesale-aesthetic-distribution-explained</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/international-export-medical-injectables</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/safety-standards-aesthetic-medicine-supply</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pharmooworld.com/blog/pharmaceutical-supply-chain-integrity</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
 </urlset>
