@@ -87,7 +87,20 @@ const SEO = ({
     priceRange: "$$",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "1
+      streetAddress: "1914 S Vermont Ave",
+      addressLocality: "Los Angeles",
+      addressRegion: "CA",
+      postalCode: "90006",
+      addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 34.0195,
+      longitude: -118.2927,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "O
 
   return (
     <Helmet>
