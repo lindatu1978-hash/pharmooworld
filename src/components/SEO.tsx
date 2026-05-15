@@ -25,7 +25,13 @@ const SEO = ({
   noindex = false,
   structuredData,
 }: SEOProps) => {
-  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  // Keep <title> within Google's ~60-char limit. Append site name only when there's room.
+  const suffix = ` | ${SITE_NAME}`;
+  const fullTitle = title.includes(SITE_NAME)
+    ? title
+    : title.length + suffix.length <= 60
+      ? `${title}${suffix}`
+      : title;
   const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : undefined;
 
   // Default Organization schema
@@ -68,6 +74,51 @@ const SEO = ({
     },
   };
 
+  // MedicalBusiness schema — represents the physical office (address, phone, hours)
+  const medicalBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    "@id": `${SITE_URL}/#business`,
+    name: SITE_NAME,
+    image: `${SITE_URL}/favicon.png`,
+    url: SITE_URL,
+    telephone: "+1-401-232-4508",
+    email: "sales@pharmooworld.com",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "1914 S Vermont Ave",
+      addressLocality: "Los Angeles",
+      addressRegion: "CA",
+      postalCode: "90006",
+      addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 34.0195,
+      longitude: -118.2927,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "18:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "10:00",
+        closes: "14:00",
+      },
+    ],
+    areaServed: "Worldwide",
+    sameAs: [
+      "https://www.facebook.com/pharmooworld",
+      "https://www.instagram.com/pharmooworld",
+      "https://twitter.com/pharmooworld",
+    ],
+  };
   return (
     <Helmet>
       {/* Primary Meta Tags */}
@@ -105,6 +156,9 @@ const SEO = ({
       </script>
       <script type="application/ld+json">
         {JSON.stringify(websiteSchema)}
+      </script>
+      <script type="application/ld+json">
+        {JSON.stringify(medicalBusinessSchema)}
       </script>
       {structuredData && (
         Array.isArray(structuredData) 

@@ -392,7 +392,7 @@ const ProductDetail = () => {
   return (
     <>
       <SEO
-        title={`${product.name} - Buy Wholesale`}
+        title={product.name}
         description={product.description || `Buy ${product.name} from Pharmoo World. ${product.regulatory_status || "GMP Certified"}. ${product.manufacturer ? `By ${product.manufacturer}.` : ""} Global shipping available.`}
         keywords={`${product.name}, ${product.manufacturer || ""}, ${category?.name || "pharmaceutical"}, wholesale, buy online`}
         canonical={`/product/${product.slug}`}
