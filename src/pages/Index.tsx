@@ -57,7 +57,7 @@ const Index = () => {
     <>
       <SEO
         title="Pharmoo World - Global Pharmaceutical & Medical Supplies"
-        description="Trusted pharmaceutical supplier offering GMP-certified medicines, APIs, medical devices, and hospital supplies. WHO compliant with global shipping to 50+ countries."
+        description="Trusted supplier of GMP-certified medicines, APIs, medical devices and hospital supplies. WHO-compliant, shipping to 50+ countries."
         keywords="pharmaceutical supplier, buy medicines online wholesale, API supplier, medical supplies distributor, pharmaceutical exporter, GMP certified, Botox wholesale, dermal fillers supplier, hospital supplies"
         canonical="/"
       />
