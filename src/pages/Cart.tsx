@@ -94,9 +94,9 @@ const Cart = () => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
                               <Link to={`/product/${item.product.slug}`} className="min-w-0 flex-1">
-                                <h3 className="font-semibold text-sm sm:text-base text-foreground hover:text-primary transition-colors line-clamp-2">
+                                <h2 className="font-semibold text-sm sm:text-base text-foreground hover:text-primary transition-colors line-clamp-2">
                                   {item.product.name}
-                                </h3>
+                                </h2>
                               </Link>
                               {/* Price */}
                               <p className="font-bold text-sm sm:text-lg whitespace-nowrap shrink-0">
@@ -145,6 +145,7 @@ const Cart = () => {
                                 size="sm"
                                 className="text-destructive hover:text-destructive hover:bg-destructive/10 h-9 px-2"
                                 onClick={() => removeFromCart(item.id)}
+                                aria-label="Remove item"
                               >
                                 <Trash2 className="h-4 w-4 sm:mr-1" />
                                 <span className="hidden sm:inline">Remove</span>
