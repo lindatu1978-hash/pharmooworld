@@ -66,6 +66,7 @@ const Index = () => {
       <AnnouncementBar />
 
       <Layout>
+        <h1 className="sr-only">Pharmoo World — Global Pharmaceutical & Medical Supplies</h1>
         <CategoryCarousel />
         <HeroBanner />
         
