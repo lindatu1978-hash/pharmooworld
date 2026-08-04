@@ -266,10 +266,19 @@ export const createProductSchema = (product: {
       },
       shippingDetails: {
         "@type": "OfferShippingDetails",
-        shippingDestination: {
-          "@type": "DefinedRegion",
-          addressCountry: "Worldwide",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: "0",
+          currency: "USD",
         },
+        shippingDestination: [
+          { "@type": "DefinedRegion", addressCountry: "US" },
+          { "@type": "DefinedRegion", addressCountry: "CA" },
+          { "@type": "DefinedRegion", addressCountry: "GB" },
+          { "@type": "DefinedRegion", addressCountry: "DE" },
+          { "@type": "DefinedRegion", addressCountry: "FR" },
+          { "@type": "DefinedRegion", addressCountry: "AU" },
+        ],
         deliveryTime: {
           "@type": "ShippingDeliveryTime",
           handlingTime: {
@@ -286,7 +295,17 @@ export const createProductSchema = (product: {
           },
         },
       },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: ["US", "CA", "GB", "DE", "FR", "AU"],
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/ReturnShippingFees",
+        merchantReturnLink: `${SITE_URL}/returns`,
+      },
     },
+
     ...(additionalProperties.length > 0 && { additionalProperty: additionalProperties }),
   };
 
