@@ -602,6 +602,16 @@ const ProductDetail = () => {
                     </span>
                   </p>
                 )}
+
+                {reviewCount > 0 && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <StarRating value={averageRating} size="sm" />
+                    <span className="text-sm text-muted-foreground">
+                      {averageRating.toFixed(1)} · {reviewCount} verified {reviewCount === 1 ? "review" : "reviews"}
+                    </span>
+                  </div>
+                )}
+
               </header>
 
               {/* Specs */}
