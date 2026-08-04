@@ -194,7 +194,16 @@ export const createProductSchema = (product: {
   form?: string | null;
   origin?: string | null;
   regulatoryStatus?: string | null;
+  aggregateRating?: { ratingValue: number; reviewCount: number } | null;
+  reviews?: {
+    rating: number;
+    author: string;
+    datePublished: string;
+    title?: string | null;
+    body?: string | null;
+  }[];
 }) => {
+
   const additionalProperties = [];
   
   if (product.dosage) {
