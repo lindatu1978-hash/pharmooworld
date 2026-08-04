@@ -253,6 +253,56 @@ export type Database = {
         }
         Relationships: []
       }
+      product_reviews: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_approved: boolean
+          is_verified_purchase: boolean
+          product_id: string
+          rating: number
+          reviewer_name: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          is_verified_purchase?: boolean
+          product_id: string
+          rating: number
+          reviewer_name?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          is_verified_purchase?: boolean
+          product_id?: string
+          rating?: number
+          reviewer_name?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           bulk_min_quantity: number | null
@@ -392,6 +442,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_purchased_product: {
+        Args: { _product_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
