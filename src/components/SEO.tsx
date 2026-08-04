@@ -194,7 +194,16 @@ export const createProductSchema = (product: {
   form?: string | null;
   origin?: string | null;
   regulatoryStatus?: string | null;
+  aggregateRating?: { ratingValue: number; reviewCount: number } | null;
+  reviews?: {
+    rating: number;
+    author: string;
+    datePublished: string;
+    title?: string | null;
+    body?: string | null;
+  }[];
 }) => {
+
   const additionalProperties = [];
   
   if (product.dosage) {
@@ -306,8 +315,39 @@ export const createProductSchema = (product: {
       },
     },
 
+    // Only emitted when genuine verified-purchase reviews exist.
+    ...(product.aggregateRating && product.aggregateRating.reviewCount > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.aggregateRating.ratingValue,
+            reviewCount: product.aggregateRating.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+    ...(product.reviews && product.reviews.length > 0
+      ? {
+          review: product.reviews.map((r) => ({
+            "@type": "Review",
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: r.rating,
+              bestRating: 5,
+              worstRating: 1,
+            },
+            author: { "@type": "Person", name: r.author },
+            datePublished: r.datePublished,
+            ...(r.title && { name: r.title }),
+            ...(r.body && { reviewBody: r.body }),
+          })),
+        }
+      : {}),
+
     ...(additionalProperties.length > 0 && { additionalProperty: additionalProperties }),
   };
+
 
   return productSchema;
 };

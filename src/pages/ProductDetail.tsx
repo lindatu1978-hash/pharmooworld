@@ -15,6 +15,10 @@ import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
 import { cn } from "@/lib/utils";
+import ProductReviews from "@/components/product/ProductReviews";
+import StarRating from "@/components/product/StarRating";
+import { useProductReviews } from "@/hooks/useProductReviews";
+
 
 // Optimized main image with loading state and smooth transitions
 const MainProductImage = memo(({ 
@@ -208,6 +212,8 @@ const ProductDetail = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const { averageRating, reviewCount, reviews } = useProductReviews(product?.id);
+
 
   // Extract base product name for finding variations
   const getBaseProductName = (name: string): string => {
@@ -413,7 +419,16 @@ const ProductDetail = () => {
             form: product.form,
             origin: product.origin,
             regulatoryStatus: product.regulatory_status,
+            aggregateRating: reviewCount > 0 ? { ratingValue: averageRating, reviewCount } : null,
+            reviews: reviews.slice(0, 10).map((r) => ({
+              rating: r.rating,
+              author: r.reviewer_name || "Verified buyer",
+              datePublished: r.created_at.slice(0, 10),
+              title: r.title,
+              body: r.body,
+            })),
           }),
+
           createMedicalEntitySchema({
             name: product.name,
             description: product.description,
@@ -587,6 +602,16 @@ const ProductDetail = () => {
                     </span>
                   </p>
                 )}
+
+                {reviewCount > 0 && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <StarRating value={averageRating} size="sm" />
+                    <span className="text-sm text-muted-foreground">
+                      {averageRating.toFixed(1)} · {reviewCount} verified {reviewCount === 1 ? "review" : "reviews"}
+                    </span>
+                  </div>
+                )}
+
               </header>
 
               {/* Specs */}
@@ -761,11 +786,60 @@ const ProductDetail = () => {
           {/* Tabs */}
           <div className="mt-12">
             <Tabs defaultValue="description">
-              <TabsList className="w-full justify-start">
+              <TabsList className="w-full justify-start overflow-x-auto scrollbar-hide">
                 <TabsTrigger value="description">Description</TabsTrigger>
+                <TabsTrigger value="specifications">Specifications</TabsTrigger>
                 <TabsTrigger value="applications">Applications</TabsTrigger>
                 <TabsTrigger value="documentation">Documentation</TabsTrigger>
+                <TabsTrigger value="reviews">
+                  Reviews{reviewCount > 0 ? ` (${reviewCount})` : ""}
+                </TabsTrigger>
               </TabsList>
+
+              <TabsContent value="specifications" className="mt-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <h2 className="text-lg font-semibold mb-4">Product details</h2>
+                    <dl className="divide-y divide-border">
+                      {[
+                        { label: "Product name", value: product.name },
+                        { label: "Category", value: category?.name },
+                        { label: "Manufacturer", value: product.manufacturer },
+                        { label: "Strength / Dosage", value: product.dosage },
+                        { label: "Form", value: product.form },
+                        { label: "Country of origin", value: product.origin },
+                        { label: "Regulatory status", value: product.regulatory_status },
+                        { label: "Shelf life", value: product.shelf_life },
+                        {
+                          label: "Unit price",
+                          value: `$${product.price.toFixed(2)}`,
+                        },
+                        {
+                          label: "Wholesale price",
+                          value:
+                            product.bulk_price && product.bulk_min_quantity
+                              ? `$${product.bulk_price.toFixed(2)} per unit from ${product.bulk_min_quantity} units`
+                              : null,
+                        },
+                        { label: "Availability", value: product.in_stock ? "In stock" : "Out of stock" },
+                        { label: "SKU", value: product.slug },
+                      ]
+                        .filter((row) => !!row.value)
+                        .map((row) => (
+                          <div key={row.label} className="grid grid-cols-1 sm:grid-cols-3 gap-1 py-3">
+                            <dt className="text-sm text-muted-foreground">{row.label}</dt>
+                            <dd className="sm:col-span-2 text-sm font-medium">{row.value}</dd>
+                          </div>
+                        ))}
+                    </dl>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="reviews" className="mt-6">
+                <ProductReviews productId={product.id} productName={product.name} />
+              </TabsContent>
+
 
               <TabsContent value="description" className="mt-6">
                 <Card>
