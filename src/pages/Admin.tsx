@@ -109,11 +109,20 @@ const Admin = () => {
                 <ShoppingCart className="h-4 w-4" />
                 Orders
               </TabsTrigger>
+              <TabsTrigger value="reviews" className="flex items-center gap-2">
+                <Star className="h-4 w-4" />
+                Reviews
+              </TabsTrigger>
               <TabsTrigger value="import" className="flex items-center gap-2">
                 <Upload className="h-4 w-4" />
                 Import
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="reviews">
+              <ReviewModeration />
+            </TabsContent>
+
 
             <TabsContent value="dashboard">
               <AdminDashboard />
