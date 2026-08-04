@@ -15,6 +15,10 @@ import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { BitcoinPriceDisplay } from "@/components/bitcoin/BitcoinPriceDisplay";
 import { cn } from "@/lib/utils";
+import ProductReviews from "@/components/product/ProductReviews";
+import StarRating from "@/components/product/StarRating";
+import { useProductReviews } from "@/hooks/useProductReviews";
+
 
 // Optimized main image with loading state and smooth transitions
 const MainProductImage = memo(({ 
