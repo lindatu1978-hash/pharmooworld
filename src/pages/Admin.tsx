@@ -4,7 +4,9 @@ import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, Plus, Settings, Image, ShoppingCart, LayoutDashboard, Upload } from "lucide-react";
+import { Package, Plus, Settings, Image, ShoppingCart, LayoutDashboard, Upload, Star } from "lucide-react";
+import ReviewModeration from "@/components/admin/ReviewModeration";
+
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import ProductList from "@/components/admin/ProductList";
 import ProductForm from "@/components/admin/ProductForm";
