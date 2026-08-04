@@ -419,7 +419,16 @@ const ProductDetail = () => {
             form: product.form,
             origin: product.origin,
             regulatoryStatus: product.regulatory_status,
+            aggregateRating: reviewCount > 0 ? { ratingValue: averageRating, reviewCount } : null,
+            reviews: reviews.slice(0, 10).map((r) => ({
+              rating: r.rating,
+              author: r.reviewer_name || "Verified buyer",
+              datePublished: r.created_at.slice(0, 10),
+              title: r.title,
+              body: r.body,
+            })),
           }),
+
           createMedicalEntitySchema({
             name: product.name,
             description: product.description,
