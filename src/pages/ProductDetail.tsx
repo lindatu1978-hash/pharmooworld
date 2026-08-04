@@ -208,6 +208,8 @@ const ProductDetail = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const { averageRating, reviewCount, reviews } = useProductReviews(product?.id);
+
 
   // Extract base product name for finding variations
   const getBaseProductName = (name: string): string => {
