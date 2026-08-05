@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, memo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import SEO, { createProductSchema, createBreadcrumbSchema, createMedicalEntitySchema } from "@/components/SEO";
+import SEO, { createProductSchema, createBreadcrumbSchema, createMedicalEntitySchema, createFAQSchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,8 @@ import { cn } from "@/lib/utils";
 import ProductReviews from "@/components/product/ProductReviews";
 import StarRating from "@/components/product/StarRating";
 import { useProductReviews } from "@/hooks/useProductReviews";
+import ProductAuthoritySections from "@/components/product/ProductAuthoritySections";
+import { buildProductTitle, buildProductDescription, buildFaqs } from "@/lib/product-content";
 
 
 // Optimized main image with loading state and smooth transitions
@@ -361,6 +363,11 @@ const ProductDetail = () => {
     return parts.join(" - ");
   };
 
+  const productFaqs = useMemo(
+    () => (product ? buildFaqs(product, category?.name) : []),
+    [product, category],
+  );
+
   if (isLoading) {
     return (
       <Layout>
@@ -398,8 +405,8 @@ const ProductDetail = () => {
   return (
     <>
       <SEO
-        title={product.name}
-        description={product.description || `Buy ${product.name} from Pharmoo World. ${product.regulatory_status || "GMP Certified"}. ${product.manufacturer ? `By ${product.manufacturer}.` : ""} Global shipping available.`}
+        title={buildProductTitle(product.name, product.manufacturer)}
+        description={buildProductDescription(product, category?.name)}
         keywords={`${product.name}, ${product.manufacturer || ""}, ${category?.name || "pharmaceutical"}, wholesale, buy online`}
         canonical={`/product/${product.slug}`}
         type="product"
@@ -436,6 +443,7 @@ const ProductDetail = () => {
             form: product.form,
             dosage: product.dosage,
           }),
+          createFAQSchema(productFaqs),
           createBreadcrumbSchema([
             { name: "Home", url: "/" },
             { name: "Products", url: "/products" },
@@ -907,6 +915,8 @@ const ProductDetail = () => {
               </TabsContent>
             </Tabs>
           </div>
+
+          <ProductAuthoritySections product={product} category={category} faqs={productFaqs} />
         </article>
       </Layout>
     </>
