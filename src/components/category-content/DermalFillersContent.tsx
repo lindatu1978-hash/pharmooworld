@@ -51,7 +51,7 @@ const DermalFillersContent = () => {
     itemListElement: products.map((p, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `https://www.pharmooworld.com/product/${p.slug}`,
+      url: `https://pharmooworld.com/product/${p.slug}`,
       name: p.name,
     })),
   };

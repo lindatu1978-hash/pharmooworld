@@ -156,4 +156,4 @@ Sitemap: https://pharmooworld.com/sitemap.xml
 # ===========================================
 # Host Directive
 # ===========================================
-Host: https://www.pharmooworld.com
+Host: https://pharmooworld.com
