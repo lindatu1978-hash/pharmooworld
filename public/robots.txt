@@ -1,6 +1,6 @@
 # Pharmoo World - Robots.txt
 # Global Pharmaceutical & Medical Supplies Distributor
-# https://www.pharmooworld.com
+# https://pharmooworld.com
 
 # ===========================================
 # Disallowed Pages (Private/Admin/Redirect pages)
