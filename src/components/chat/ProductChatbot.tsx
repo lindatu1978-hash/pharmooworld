@@ -177,6 +177,7 @@ const ProductChatbot = () => {
           isOpen && "rotate-90"
         )}
         size="icon"
+        aria-label={isOpen ? "Close product assistant chat" : "Open product assistant chat"}
       >
         {isOpen ? (
           <X className="h-6 w-6" />
@@ -292,6 +293,7 @@ const ProductChatbot = () => {
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
               size="icon"
+              aria-label="Send message"
             >
               <Send className="h-4 w-4" />
             </Button>

@@ -11,7 +11,7 @@ interface SEOProps {
   structuredData?: object | object[];
 }
 
-const SITE_URL = "https://www.pharmooworld.com";
+const SITE_URL = "https://pharmooworld.com";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 const SITE_NAME = "Pharmoo World";
 

@@ -105,13 +105,13 @@ const BlogPost = () => {
     publisher: {
       "@type": "Organization",
       name: "PharmooWorld",
-      logo: { "@type": "ImageObject", url: "https://www.pharmooworld.com/favicon.png" },
+      logo: { "@type": "ImageObject", url: "https://pharmooworld.com/favicon.png" },
     },
     datePublished: post.published_at,
     dateModified: post.published_at,
-    url: `https://www.pharmooworld.com/blog/${post.slug}`,
+    url: `https://pharmooworld.com/blog/${post.slug}`,
     ...(post.featured_image && { image: post.featured_image }),
-    mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.pharmooworld.com/blog/${post.slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://pharmooworld.com/blog/${post.slug}` },
   };
 
   return (

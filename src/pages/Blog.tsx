@@ -46,7 +46,7 @@ const Blog = () => {
     <>
       <SEO
         title="Pharma Industry Blog & Guides"
-        description="Expert articles on botulinum toxin, dermal fillers, cold chain logistics, pharmaceutical supply chain, and aesthetic medicine. Written by PharmooWorld's editorial team."
+        description="Expert articles on botulinum toxin, dermal fillers, cold chain logistics, and aesthetic medicine from PharmooWorld."
         keywords="pharmaceutical blog, botulinum toxin guide, dermal fillers education, cold chain logistics, medical supply chain"
         canonical="/blog"
         structuredData={createBreadcrumbSchema([
