@@ -40,6 +40,18 @@ const ProductReviews = ({ productId, productName }: ProductReviewsProps) => {
   const [body, setBody] = useState(myReview?.body ?? "");
   const [reviewerName, setReviewerName] = useState(myReview?.reviewer_name ?? "");
 
+  // Seed the form once the user's existing review loads (query resolves async)
+  const seededReviewId = useRef<string | null>(null);
+  useEffect(() => {
+    if (myReview && seededReviewId.current !== myReview.id) {
+      seededReviewId.current = myReview.id;
+      setRating(myReview.rating ?? 0);
+      setTitle(myReview.title ?? "");
+      setBody(myReview.body ?? "");
+      setReviewerName(myReview.reviewer_name ?? "");
+    }
+  }, [myReview]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating < 1 || rating > 5) {
