@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,18 @@ const ProductReviews = ({ productId, productName }: ProductReviewsProps) => {
   const [title, setTitle] = useState(myReview?.title ?? "");
   const [body, setBody] = useState(myReview?.body ?? "");
   const [reviewerName, setReviewerName] = useState(myReview?.reviewer_name ?? "");
+
+  // Seed the form once the user's existing review loads (query resolves async)
+  const seededReviewId = useRef<string | null>(null);
+  useEffect(() => {
+    if (myReview && seededReviewId.current !== myReview.id) {
+      seededReviewId.current = myReview.id;
+      setRating(myReview.rating ?? 0);
+      setTitle(myReview.title ?? "");
+      setBody(myReview.body ?? "");
+      setReviewerName(myReview.reviewer_name ?? "");
+    }
+  }, [myReview]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
